@@ -1,0 +1,57 @@
+export type ProjectStatus = "live" | "in-progress" | "archived";
+
+export type TechCategory = "frontend" | "backend" | "infra" | "tooling";
+
+export interface TechChoice {
+  name: string;
+  category: TechCategory;
+  /** Por qué se eligió esta tecnología en este proyecto, no una descripción genérica. */
+  why: string;
+}
+
+export interface TimelinePhase {
+  order: number;
+  label: string;
+  summary: string;
+  detail: string;
+  commitRange?: string;
+}
+
+export interface CaseStudyDecision {
+  title: string;
+  detail: string;
+}
+
+export interface CaseStudy {
+  problem: string;
+  decisions: CaseStudyDecision[];
+  challenge: string;
+  result: string;
+}
+
+export interface ProjectImage {
+  src: string;
+  alt: string;
+}
+
+export interface ProjectRepo {
+  label: string;
+  url: string;
+}
+
+export interface Project {
+  slug: string;
+  title: string;
+  tagline: string;
+  status: ProjectStatus;
+  /** Solo true para el proyecto insignia (codequest-rpg). */
+  featured: boolean;
+  tags: string[];
+  stack: TechChoice[];
+  repos: ProjectRepo[];
+  demoUrl?: string;
+  images: ProjectImage[];
+  caseStudy: CaseStudy;
+  /** Solo presente en codequest-rpg. */
+  timeline?: TimelinePhase[];
+}
