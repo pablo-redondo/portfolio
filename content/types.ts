@@ -1,5 +1,7 @@
 export type ProjectStatus = "live" | "in-progress" | "archived";
 
+export const PROJECT_TAGS = ["Full-stack", "Educación", "Redes/Infra", "Herramientas"] as const;
+
 export type TechCategory = "frontend" | "backend" | "infra" | "tooling";
 
 export interface TechChoice {
