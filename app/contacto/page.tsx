@@ -3,9 +3,13 @@ import { Container } from "@/components/Container";
 import { SectionLabel } from "@/components/SectionLabel";
 import { SITE } from "@/content/site";
 
+const TITLE = "Contacto";
+const DESCRIPTION = "Contacta con Pablo Redondo — email, GitHub, LinkedIn y CV.";
+
 export const metadata: Metadata = {
-  title: "Contacto",
-  description: "Contacta con Pablo Redondo — email, GitHub, LinkedIn y CV.",
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: { title: `${TITLE} · Pablo Redondo`, description: DESCRIPTION },
 };
 
 export default function ContactoPage() {

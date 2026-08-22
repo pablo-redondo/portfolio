@@ -16,7 +16,7 @@ export function ProjectCard({ project }: { project: Project }) {
         </p>
         <StatusBadge status={project.status} />
       </div>
-      <h3
+      <h2
         className={`font-mono font-bold tracking-tight text-ink group-hover:text-accent ${
           project.featured ? "text-2xl" : "text-lg"
         }`}
@@ -27,7 +27,7 @@ export function ProjectCard({ project }: { project: Project }) {
             PROYECTO INSIGNIA
           </span>
         )}
-      </h3>
+      </h2>
       <p className="max-w-[60ch] text-sm text-ink-soft">{project.tagline}</p>
       <div className="mt-auto flex flex-wrap gap-1.5 pt-2">
         {project.stack.slice(0, project.featured ? 6 : 4).map((tech) => (

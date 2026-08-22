@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/Container";
 import { SectionLabel } from "@/components/SectionLabel";
@@ -7,6 +8,16 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { projects } from "@/content/projects";
 import { aboutStack } from "@/content/stack";
 import { SITE } from "@/content/site";
+
+const TITLE = "Pablo Redondo — Desarrollador full-stack";
+const DESCRIPTION =
+  "De la sala de servidores al código: desarrollador full-stack con base en ASIR y redes. Proyectos, stack y case studies.";
+
+export const metadata: Metadata = {
+  title: { absolute: TITLE },
+  description: DESCRIPTION,
+  openGraph: { title: TITLE, description: DESCRIPTION },
+};
 
 const HOME_STACK_STRIP = [
   "TypeScript",

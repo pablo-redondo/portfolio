@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { JetBrains_Mono, Source_Serif_4 } from "next/font/google";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { SITE } from "@/content/site";
 import "./globals.css";
 
 const jetbrainsMono = JetBrains_Mono({
@@ -15,18 +16,23 @@ const sourceSerif = Source_Serif_4({
   subsets: ["latin"],
 });
 
+const DEFAULT_TITLE = "Pablo Redondo — Desarrollador full-stack";
+const DEFAULT_DESCRIPTION =
+  "Portfolio de Pablo Redondo, desarrollador full-stack en transición desde ASIR y redes hacia el desarrollo web.";
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://pablo-redondo.dev"),
+  metadataBase: new URL(SITE.url),
   title: {
-    default: "Pablo Redondo — Desarrollador full-stack",
+    default: DEFAULT_TITLE,
     template: "%s · Pablo Redondo",
   },
-  description:
-    "Portfolio de Pablo Redondo, desarrollador full-stack en transición desde ASIR y redes hacia el desarrollo web.",
+  description: DEFAULT_DESCRIPTION,
   openGraph: {
     type: "website",
     locale: "es_ES",
     siteName: "Pablo Redondo",
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
   },
 };
 

@@ -6,9 +6,13 @@ import { ProjectCard } from "@/components/ProjectCard";
 import { projects } from "@/content/projects";
 import { PROJECT_TAGS } from "@/content/types";
 
+const TITLE = "Proyectos";
+const DESCRIPTION = "Proyectos full-stack, herramientas y experimentos de Pablo Redondo.";
+
 export const metadata: Metadata = {
-  title: "Proyectos",
-  description: "Proyectos full-stack, herramientas y experimentos de Pablo Redondo.",
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: { title: `${TITLE} · Pablo Redondo`, description: DESCRIPTION },
 };
 
 type Props = {

@@ -4,9 +4,13 @@ import { SectionLabel } from "@/components/SectionLabel";
 import { StackByCategory } from "@/components/StackByCategory";
 import { aboutStack } from "@/content/stack";
 
+const TITLE = "Sobre mí";
+const DESCRIPTION = "De ASIR y redes al desarrollo web — trayectoria y stack de Pablo Redondo.";
+
 export const metadata: Metadata = {
-  title: "Sobre mí",
-  description: "De ASIR y redes al desarrollo web — trayectoria y stack de Pablo Redondo.",
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: { title: `${TITLE} · Pablo Redondo`, description: DESCRIPTION },
 };
 
 export default function SobreMiPage() {
