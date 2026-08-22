@@ -9,6 +9,7 @@ import { DeploymentStatusPanel } from "@/components/DeploymentStatus";
 import { projects } from "@/content/projects";
 import { aboutStack } from "@/content/stack";
 import { SITE } from "@/content/site";
+import { HOME_HERO } from "@/content/home";
 import { spanForLastInRow } from "@/lib/grid";
 
 const TITLE = "Pablo Redondo — Desarrollador full-stack";
@@ -48,15 +49,11 @@ export default function HomePage() {
               <SectionLabel typed>whoami --stack</SectionLabel>
 
               <h1 className="mt-4 max-w-[15ch] font-mono text-4xl leading-[1.05] font-bold tracking-tight text-balance sm:text-5xl lg:text-6xl">
-                De la sala de servidores al código
+                {HOME_HERO.headline}
               </h1>
 
               <p className="mt-7 max-w-[58ch] text-lg leading-relaxed text-ink-soft">
-                Desarrollador full-stack con base en ASIR y redes: entiendo lo
-                que pasa por debajo de una petición HTTP, no solo lo que se ve
-                en el navegador. Construyo aplicaciones completas —de la base
-                de datos al pixel— y esa base de sistemas es la que explica el
-                porqué de muchas decisiones, no solo el qué.
+                {HOME_HERO.intro}
               </p>
 
               <div className="mt-9 flex flex-wrap items-center gap-3">
