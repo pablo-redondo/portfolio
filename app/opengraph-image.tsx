@@ -4,10 +4,10 @@ export const alt = "Pablo Redondo — Desarrollador full-stack";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-const BG = "#14181a";
-const INK = "#edeae2";
-const INK_SOFT = "#a7ada8";
-const ACCENT = "#e08a3e";
+const BG = "#0B0F14";
+const INK = "#E9EFF6";
+const INK_SOFT = "#A7B6C7";
+const ACCENT = "#FFB44D";
 
 export default async function Image() {
   return new ImageResponse(

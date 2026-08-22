@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono, Source_Serif_4 } from "next/font/google";
+import { JetBrains_Mono, Manrope } from "next/font/google";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SITE } from "@/content/site";
@@ -11,8 +11,8 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ["400", "500", "700"],
 });
 
-const sourceSerif = Source_Serif_4({
-  variable: "--font-source-serif",
+const manrope = Manrope({
+  variable: "--font-manrope",
   subsets: ["latin"],
 });
 
@@ -40,7 +40,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="es"
-      className={`${jetbrainsMono.variable} ${sourceSerif.variable} h-full antialiased`}
+      className={`${jetbrainsMono.variable} ${manrope.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
         <Header />

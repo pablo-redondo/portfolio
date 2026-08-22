@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Container } from "@/components/Container";
-import { SectionLabel } from "@/components/SectionLabel";
 import { StatusBadge } from "@/components/StatusBadge";
 import { StackTable } from "@/components/StackTable";
 import { Timeline } from "@/components/Timeline";
@@ -34,6 +34,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+function SectionHeading({ eyebrow, title }: { eyebrow: string; title: string }) {
+  return (
+    <div className="mb-6">
+      <p className="mb-2 font-mono text-[11px] tracking-wide text-accent uppercase">
+        {eyebrow}
+      </p>
+      <h2 className="font-mono text-2xl font-bold tracking-tight">{title}</h2>
+    </div>
+  );
+}
+
 export default async function ProjectPage({ params }: Props) {
   const { slug } = await params;
   const project = findProject(slug);
@@ -42,95 +53,153 @@ export default async function ProjectPage({ params }: Props) {
   const { caseStudy } = project;
 
   return (
-    <Container>
-      <article className="py-16 sm:py-24">
-        <SectionLabel>{`cat ${project.slug}.md`}</SectionLabel>
-
-        <div className="flex flex-wrap items-center gap-3">
-          <h1 className="font-mono text-3xl font-bold tracking-tight">{project.title}</h1>
-          <StatusBadge status={project.status} />
-        </div>
-        <p className="mt-3 max-w-[65ch] text-lg text-ink-soft">{project.tagline}</p>
-
-        <div className="mt-5 flex flex-wrap gap-2">
-          {project.tags.map((tag) => (
-            <span
-              key={tag}
-              className="rounded-sm border border-line px-2 py-0.5 font-mono text-[11px] text-ink-soft"
+    <>
+      {/* --- Cabecera --- */}
+      <section className="hero-glow border-b border-line">
+        <Container>
+          <div className="py-16 sm:py-20">
+            <Link
+              href="/proyectos"
+              className="font-mono text-xs text-ink-faint hover:text-accent"
             >
-              {tag}
-            </span>
-          ))}
-        </div>
+              ← proyectos
+            </Link>
 
-        <div className="mt-6 flex flex-wrap gap-4 font-mono text-sm">
-          {project.repos.map((repo) => (
-            <a key={repo.url} href={repo.url} className="text-teal hover:text-accent">
-              {repo.label} ↗
-            </a>
-          ))}
-          {project.demoUrl && (
-            <a href={project.demoUrl} className="text-teal hover:text-accent">
-              Demo ↗
-            </a>
-          )}
-        </div>
+            <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3">
+              <h1 className="font-mono text-4xl font-bold tracking-tight sm:text-5xl">
+                {project.title}
+              </h1>
+              <StatusBadge status={project.status} />
+            </div>
 
-        {project.timeline && project.timeline.length > 0 && (
-          <Reveal>
-          <section className="mt-14">
-            <h2 className="mb-4 font-mono text-lg font-bold tracking-tight">Línea de evolución</h2>
-            <Timeline phases={project.timeline} />
-          </section>
-          </Reveal>
-        )}
+            <p className="mt-5 max-w-[65ch] text-lg leading-relaxed text-ink-soft">
+              {project.tagline}
+            </p>
 
-        <Reveal>
-          <section className="mt-14">
-            <h2 className="mb-3 font-mono text-lg font-bold tracking-tight">Contexto</h2>
-            <p className="max-w-[65ch] text-ink-soft">{caseStudy.problem}</p>
-          </section>
-        </Reveal>
-
-        {caseStudy.decisions.length > 0 && (
-          <Reveal>
-          <section className="mt-12">
-            <h2 className="mb-4 font-mono text-lg font-bold tracking-tight">Decisiones técnicas clave</h2>
-            <div className="flex flex-col gap-6">
-              {caseStudy.decisions.map((decision) => (
-                <div key={decision.title}>
-                  <h3 className="font-mono text-sm font-semibold text-ink">{decision.title}</h3>
-                  <p className="mt-1 max-w-[65ch] text-sm text-ink-soft">{decision.detail}</p>
-                </div>
+            <div className="mt-6 flex flex-wrap gap-2">
+              {project.tags.map((tag) => (
+                <span key={tag} className="chip">
+                  {tag}
+                </span>
               ))}
             </div>
-          </section>
-          </Reveal>
-        )}
 
-        <Reveal>
-        <section className="mt-12">
-          <h2 className="mb-3 font-mono text-lg font-bold tracking-tight">Reto técnico destacado</h2>
-          <p className="max-w-[65ch] text-ink-soft">{caseStudy.challenge}</p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              {project.repos.map((repo) => (
+                <a key={repo.url} href={repo.url} className="btn btn-secondary">
+                  {repo.label} <span aria-hidden>↗</span>
+                </a>
+              ))}
+              {project.demoUrl && (
+                <a href={project.demoUrl} className="btn btn-primary">
+                  Ver demo <span aria-hidden>↗</span>
+                </a>
+              )}
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      {/* --- Línea de evolución --- */}
+      {project.timeline && project.timeline.length > 0 && (
+        <section className="border-b border-line py-16">
+          <Container>
+            <Reveal>
+              <SectionHeading eyebrow="cómo llegó hasta aquí" title="Línea de evolución" />
+              <p className="mb-8 max-w-[65ch] text-ink-soft">
+                Seis fases reconstruyendo el proyecto sin dejarlo roto entre
+                pasos. Cada una se despliega con su detalle y su rango de
+                commits.
+              </p>
+              <Timeline phases={project.timeline} />
+            </Reveal>
+          </Container>
         </section>
-        </Reveal>
+      )}
 
-        <Reveal>
-          <section className="mt-12">
-            <h2 className="mb-3 font-mono text-lg font-bold tracking-tight">Resultado</h2>
-            <p className="max-w-[65ch] text-ink-soft">{caseStudy.result}</p>
-          </section>
-        </Reveal>
+      {/* --- Contexto y reto, a dos columnas --- */}
+      <section className="border-b border-line py-16">
+        <Container>
+          <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
+            <Reveal>
+              <SectionHeading eyebrow="por qué existe" title="Contexto" />
+              <p className="max-w-[62ch] leading-relaxed text-ink-soft">
+                {caseStudy.problem}
+              </p>
+            </Reveal>
 
-        {project.stack.length > 0 && (
+            <Reveal delay={80}>
+              <SectionHeading eyebrow="lo más difícil" title="Reto técnico" />
+              <p className="max-w-[62ch] leading-relaxed text-ink-soft">
+                {caseStudy.challenge}
+              </p>
+            </Reveal>
+          </div>
+        </Container>
+      </section>
+
+      {/* --- Decisiones --- */}
+      {caseStudy.decisions.length > 0 && (
+        <section className="border-b border-line py-16">
+          <Container>
+            <Reveal>
+              <SectionHeading eyebrow="el porqué, no solo el qué" title="Decisiones técnicas" />
+            </Reveal>
+            <div className="grid gap-4 lg:grid-cols-3">
+              {caseStudy.decisions.map((decision, i) => (
+                <Reveal key={decision.title} delay={(i % 3) * 60}>
+                  <div className="surface-card h-full p-6">
+                    <span className="font-mono text-[11px] text-accent">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <h3 className="mt-2 font-mono text-base font-semibold text-ink">
+                      {decision.title}
+                    </h3>
+                    <p className="mt-3 text-sm leading-relaxed text-ink-soft">
+                      {decision.detail}
+                    </p>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </Container>
+        </section>
+      )}
+
+      {/* --- Resultado --- */}
+      <section className="border-b border-line py-16">
+        <Container>
           <Reveal>
-          <section className="mt-14">
-            <h2 className="mb-4 font-mono text-lg font-bold tracking-tight">Stack</h2>
-            <StackTable stack={project.stack} />
-          </section>
+            <SectionHeading eyebrow="dónde está hoy" title="Resultado" />
+            <div className="surface-featured p-7 sm:p-9">
+              <p className="max-w-[70ch] leading-relaxed text-ink-soft">
+                {caseStudy.result}
+              </p>
+            </div>
           </Reveal>
-        )}
-      </article>
-    </Container>
+        </Container>
+      </section>
+
+      {/* --- Stack --- */}
+      {project.stack.length > 0 && (
+        <section className="py-16">
+          <Container>
+            <Reveal>
+              <SectionHeading eyebrow="con qué está construido" title="Stack" />
+              <StackTable stack={project.stack} />
+            </Reveal>
+
+            <Reveal>
+              <div className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-line pt-8">
+                <p className="text-ink-soft">¿Quieres ver el resto de proyectos?</p>
+                <Link href="/proyectos" className="btn btn-secondary">
+                  Todos los proyectos <span aria-hidden>→</span>
+                </Link>
+              </div>
+            </Reveal>
+          </Container>
+        </section>
+      )}
+    </>
   );
 }

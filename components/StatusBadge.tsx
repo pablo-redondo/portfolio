@@ -2,15 +2,26 @@ import type { ProjectStatus } from "@/content/types";
 
 const LABELS: Record<ProjectStatus, string> = {
   live: "live",
-  "in-progress": "en progreso",
+  "in-progress": "en curso",
   archived: "archivado",
 };
 
+const TONES: Record<ProjectStatus, string> = {
+  live: "text-teal",
+  "in-progress": "text-accent",
+  archived: "text-ink-faint",
+};
+
 export function StatusBadge({ status }: { status: ProjectStatus }) {
-  const color = status === "live" ? "text-teal" : status === "in-progress" ? "text-accent" : "text-ink-faint";
   return (
-    <span className={`font-mono text-[11px] ${color}`}>
-      ● {LABELS[status]}
+    <span
+      className={`inline-flex shrink-0 items-center gap-1.5 font-mono text-[11px] whitespace-nowrap ${TONES[status]}`}
+    >
+      <span
+        aria-hidden
+        className="inline-block h-1.5 w-1.5 rounded-full bg-current"
+      />
+      {LABELS[status]}
     </span>
   );
 }

@@ -1,23 +1,39 @@
 @import "tailwindcss";
 
+/* ============================================================
+   Paleta
+   Tres niveles de superficie (bg → surface → surface-2) para que
+   las cards tengan profundidad real en vez de flotar sobre un
+   único plano. Todos los pares texto/fondo verificados ≥4.5:1.
+   ============================================================ */
+
 :root {
-  --bg: #ecede7;
-  --surface: #f7f7f3;
-  --surface-2: #e2e1d8;
-  --ink: #171b1a;
-  --ink-soft: #4b534f;
-  --ink-faint: #5f655c;
-  --line: rgba(23, 27, 26, 0.14);
-  --accent: #9c531f;
-  --accent-ink: #fdf9f3;
-  --accent-soft: #e7c9a8;
-  --teal: #2f5750;
-  --code-bg: #e2e1d8;
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --surface-2: #eef1f5;
+  --surface-3: #e4e9f0;
+  --ink: #0e141b;
+  --ink-soft: #47566a;
+  --ink-faint: #5e6c7f;
+  --line: #dee3ea;
+  --line-strong: #ccd4de;
+  --accent: #9a5309;
+  --accent-ink: #ffffff;
+  --accent-soft: rgba(154, 83, 9, 0.09);
+  --accent-line: rgba(154, 83, 9, 0.32);
+  --teal: #0b6e62;
+  --code-bg: #0e141b;
+  --code-ink: #e9eff6;
 
-  /* En claro la elevación se comunica con sombra. */
-  --shadow-lift: 0 3px 14px -6px rgba(23, 27, 26, 0.3);
+  --shadow-sm: 0 1px 2px rgba(14, 20, 27, 0.05);
+  --shadow-md: 0 4px 16px -6px rgba(14, 20, 27, 0.14);
+  --shadow-lg: 0 16px 40px -18px rgba(14, 20, 27, 0.26);
+  --glow: rgba(154, 83, 9, 0.1);
 
-  /* Tokens de movimiento — una sola escala para todo el sitio. */
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+
   --motion-fast: 140ms;
   --motion-base: 220ms;
   --motion-slow: 420ms;
@@ -26,46 +42,64 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #14181a;
-    --surface: #1b2022;
-    --surface-2: #20262a;
-    --ink: #edeae2;
-    --ink-soft: #a7ada8;
-    --ink-faint: #8a918c;
-    --line: rgba(237, 234, 226, 0.14);
-    --accent: #e08a3e;
-    --accent-ink: #14181a;
-    --accent-soft: #3a2a18;
-    --teal: #6fa79d;
-    --code-bg: #101416;
-    --shadow-lift: none;
+    --bg: #0b0f14;
+    --surface: #121821;
+    --surface-2: #1a2130;
+    --surface-3: #212a3a;
+    --ink: #e9eff6;
+    --ink-soft: #a7b6c7;
+    --ink-faint: #7a8a9c;
+    --line: #263041;
+    --line-strong: #334054;
+    --accent: #ffb44d;
+    --accent-ink: #1a1206;
+    --accent-soft: rgba(255, 180, 77, 0.12);
+    --accent-line: rgba(255, 180, 77, 0.38);
+    --teal: #45e0c0;
+    --code-bg: #070a0e;
+    --code-ink: #e9eff6;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 18px -6px rgba(0, 0, 0, 0.6);
+    --shadow-lg: 0 18px 44px -20px rgba(0, 0, 0, 0.8);
+    --glow: rgba(255, 180, 77, 0.13);
   }
 }
 
 :root[data-theme="dark"] {
-  --bg: #14181a;
-  --surface: #1b2022;
-  --surface-2: #20262a;
-  --ink: #edeae2;
-  --ink-soft: #a7ada8;
-  --ink-faint: #8a918c;
-  --line: rgba(237, 234, 226, 0.14);
-  --accent: #e08a3e;
-  --accent-ink: #14181a;
-  --accent-soft: #3a2a18;
-  --teal: #6fa79d;
-  --code-bg: #101416;
-  --shadow-lift: none;
+  --bg: #0b0f14;
+  --surface: #121821;
+  --surface-2: #1a2130;
+  --surface-3: #212a3a;
+  --ink: #e9eff6;
+  --ink-soft: #a7b6c7;
+  --ink-faint: #7a8a9c;
+  --line: #263041;
+  --line-strong: #334054;
+  --accent: #ffb44d;
+  --accent-ink: #1a1206;
+  --accent-soft: rgba(255, 180, 77, 0.12);
+  --accent-line: rgba(255, 180, 77, 0.38);
+  --teal: #45e0c0;
+  --code-bg: #070a0e;
+  --code-ink: #e9eff6;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 18px -6px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 18px 44px -20px rgba(0, 0, 0, 0.8);
+  --glow: rgba(255, 180, 77, 0.13);
 }
 
 @theme inline {
   --color-bg: var(--bg);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
   --color-ink: var(--ink);
   --color-ink-soft: var(--ink-soft);
   --color-ink-faint: var(--ink-faint);
   --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
   --color-accent: var(--accent);
   --color-accent-ink: var(--accent-ink);
   --color-accent-soft: var(--accent-soft);
@@ -73,7 +107,9 @@
   --color-code-bg: var(--code-bg);
 
   --font-mono: var(--font-jetbrains-mono);
-  --font-serif: var(--font-source-serif);
+  --font-sans: var(--font-manrope);
+
+  --radius-card: var(--radius-lg);
 }
 
 html {
@@ -83,7 +119,8 @@ html {
 body {
   background: var(--bg);
   color: var(--ink);
-  font-family: var(--font-serif), Georgia, "Times New Roman", serif;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-synthesis-weight: none;
 }
 
 ::selection {
@@ -93,21 +130,110 @@ body {
 
 :focus-visible {
   outline: 2px solid var(--accent);
-  outline-offset: 2px;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ============================================================
+   Piezas de superficie
+   ============================================================ */
+
+/* Card: superficie elevada + hairline interior. El anillo interior
+   es lo que le da borde definido sin recurrir a un borde duro. */
+.surface-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.surface-panel {
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+}
+
+/* Card del proyecto insignia: se distingue por tinte de acento y
+   brillo, no solo por ocupar más ancho. */
+.surface-featured {
+  background:
+    linear-gradient(180deg, var(--accent-soft) 0%, transparent 42%),
+    var(--surface);
+  border: 1px solid var(--accent-line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+/* Resplandor difuso tras el hero: rompe el plano sin ser un patrón
+   de fondo ni partículas. */
+.hero-glow {
+  position: relative;
+  isolation: isolate;
+}
+
+.hero-glow::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -20% -30% auto -10%;
+  height: 460px;
+  background: radial-gradient(60% 60% at 20% 30%, var(--glow), transparent 70%);
+  pointer-events: none;
+}
+
+.divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    var(--line-strong) 0%,
+    var(--line) 45%,
+    transparent 100%
+  );
+}
+
+/* Chip de stack */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  color: var(--ink-soft);
+  border-radius: 999px;
+  padding: 0.25rem 0.625rem;
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.chip-quiet {
+  background: transparent;
+}
+
+/* Recorte de líneas para que las cards de una fila queden parejas
+   en vez de dejar huecos de aire de distinto tamaño. */
+.clamp-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+
+.clamp-3 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
 }
 
 /* ============================================================
    Capa de movimiento
-   Reglas: todo se apaga con prefers-reduced-motion, y ningún
-   estado inicial puede dejar contenido invisible si falla el JS.
+   Todo se apaga con prefers-reduced-motion, y ningún estado
+   inicial puede dejar contenido invisible si falla el JS.
    ============================================================ */
 
-/* --- Scroll reveals ---------------------------------------- */
-
-/* El estado oculto SOLO existe si hay JS que pueda revelarlo y si
-   el usuario no ha pedido menos movimiento. Fuera de esa condición
-   no hace falta ninguna regla: el contenido es visible por defecto,
-   así que todos los caminos de fallo terminan en "se ve". */
 @media (prefers-reduced-motion: no-preference) and (scripting: enabled) {
   [data-reveal] {
     transition:
@@ -123,9 +249,6 @@ body {
 
 /* --- Hero: el prompt que arranca --------------------------- */
 
-/* El texto completo está siempre en el DOM; lo que se anima es la
-   máscara que lo tapa. Sin cambio de contenido no hay CLS, y el
-   rastreador y el lector de pantalla ven la cadena entera. */
 .type-in {
   display: inline-block;
   white-space: nowrap;
@@ -146,23 +269,10 @@ body {
     animation: type-in 620ms steps(var(--type-steps, 14), end) both;
   }
 
-  /* Dos animaciones sobre propiedades distintas: el cursor viaja con la
-     escritura (transform) y luego parpadea (opacity). El backwards fill
-     de cursor-blink lo mantiene visible durante el viaje; tras 4
-     parpadeos termina apagado. */
   .type-cursor {
     animation:
       cursor-travel 620ms steps(var(--type-steps, 14), end) both,
       cursor-blink 380ms steps(1, end) 620ms 4 both;
-  }
-}
-
-@keyframes cursor-travel {
-  from {
-    transform: translateX(calc(var(--type-steps, 14) * -1ch)) translateY(0.15em);
-  }
-  to {
-    transform: translateX(0) translateY(0.15em);
   }
 }
 
@@ -172,6 +282,15 @@ body {
   }
   to {
     clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes cursor-travel {
+  from {
+    transform: translateX(calc(var(--type-steps, 14) * -1ch)) translateY(0.15em);
+  }
+  to {
+    transform: translateX(0) translateY(0.15em);
   }
 }
 
@@ -198,44 +317,65 @@ body {
 
 .card-lift:hover,
 .card-lift:focus-visible {
-  border-color: var(--accent);
-  background-color: var(--surface-2);
-  box-shadow: var(--shadow-lift);
+  border-color: var(--accent-line);
+  box-shadow: var(--shadow-lg);
 }
 
 @media (prefers-reduced-motion: no-preference) {
   .card-lift:hover,
   .card-lift:focus-visible {
-    transform: translateY(-2px);
+    transform: translateY(-3px);
   }
 }
 
-/* --- Botones: presión, no rebote --------------------------- */
+/* --- Botones ----------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: var(--radius-sm);
+  padding: 0.625rem 1.125rem;
+  font-family: var(--font-mono), monospace;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
 
 .btn-primary {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border: 1px solid var(--accent);
+  box-shadow: var(--shadow-sm);
   transition:
     filter var(--motion-fast) var(--ease-out),
+    box-shadow var(--motion-fast) var(--ease-out),
     transform 90ms var(--ease-out);
 }
 
 .btn-primary:hover {
-  filter: brightness(0.92);
+  filter: brightness(0.94);
+  box-shadow: var(--shadow-md);
 }
 
 .btn-secondary {
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line-strong);
   transition:
     border-color var(--motion-fast) var(--ease-out),
     color var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out),
     transform 90ms var(--ease-out);
 }
 
 .btn-secondary:hover,
 .btn-secondary:focus-visible {
-  border-color: var(--accent);
+  border-color: var(--accent-line);
   color: var(--accent);
+  background: var(--surface-2);
 }
 
-/* La única animación del sitio que dice algo semántico: "se descarga". */
 .btn-arrow {
   display: inline-block;
   transition: transform var(--motion-base) var(--ease-out);
@@ -253,7 +393,7 @@ body {
   }
 }
 
-/* --- Nav: subrayado que barre ------------------------------ */
+/* --- Nav ---------------------------------------------------- */
 
 .nav-link {
   position: relative;
@@ -263,9 +403,9 @@ body {
 .nav-link::after {
   content: "";
   position: absolute;
-  left: 0.5rem;
-  right: 0.5rem;
-  bottom: 0.125rem;
+  left: 0.625rem;
+  right: 0.625rem;
+  bottom: 0.25rem;
   height: 1px;
   background: currentColor;
   transform: scaleX(0);
@@ -278,10 +418,94 @@ body {
   transform: scaleX(1);
 }
 
+/* --- Filtros ------------------------------------------------ */
+
+.filter-pill {
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink-soft);
+  padding: 0.375rem 0.875rem;
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  white-space: nowrap;
+  transition:
+    border-color var(--motion-fast) var(--ease-out),
+    color var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out);
+}
+
+.filter-pill:hover {
+  color: var(--ink);
+  border-color: var(--line-strong);
+}
+
+.filter-pill[data-active="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* --- Timeline: raíl vertical -------------------------------
+   Seis fases en seis columnas partían el texto palabra por
+   palabra. En vertical cada fase dispone del ancho completo. */
+
+.rail {
+  position: relative;
+  padding-left: 2.75rem;
+}
+
+.rail::before {
+  content: "";
+  position: absolute;
+  left: 1.0625rem;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: 2px;
+  background: linear-gradient(
+    180deg,
+    var(--accent-line) 0%,
+    var(--line) 60%,
+    transparent 100%
+  );
+}
+
+.rail-node {
+  position: relative;
+}
+
+.rail-dot {
+  position: absolute;
+  left: -2.75rem;
+  top: 0.0625rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.125rem;
+  height: 2.125rem;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink-faint);
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
+  transition:
+    color var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out);
+}
+
+.rail-node[open] .rail-dot,
+.rail-node:hover .rail-dot {
+  color: var(--accent-ink);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
 /* --- Timeline: entrada del detalle ------------------------- */
 
-/* Va sobre el div interior, no sobre el <details>, para que el
-   toggle nativo siga siendo instantáneo. El cierre no se anima. */
 @media (prefers-reduced-motion: no-preference) {
   details[open] > .detail-in {
     animation: detail-in var(--motion-base) var(--ease-out) both;
@@ -303,8 +527,7 @@ body {
 
 /* Apaga movimiento, no feedback: los cambios de color y borde de
    hover/focus sobreviven porque son la señal de "esto es
-   interactivo", y quitarla degradaría la usabilidad justo para
-   quien pidió una interfaz más tranquila. */
+   interactivo". */
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;

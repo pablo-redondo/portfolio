@@ -40,9 +40,21 @@ export function Reveal({ children, delay = 0, className }: Props) {
       return;
     }
 
+    // Al recargar, el navegador restaura el scroll: lo que quedó por
+    // encima del viewport nunca disparará el observer (el ratio pasa de
+    // 0 a 0 sin cruzar el umbral), así que se muestra sin animar.
+    if (el.getBoundingClientRect().bottom < 0) {
+      show();
+      return;
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
+        // `top < 0` significa que el elemento ya quedó por encima del
+        // viewport: el usuario llegó por un ancla o saltó el scroll y
+        // nunca lo verá entrar. Mostrarlo igualmente, o se quedaría
+        // invisible para siempre.
+        if (entry.isIntersecting || entry.boundingClientRect.top < 0) {
           show();
           observer.disconnect(); // una sola vez: no re-animar al subir
         }

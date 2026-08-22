@@ -12,63 +12,99 @@ export const metadata: Metadata = {
   openGraph: { title: `${TITLE} · Pablo Redondo`, description: DESCRIPTION },
 };
 
-export default function ContactoPage() {
-  return (
-    <Container>
-      <section className="py-16 sm:py-24">
-        <SectionLabel>cat contacto.md</SectionLabel>
-        <h1 className="font-mono text-3xl font-bold tracking-tight">Contacto</h1>
-        <p className="mt-4 max-w-[60ch] text-ink-soft">
-          Sin formulario ni backend de por medio — un email directo funciona mejor.
-        </p>
+type Channel = {
+  label: string;
+  value: string;
+  href?: string;
+  hint: string;
+  arrow?: boolean;
+};
 
-        <div className="mt-10 flex flex-col divide-y divide-line border-y border-line">
-          <a
-            href={`mailto:${SITE.email}`}
-            className="flex items-center justify-between py-4 font-mono text-sm text-ink hover:text-accent"
-          >
-            <span>Email</span>
-            <span className="text-ink-soft">{SITE.email}</span>
-          </a>
-          <a
-            href={SITE.github}
-            className="flex items-center justify-between py-4 font-mono text-sm text-ink hover:text-accent"
-          >
-            <span>GitHub</span>
-            <span className="text-ink-soft">{SITE.github.replace("https://", "")}</span>
-          </a>
-          {SITE.linkedin ? (
-            <a
-              href={SITE.linkedin}
-              className="flex items-center justify-between py-4 font-mono text-sm text-ink hover:text-accent"
-            >
-              <span>LinkedIn</span>
-              <span className="text-ink-soft">{SITE.linkedin.replace("https://", "")}</span>
-            </a>
-          ) : (
-            <div className="flex items-center justify-between py-4 font-mono text-sm text-ink-faint">
-              <span>LinkedIn</span>
-              <span>próximamente</span>
-            </div>
-          )}
-          {SITE.cvUrl ? (
-            <a
-              href={SITE.cvUrl}
-              className="btn-secondary flex items-center justify-between border-0 py-4 font-mono text-sm text-ink"
-            >
-              <span>CV (PDF)</span>
-              <span className="text-ink-soft">
-                descargar <span className="btn-arrow">↓</span>
-              </span>
-            </a>
-          ) : (
-            <div className="flex items-center justify-between py-4 font-mono text-sm text-ink-faint">
-              <span>CV (PDF)</span>
-              <span>próximamente</span>
-            </div>
-          )}
+export default function ContactoPage() {
+  const channels: Channel[] = [
+    {
+      label: "Email",
+      value: SITE.email,
+      href: `mailto:${SITE.email}`,
+      hint: "La vía más directa",
+    },
+    {
+      label: "GitHub",
+      value: SITE.github.replace("https://", ""),
+      href: SITE.github,
+      hint: "El código de todo lo que hay aquí",
+    },
+    {
+      label: "LinkedIn",
+      value: SITE.linkedin ? SITE.linkedin.replace("https://www.", "") : "próximamente",
+      href: SITE.linkedin,
+      hint: "Para conectar",
+    },
+    {
+      label: "CV",
+      value: SITE.cvUrl ? "descargar PDF" : "próximamente",
+      href: SITE.cvUrl,
+      hint: "Un folio, sin florituras",
+      arrow: true,
+    },
+  ];
+
+  return (
+    <section className="hero-glow">
+      <Container>
+        <div className="py-16 sm:py-24">
+          <SectionLabel>cat contacto.md</SectionLabel>
+          <h1 className="mt-4 font-mono text-4xl font-bold tracking-tight sm:text-5xl">
+            Hablemos
+          </h1>
+          <p className="mt-5 max-w-[54ch] text-lg text-ink-soft">
+            Busco mi primera posición como desarrollador full-stack. Sin
+            formulario ni backend de por medio: un email directo funciona mejor.
+          </p>
+
+          <div className="mt-12 grid gap-4 sm:grid-cols-2">
+            {channels.map((channel) => {
+              const inner = (
+                <>
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="font-mono text-xs tracking-wide text-ink-faint uppercase">
+                      {channel.label}
+                    </span>
+                    {channel.href && (
+                      <span
+                        aria-hidden
+                        className={`font-mono text-sm text-ink-faint transition-colors group-hover:text-accent ${
+                          channel.arrow ? "btn-arrow" : ""
+                        }`}
+                      >
+                        {channel.arrow ? "↓" : "↗"}
+                      </span>
+                    )}
+                  </div>
+                  <p className="mt-3 font-mono text-base break-all text-ink transition-colors group-hover:text-accent">
+                    {channel.value}
+                  </p>
+                  <p className="mt-1.5 text-sm text-ink-soft">{channel.hint}</p>
+                </>
+              );
+
+              return channel.href ? (
+                <a
+                  key={channel.label}
+                  href={channel.href}
+                  className="card-lift surface-card group block p-6"
+                >
+                  {inner}
+                </a>
+              ) : (
+                <div key={channel.label} className="surface-card block p-6 opacity-60">
+                  {inner}
+                </div>
+              );
+            })}
+          </div>
         </div>
-      </section>
-    </Container>
+      </Container>
+    </section>
   );
 }

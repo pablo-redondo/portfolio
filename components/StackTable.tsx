@@ -9,16 +9,18 @@ const CATEGORY_LABELS: Record<TechChoice["category"], string> = {
 
 export function StackTable({ stack }: { stack: TechChoice[] }) {
   return (
-    <dl className="flex flex-col divide-y divide-line border-y border-line">
+    <div className="grid gap-3 sm:grid-cols-2">
       {stack.map((tech) => (
-        <div key={tech.name} className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-[10rem_1fr] sm:gap-4">
-          <dt className="font-mono text-xs">
-            <span className="font-semibold text-ink">{tech.name}</span>
-            <span className="ml-2 text-ink-faint">{CATEGORY_LABELS[tech.category]}</span>
-          </dt>
-          <dd className="text-sm text-ink-soft">{tech.why}</dd>
+        <div key={tech.name} className="surface-panel p-4">
+          <div className="flex items-baseline justify-between gap-3">
+            <h3 className="font-mono text-sm font-semibold text-ink">{tech.name}</h3>
+            <span className="shrink-0 font-mono text-[10px] tracking-wide text-ink-faint uppercase">
+              {CATEGORY_LABELS[tech.category]}
+            </span>
+          </div>
+          <p className="mt-1.5 text-sm leading-relaxed text-ink-soft">{tech.why}</p>
         </div>
       ))}
-    </dl>
+    </div>
   );
 }

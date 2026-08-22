@@ -15,13 +15,20 @@ export function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="border-b border-line">
+    <header className="sticky top-0 z-50 border-b border-line bg-bg/85 backdrop-blur-md">
       <Container>
-        <div className="flex h-16 items-center justify-between">
-          <Link href="/" className="font-mono text-sm font-bold tracking-tight text-ink">
+        <div className="flex h-16 items-center justify-between gap-4">
+          <Link
+            href="/"
+            className="flex items-center gap-2.5 font-mono text-sm font-bold tracking-tight text-ink"
+          >
+            <span
+              aria-hidden
+              className="inline-block h-2 w-2 rounded-full bg-accent"
+            />
             pablo-redondo.dev
           </Link>
-          <nav className="flex items-center gap-1">
+          <nav className="flex items-center gap-0.5">
             {NAV_ITEMS.map((item) => {
               const isActive =
                 item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
@@ -30,11 +37,12 @@ export function Header() {
                   key={item.href}
                   href={item.href}
                   aria-current={isActive ? "page" : undefined}
-                  className={`nav-link rounded-sm px-2 py-1 font-mono text-xs ${
+                  className={`nav-link rounded-md px-2.5 py-1.5 font-mono text-xs ${
                     isActive ? "text-accent" : "text-ink-soft hover:text-ink"
                   }`}
                 >
-                  ~/{item.label}
+                  <span className="hidden sm:inline">~/</span>
+                  {item.label}
                 </Link>
               );
             })}

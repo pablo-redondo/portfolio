@@ -9,11 +9,11 @@ export function generateStaticParams() {
   return projects.map((project) => ({ slug: project.slug }));
 }
 
-const BG = "#14181a";
-const INK = "#edeae2";
-const INK_SOFT = "#a7ada8";
-const ACCENT = "#e08a3e";
-const LINE = "rgba(237,234,226,0.14)";
+const BG = "#0B0F14";
+const INK = "#E9EFF6";
+const INK_SOFT = "#A7B6C7";
+const ACCENT = "#FFB44D";
+const LINE = "rgba(233,239,246,0.16)";
 
 export default async function Image({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -36,7 +36,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
           fontFamily: "monospace",
         }}
       >
-        <div style={{ display: "flex", fontSize: 26, color: "#6e7570" }}>
+        <div style={{ display: "flex", fontSize: 26, color: "#7A8A9C" }}>
           $ cat proyectos/{slug}.md
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
