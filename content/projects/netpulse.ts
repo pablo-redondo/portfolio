@@ -9,6 +9,9 @@ export const netpulse: Project = {
   featured: false,
   tags: ["Redes/Infra", "Full-stack"],
   repos: [{ label: "Repositorio", url: "https://github.com/pablo-redondo/netpulse" }],
+  demoUrl: "https://netpulse-web-tan.vercel.app",
+  demoNote:
+    "El panel es instantáneo, pero la API vive en el plan free de Render y se duerme a los 15 minutos sin tráfico: la primera carga puede tardar mientras arranca, y el histórico tiene huecos de ese rato.",
   images: [],
   stack: [
     {

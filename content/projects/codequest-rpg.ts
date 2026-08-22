@@ -9,6 +9,7 @@ export const codequestRpg: Project = {
   featured: true,
   tags: ["Educación"],
   repos: [{ label: "Repositorio", url: "https://github.com/pablo-redondo/codequest-rpg" }],
+  demoUrl: "https://codequest-rpg.vercel.app",
   images: [],
   stack: [
     {

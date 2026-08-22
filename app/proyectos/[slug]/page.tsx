@@ -7,7 +7,9 @@ import { StackTable } from "@/components/StackTable";
 import { Timeline } from "@/components/Timeline";
 import { Reveal } from "@/components/Reveal";
 import { LiveDemo } from "@/components/LiveDemo";
+import { DeploymentBadge } from "@/components/DeploymentStatus";
 import { projects } from "@/content/projects";
+import { hasScreenshot } from "@/lib/screenshots";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -106,11 +108,23 @@ export default async function ProjectPage({ params }: Props) {
         <section className="border-b border-line py-16">
           <Container>
             <Reveal>
-              <SectionHeading eyebrow="pruébalo tú" title="Demo en vivo" />
+              <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+                <div>
+                  <p className="mb-2 font-mono text-[11px] tracking-wide text-accent uppercase">
+                    pruébalo tú
+                  </p>
+                  <h2 className="font-mono text-2xl font-bold tracking-tight">
+                    Demo en vivo
+                  </h2>
+                </div>
+                <DeploymentBadge slug={project.slug} />
+              </div>
               <LiveDemo
+                slug={project.slug}
                 url={project.demoUrl}
                 title={project.title}
                 note={project.demoNote}
+                hasPoster={hasScreenshot(project.slug)}
               />
             </Reveal>
           </Container>

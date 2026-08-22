@@ -22,6 +22,7 @@
   --accent-soft: rgba(154, 83, 9, 0.09);
   --accent-line: rgba(154, 83, 9, 0.32);
   --teal: #0b6e62;
+  --danger: #b42318;
   --code-bg: #0e141b;
   --code-ink: #e9eff6;
 
@@ -56,6 +57,7 @@
     --accent-soft: rgba(255, 180, 77, 0.12);
     --accent-line: rgba(255, 180, 77, 0.38);
     --teal: #45e0c0;
+    --danger: #ff8a80;
     --code-bg: #070a0e;
     --code-ink: #e9eff6;
 
@@ -81,6 +83,7 @@
   --accent-soft: rgba(255, 180, 77, 0.12);
   --accent-line: rgba(255, 180, 77, 0.38);
   --teal: #45e0c0;
+  --danger: #ff8a80;
   --code-bg: #070a0e;
   --code-ink: #e9eff6;
 
@@ -104,6 +107,7 @@
   --color-accent-ink: var(--accent-ink);
   --color-accent-soft: var(--accent-soft);
   --color-teal: var(--teal);
+  --color-danger: var(--danger);
   --color-code-bg: var(--code-bg);
 
   --font-mono: var(--font-jetbrains-mono);

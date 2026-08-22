@@ -5,6 +5,7 @@ import { SectionLabel } from "@/components/SectionLabel";
 import { ProjectCard } from "@/components/ProjectCard";
 import { EvolutionPreview } from "@/components/EvolutionPreview";
 import { Reveal } from "@/components/Reveal";
+import { DeploymentStatusPanel } from "@/components/DeploymentStatus";
 import { projects } from "@/content/projects";
 import { aboutStack } from "@/content/stack";
 import { SITE } from "@/content/site";
@@ -74,31 +75,11 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Panel de terminal: da peso al lado derecho del hero, que
-                antes quedaba vacío, y resume el perfil sin repetir texto. */}
-            <div className="surface-card overflow-hidden lg:justify-self-end lg:self-start">
-              <div className="flex items-center gap-2 border-b border-line bg-surface-2 px-4 py-2.5">
-                <span className="h-2.5 w-2.5 rounded-full bg-line-strong" />
-                <span className="h-2.5 w-2.5 rounded-full bg-line-strong" />
-                <span className="h-2.5 w-2.5 rounded-full bg-accent" />
-                <span className="ml-2 font-mono text-[11px] text-ink-faint">
-                  perfil.sh
-                </span>
-              </div>
-              <dl className="divide-y divide-line font-mono text-[13px]">
-                {[
-                  ["formación", "ASIR → DAW"],
-                  ["enfoque", "full-stack"],
-                  ["proyectos", `${projects.length} documentados`],
-                  ["desplegados", `${projects.filter((p) => p.status === "live").length} en producción`],
-                  ["ubicación", "España · remoto"],
-                ].map(([k, v]) => (
-                  <div key={k} className="flex items-center justify-between gap-4 px-4 py-3">
-                    <dt className="text-ink-faint">{k}</dt>
-                    <dd className="text-right text-ink">{v}</dd>
-                  </div>
-                ))}
-              </dl>
+            {/* El portfolio comprobando sus propios despliegues. Da peso al
+                lado derecho del hero y demuestra el ángulo de redes en la
+                primera pantalla, en vez de solo contarlo. */}
+            <div className="lg:justify-self-end lg:self-start lg:w-full lg:max-w-md">
+              <DeploymentStatusPanel />
             </div>
           </div>
         </Container>

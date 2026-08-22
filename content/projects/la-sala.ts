@@ -9,6 +9,7 @@ export const laSala: Project = {
   featured: false,
   tags: ["Herramientas"],
   repos: [{ label: "Repositorio", url: "https://github.com/pablo-redondo/la-sala" }],
+  demoUrl: "https://lasala-premium.vercel.app",
   images: [],
   stack: [
     {
