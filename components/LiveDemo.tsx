@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { ArrowUpRight, Play } from "@/components/icons";
 
 type Props = {
   slug: string;
@@ -44,16 +45,16 @@ export function LiveDemo({ slug, url, title, note, hasPoster = false }: Props) {
           <span className="h-2.5 w-2.5 rounded-full bg-line-strong" />
           <span className="h-2.5 w-2.5 rounded-full bg-accent" />
         </div>
-        <span className="truncate rounded-md bg-bg px-2.5 py-1 font-mono text-[11px] text-ink-faint">
+        <span className="min-w-0 truncate rounded-md bg-bg px-2.5 py-1 font-mono text-[11px] text-ink-faint">
           {host}
         </span>
         <a
           href={url}
           target="_blank"
           rel="noopener noreferrer"
-          className="ml-auto shrink-0 font-mono text-[11px] text-teal hover:text-accent"
+          className="ml-auto inline-flex shrink-0 items-center gap-1.5 font-mono text-[11px] text-teal hover:text-accent"
         >
-          Abrir ↗
+          Abrir <ArrowUpRight />
         </a>
       </div>
 
@@ -90,7 +91,7 @@ export function LiveDemo({ slug, url, title, note, hasPoster = false }: Props) {
                 onClick={() => setLoaded(true)}
                 className="btn btn-primary"
               >
-                <span aria-hidden>▶</span> Cargar demo en vivo
+                <Play /> Cargar demo en vivo
               </button>
               <p className="max-w-[46ch] text-sm text-ink-soft">
                 {note ??

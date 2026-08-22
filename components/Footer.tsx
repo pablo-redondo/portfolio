@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Container } from "@/components/Container";
 import { SITE } from "@/content/site";
+import { ArrowUpRight } from "@/components/icons";
 
 export function Footer() {
   return (
@@ -20,12 +21,18 @@ export function Footer() {
             <Link href="/sobre-mi" className="text-ink-soft hover:text-accent">
               Sobre mí
             </Link>
-            <a href={SITE.github} className="text-ink-soft hover:text-accent">
-              GitHub ↗
+            <a
+              href={SITE.github}
+              className="inline-flex items-center gap-1.5 text-ink-soft hover:text-accent"
+            >
+              GitHub <ArrowUpRight />
             </a>
             {SITE.linkedin && (
-              <a href={SITE.linkedin} className="text-ink-soft hover:text-accent">
-                LinkedIn ↗
+              <a
+                href={SITE.linkedin}
+                className="inline-flex items-center gap-1.5 text-ink-soft hover:text-accent"
+              >
+                LinkedIn <ArrowUpRight />
               </a>
             )}
             <a href={`mailto:${SITE.email}`} className="text-ink-soft hover:text-accent">

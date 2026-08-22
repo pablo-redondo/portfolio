@@ -179,10 +179,14 @@ body {
   content: "";
   position: absolute;
   z-index: -1;
-  /* Desplazamiento vertical fijo, no porcentual: un porcentaje se resuelve
-     contra el alto de la sección, así que al cargar la tipografía y
-     recomponerse el titular el resplandor se movía y contaba como CLS. */
-  inset: -140px -30% auto -10%;
+  /* Sin sangrado horizontal: el -30% de la derecha sobresalía del documento
+     y provocaba scroll lateral hacia el vacío en toda la web (el desborde
+     medía exactamente el 30% del ancho de la ventana). El degradado ya se
+     desvanece antes de los bordes, así que se ve igual.
+     El desplazamiento vertical es fijo, no porcentual: un porcentaje se
+     resuelve contra el alto de la sección, y al recomponerse el titular al
+     cargar la tipografía el resplandor se movía y contaba como CLS. */
+  inset: -140px 0 auto 0;
   height: 460px;
   background: radial-gradient(60% 60% at 20% 30%, var(--glow), transparent 70%);
   pointer-events: none;
@@ -335,24 +339,29 @@ body {
   }
 }
 
-/* --- Botones ----------------------------------------------- */
+/* --- Botones y enlaces --------------------------------------
+   Un solo sistema: misma altura, mismo radio, mismos iconos.
+   Los iconos son SVG dimensionados en em, no caracteres de texto. */
 
 .btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   border-radius: var(--radius-sm);
-  padding: 0.625rem 1.125rem;
+  padding: 0.6875rem 1.125rem;
   font-family: var(--font-mono), monospace;
   font-size: 13px;
   font-weight: 500;
+  line-height: 1.15;
   white-space: nowrap;
+  border: 1px solid transparent;
 }
 
 .btn-primary {
   background: var(--accent);
   color: var(--accent-ink);
-  border: 1px solid var(--accent);
+  border-color: var(--accent);
   box-shadow: var(--shadow-sm);
   transition:
     filter var(--motion-fast) var(--ease-out),
@@ -368,7 +377,7 @@ body {
 .btn-secondary {
   background: var(--surface);
   color: var(--ink);
-  border: 1px solid var(--line-strong);
+  border-color: var(--line-strong);
   transition:
     border-color var(--motion-fast) var(--ease-out),
     color var(--motion-fast) var(--ease-out),
@@ -383,20 +392,74 @@ body {
   background: var(--surface-2);
 }
 
-.btn-arrow {
-  display: inline-block;
+/* Terciario: acciones de menor peso, como volver atrás. */
+.btn-ghost {
+  background: transparent;
+  color: var(--ink-soft);
+  padding-inline: 0.625rem;
+  transition:
+    color var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out);
+}
+
+.btn-ghost:hover,
+.btn-ghost:focus-visible {
+  color: var(--ink);
+  background: var(--surface-2);
+}
+
+/* Enlace de texto con icono, para navegar dentro del contenido. */
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4375rem;
+  font-family: var(--font-mono), monospace;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--teal);
+  transition: color var(--motion-fast) var(--ease-out);
+}
+
+.link-arrow:hover,
+.link-arrow:focus-visible {
+  color: var(--accent);
+}
+
+/* --- Movimiento de los iconos ------------------------------- */
+
+[data-icon] {
   transition: transform var(--motion-base) var(--ease-out);
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .btn-primary:active,
-  .btn-secondary:active {
-    transform: translateY(1px);
+  a:hover [data-icon="right"],
+  button:hover [data-icon="right"],
+  .group:hover [data-icon="right"] {
+    transform: translateX(3px);
   }
 
-  .btn-secondary:hover .btn-arrow,
-  .btn-secondary:focus-visible .btn-arrow {
+  a:hover [data-icon="left"],
+  button:hover [data-icon="left"],
+  .group:hover [data-icon="left"] {
+    transform: translateX(-3px);
+  }
+
+  a:hover [data-icon="up-right"],
+  button:hover [data-icon="up-right"],
+  .group:hover [data-icon="up-right"] {
+    transform: translate(2px, -2px);
+  }
+
+  a:hover [data-icon="down"],
+  button:hover [data-icon="down"],
+  .group:hover [data-icon="down"] {
     transform: translateY(3px);
+  }
+
+  .btn-primary:active,
+  .btn-secondary:active,
+  .btn-ghost:active {
+    transform: translateY(1px);
   }
 }
 
@@ -410,8 +473,8 @@ body {
 .nav-link::after {
   content: "";
   position: absolute;
-  left: 0.625rem;
-  right: 0.625rem;
+  left: 0.5rem;
+  right: 0.5rem;
   bottom: 0.25rem;
   height: 1px;
   background: currentColor;

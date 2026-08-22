@@ -11,6 +11,7 @@ import { aboutStack } from "@/content/stack";
 import { SITE } from "@/content/site";
 import { HOME_HERO } from "@/content/home";
 import { spanForLastInRow } from "@/lib/grid";
+import { ArrowDown, ArrowRight } from "@/components/icons";
 
 const TITLE = "Pablo Redondo — Desarrollador full-stack";
 const DESCRIPTION =
@@ -45,10 +46,10 @@ export default function HomePage() {
       <section className="hero-glow border-b border-line">
         <Container>
           <div className="grid items-center gap-12 py-20 sm:py-28 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16">
-            <div>
+            <div className="min-w-0">
               <SectionLabel typed>whoami --stack</SectionLabel>
 
-              <h1 className="mt-4 max-w-[15ch] font-mono text-4xl leading-[1.05] font-bold tracking-tight text-balance sm:text-5xl lg:text-6xl">
+              <h1 className="mt-4 max-w-[15ch] font-mono text-[1.75rem] leading-[1.05] font-bold tracking-tight text-balance min-[400px]:text-4xl sm:text-5xl lg:text-6xl">
                 {HOME_HERO.headline}
               </h1>
 
@@ -62,7 +63,7 @@ export default function HomePage() {
                 </Link>
                 {SITE.cvUrl ? (
                   <a href={SITE.cvUrl} className="btn btn-secondary">
-                    Descargar CV <span className="btn-arrow">↓</span>
+                    Descargar CV <ArrowDown />
                   </a>
                 ) : (
                   <span className="btn btn-secondary opacity-60">
@@ -78,7 +79,7 @@ export default function HomePage() {
             {/* Sin self-start: hereda el items-center de la rejilla, así el
                 panel queda centrado respecto a la columna de la izquierda
                 en vez de alineado por arriba. */}
-            <div className="lg:w-full lg:max-w-md lg:justify-self-end">
+            <div className="min-w-0 lg:w-full lg:max-w-md lg:justify-self-end">
               <DeploymentStatusPanel />
             </div>
           </div>
@@ -117,11 +118,8 @@ export default function HomePage() {
                   Otros proyectos
                 </h2>
               </div>
-              <Link
-                href="/proyectos"
-                className="font-mono text-sm text-teal hover:text-accent"
-              >
-                Ver todos →
+              <Link href="/proyectos" className="link-arrow">
+                Ver todos <ArrowRight />
               </Link>
             </div>
           </Reveal>
@@ -154,11 +152,8 @@ export default function HomePage() {
                 </span>
               ))}
             </div>
-            <Link
-              href="/sobre-mi"
-              className="mt-7 inline-block font-mono text-sm text-teal hover:text-accent"
-            >
-              Por qué cada una de estas elecciones →
+            <Link href="/sobre-mi" className="link-arrow mt-7">
+              Por qué cada una de estas elecciones <ArrowRight />
             </Link>
           </Reveal>
         </Container>

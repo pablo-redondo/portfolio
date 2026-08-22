@@ -10,6 +10,7 @@ import { LiveDemo } from "@/components/LiveDemo";
 import { DeploymentBadge } from "@/components/DeploymentStatus";
 import { projects } from "@/content/projects";
 import { hasScreenshot } from "@/lib/screenshots";
+import { ArrowLeft, ArrowRight, ArrowUpRight } from "@/components/icons";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -61,11 +62,8 @@ export default async function ProjectPage({ params }: Props) {
       <section className="hero-glow border-b border-line">
         <Container>
           <div className="py-16 sm:py-20">
-            <Link
-              href="/proyectos"
-              className="font-mono text-xs text-ink-faint hover:text-accent"
-            >
-              ← proyectos
+            <Link href="/proyectos" className="btn btn-ghost -ml-2.5">
+              <ArrowLeft /> proyectos
             </Link>
 
             <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3">
@@ -90,12 +88,12 @@ export default async function ProjectPage({ params }: Props) {
             <div className="mt-8 flex flex-wrap gap-3">
               {project.repos.map((repo) => (
                 <a key={repo.url} href={repo.url} className="btn btn-secondary">
-                  {repo.label} <span aria-hidden>↗</span>
+                  {repo.label} <ArrowUpRight />
                 </a>
               ))}
               {project.demoUrl && (
                 <a href={project.demoUrl} className="btn btn-primary">
-                  Ver demo <span aria-hidden>↗</span>
+                  Ver demo <ArrowUpRight />
                 </a>
               )}
             </div>
@@ -224,7 +222,7 @@ export default async function ProjectPage({ params }: Props) {
               <div className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-line pt-8">
                 <p className="text-ink-soft">¿Quieres ver el resto de proyectos?</p>
                 <Link href="/proyectos" className="btn btn-secondary">
-                  Todos los proyectos <span aria-hidden>→</span>
+                  Todos los proyectos <ArrowRight />
                 </Link>
               </div>
             </Reveal>

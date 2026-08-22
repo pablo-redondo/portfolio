@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Project } from "@/content/types";
 import { StatusBadge } from "@/components/StatusBadge";
+import { ArrowRight } from "@/components/icons";
 
 type Props = {
   project: Project;
@@ -21,7 +22,7 @@ export function ProjectCard({ project, featured = false }: Props) {
     >
       <div className="flex items-center justify-between gap-3">
         {/* El prompt se recorta en vez de partirse en dos líneas. */}
-        <span className="truncate font-mono text-[11px] text-ink-faint">
+        <span className="min-w-0 truncate font-mono text-[11px] text-ink-faint">
           <span className="text-accent">$</span> open {project.slug}
         </span>
         <StatusBadge status={project.status} />
@@ -58,9 +59,8 @@ export function ProjectCard({ project, featured = false }: Props) {
         {extra > 0 && <span className="chip chip-quiet">+{extra}</span>}
       </div>
 
-      <span className="mt-5 inline-flex items-center gap-1.5 font-mono text-xs text-teal transition-colors group-hover:text-accent">
-        Ver caso de estudio
-        <span aria-hidden>→</span>
+      <span className="link-arrow mt-5 border-t border-line pt-4 group-hover:text-accent">
+        Ver caso de estudio <ArrowRight />
       </span>
     </Link>
   );

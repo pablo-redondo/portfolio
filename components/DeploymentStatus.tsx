@@ -110,9 +110,9 @@ export function DeploymentStatusPanel() {
           ? services.map((service) => (
               <li
                 key={service.slug}
-                className="flex items-center justify-between gap-4 px-4 py-3"
+                className="flex min-w-0 items-center justify-between gap-4 px-4 py-3"
               >
-                <span className="truncate font-mono text-[13px] text-ink">
+                <span className="min-w-0 truncate font-mono text-[13px] text-ink">
                   {service.title}
                 </span>
                 <span
@@ -131,7 +131,7 @@ export function DeploymentStatusPanel() {
           : // Filas fantasma: reservan el alto exacto, así el panel no
             // provoca ningún salto de layout al llegar los datos.
             Array.from({ length: 6 }).map((_, i) => (
-              <li key={i} className="flex items-center justify-between gap-4 px-4 py-3">
+              <li key={i} className="flex min-w-0 items-center justify-between gap-4 px-4 py-3">
                 <span className="h-4 w-32 rounded bg-surface-2" />
                 <span className="h-4 w-20 rounded bg-surface-2" />
               </li>

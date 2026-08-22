@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Container } from "@/components/Container";
 import { SectionLabel } from "@/components/SectionLabel";
 import { SITE } from "@/content/site";
+import { ArrowDown, ArrowUpRight } from "@/components/icons";
 
 const TITLE = "Contacto";
 const DESCRIPTION = "Contacta con Pablo Redondo — email, GitHub, LinkedIn y CV.";
@@ -71,13 +72,8 @@ export default function ContactoPage() {
                       {channel.label}
                     </span>
                     {channel.href && (
-                      <span
-                        aria-hidden
-                        className={`font-mono text-sm text-ink-faint transition-colors group-hover:text-accent ${
-                          channel.arrow ? "btn-arrow" : ""
-                        }`}
-                      >
-                        {channel.arrow ? "↓" : "↗"}
+                      <span className="text-base text-ink-faint transition-colors group-hover:text-accent">
+                        {channel.arrow ? <ArrowDown /> : <ArrowUpRight />}
                       </span>
                     )}
                   </div>
