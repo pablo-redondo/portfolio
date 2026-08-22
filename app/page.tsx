@@ -6,6 +6,7 @@ import { EvolutionPreview } from "@/components/EvolutionPreview";
 import { StatusBadge } from "@/components/StatusBadge";
 import { projects } from "@/content/projects";
 import { aboutStack } from "@/content/stack";
+import { SITE } from "@/content/site";
 
 const HOME_STACK_STRIP = [
   "TypeScript",
@@ -44,9 +45,18 @@ export default function HomePage() {
           >
             Ver proyectos
           </Link>
-          <span className="rounded-sm border border-line px-4 py-2 font-mono text-sm text-ink-faint">
-            Descargar CV (próximamente)
-          </span>
+          {SITE.cvUrl ? (
+            <a
+              href={SITE.cvUrl}
+              className="rounded-sm border border-line px-4 py-2 font-mono text-sm text-ink hover:border-accent hover:text-accent"
+            >
+              Descargar CV
+            </a>
+          ) : (
+            <span className="rounded-sm border border-line px-4 py-2 font-mono text-sm text-ink-faint">
+              Descargar CV (próximamente)
+            </span>
+          )}
         </div>
       </section>
 

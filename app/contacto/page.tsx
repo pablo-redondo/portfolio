@@ -47,10 +47,20 @@ export default function ContactoPage() {
               <span>próximamente</span>
             </div>
           )}
-          <div className="flex items-center justify-between py-4 font-mono text-sm text-ink-faint">
-            <span>CV (PDF)</span>
-            <span>próximamente</span>
-          </div>
+          {SITE.cvUrl ? (
+            <a
+              href={SITE.cvUrl}
+              className="flex items-center justify-between py-4 font-mono text-sm text-ink hover:text-accent"
+            >
+              <span>CV (PDF)</span>
+              <span className="text-ink-soft">descargar ↓</span>
+            </a>
+          ) : (
+            <div className="flex items-center justify-between py-4 font-mono text-sm text-ink-faint">
+              <span>CV (PDF)</span>
+              <span>próximamente</span>
+            </div>
+          )}
         </div>
       </section>
     </Container>
