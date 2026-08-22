@@ -7,5 +7,5 @@
 export const HOME_HERO = {
   headline: "Full-stack con base de infraestructura real.",
   intro:
-    "Empecé en ASIR, pasé años gestionando infraestructura real —redes, sistemas, entornos de producción 24×7— y volví a estudiar (DAW) para dar el salto al desarrollo con la misma base. Construyo aplicaciones completas, de la base de datos al pixel, con el mismo rigor que aprendí manteniendo sistemas en marcha.",
+    "Vengo de redes. Años gestionando sistemas en entornos 24×7, resolviendo lo que fallaba en producción. Me saqué el ciclo de desarrollo web por mi cuenta, currando a la vez, porque quería pasar a construir aplicaciones. Lo que me llevo de ahí es saber lo que pasa por debajo: cuando algo va lento o falla, sé dónde mirar.",
 };

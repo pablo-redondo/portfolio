@@ -75,7 +75,10 @@ export default function HomePage() {
             {/* El portfolio comprobando sus propios despliegues. Da peso al
                 lado derecho del hero y demuestra el ángulo de redes en la
                 primera pantalla, en vez de solo contarlo. */}
-            <div className="lg:justify-self-end lg:self-start lg:w-full lg:max-w-md">
+            {/* Sin self-start: hereda el items-center de la rejilla, así el
+                panel queda centrado respecto a la columna de la izquierda
+                en vez de alineado por arriba. */}
+            <div className="lg:w-full lg:max-w-md lg:justify-self-end">
               <DeploymentStatusPanel />
             </div>
           </div>
