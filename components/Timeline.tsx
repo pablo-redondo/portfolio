@@ -27,7 +27,7 @@ export function Timeline({ phases }: { phases: TimelinePhase[] }) {
               </span>
               <span className="mt-1 block text-xs text-ink-soft">{phase.summary}</span>
             </summary>
-            <div className="mt-2 border-t border-dashed border-line pt-2 text-xs text-ink-soft">
+            <div className="detail-in mt-2 border-t border-dashed border-line pt-2 text-xs text-ink-soft">
               {phase.detail}
               {phase.commitRange && (
                 <span className="mt-1.5 block font-mono text-[10px] text-ink-faint">

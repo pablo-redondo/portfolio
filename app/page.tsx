@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Container } from "@/components/Container";
 import { SectionLabel } from "@/components/SectionLabel";
 import { ProjectCard } from "@/components/ProjectCard";
+import { Reveal } from "@/components/Reveal";
 import { EvolutionPreview } from "@/components/EvolutionPreview";
 import { StatusBadge } from "@/components/StatusBadge";
 import { projects } from "@/content/projects";
@@ -37,8 +38,10 @@ export default function HomePage() {
 
   return (
     <Container>
+      {/* El hero no lleva reveal: su h1 es el elemento LCP y arrancarlo
+          en opacity 0 retrasaría la métrica por definición. */}
       <section className="py-16 sm:py-24">
-        <SectionLabel>whoami --stack</SectionLabel>
+        <SectionLabel typed>whoami --stack</SectionLabel>
         <h1 className="max-w-[18ch] font-mono text-4xl font-bold tracking-tight text-balance sm:text-5xl">
           De la sala de servidores al código
         </h1>
@@ -52,16 +55,16 @@ export default function HomePage() {
         <div className="mt-8 flex flex-wrap items-center gap-4">
           <Link
             href="/proyectos"
-            className="rounded-sm bg-accent px-4 py-2 font-mono text-sm font-medium text-accent-ink"
+            className="btn-primary rounded-sm bg-accent px-4 py-2 font-mono text-sm font-medium text-accent-ink"
           >
             Ver proyectos
           </Link>
           {SITE.cvUrl ? (
             <a
               href={SITE.cvUrl}
-              className="rounded-sm border border-line px-4 py-2 font-mono text-sm text-ink hover:border-accent hover:text-accent"
+              className="btn-secondary inline-flex items-center gap-2 rounded-sm border border-line px-4 py-2 font-mono text-sm text-ink"
             >
-              Descargar CV
+              Descargar CV <span className="btn-arrow">↓</span>
             </a>
           ) : (
             <span className="rounded-sm border border-line px-4 py-2 font-mono text-sm text-ink-faint">
@@ -73,6 +76,7 @@ export default function HomePage() {
 
       {featured && (
         <section className="border-t border-line py-16">
+          <Reveal>
           <SectionLabel>{`cat proyectos/${featured.slug}.md --preview`}</SectionLabel>
           <Link href={`/proyectos/${featured.slug}`} className="group block">
             <div className="flex flex-wrap items-center gap-3">
@@ -97,14 +101,19 @@ export default function HomePage() {
           >
             Ver caso de estudio completo →
           </Link>
+          </Reveal>
         </section>
       )}
 
       <section className="border-t border-line py-16">
         <SectionLabel>ls proyectos/</SectionLabel>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {rest.map((project) => (
-            <ProjectCard key={project.slug} project={project} />
+          {rest.map((project, i) => (
+            // Stagger con tope de 3 pasos: acumularlo dejaría la última
+            // card esperando 300 ms, que ya se lee como lentitud.
+            <Reveal key={project.slug} delay={(i % 3) * 60}>
+              <ProjectCard project={project} />
+            </Reveal>
           ))}
         </div>
         <Link
@@ -116,6 +125,7 @@ export default function HomePage() {
       </section>
 
       <section className="border-t border-line py-16">
+        <Reveal>
         <SectionLabel>cat stack.txt</SectionLabel>
         <div className="flex flex-wrap gap-2">
           {stripStack.map((tech) => (
@@ -133,6 +143,7 @@ export default function HomePage() {
         >
           Por qué este stack →
         </Link>
+        </Reveal>
       </section>
     </Container>
   );

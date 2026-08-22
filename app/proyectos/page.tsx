@@ -3,8 +3,13 @@ import Link from "next/link";
 import { Container } from "@/components/Container";
 import { SectionLabel } from "@/components/SectionLabel";
 import { ProjectCard } from "@/components/ProjectCard";
+import { Reveal } from "@/components/Reveal";
 import { projects } from "@/content/projects";
 import { PROJECT_TAGS } from "@/content/types";
+
+/** Cards que caben sobre el pliegue: la insignia a doble ancho y la fila
+ *  siguiente. No llevan reveal para no retrasar el LCP. */
+const ABOVE_FOLD_CARDS = 3;
 
 const TITLE = "Proyectos";
 const DESCRIPTION = "Proyectos full-stack, herramientas y experimentos de Pablo Redondo.";
@@ -59,9 +64,34 @@ export default async function ProyectosPage({ searchParams }: Props) {
         </nav>
 
         <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {ordered.map((project) => (
-            <ProjectCard key={project.slug} project={project} />
-          ))}
+          {ordered.map((project, i) => {
+            // El ancho doble del insignia va en el envoltorio: es el grid
+            // quien decide el layout, no la card.
+            const span = project.featured ? "sm:col-span-2" : "";
+
+            // Aquí el grid empieza casi pegado al título, así que las
+            // primeras cards caen dentro del pliegue y una de ellas es el
+            // elemento LCP (medido: el tagline de la segunda card).
+            // Animarlas de entrada retrasa la métrica, así que se
+            // renderizan directas; el reveal empieza donde hay scroll real.
+            if (i < ABOVE_FOLD_CARDS) {
+              return (
+                <div key={project.slug} className={span}>
+                  <ProjectCard project={project} />
+                </div>
+              );
+            }
+
+            return (
+              <Reveal
+                key={project.slug}
+                delay={((i - ABOVE_FOLD_CARDS) % 3) * 60}
+                className={span}
+              >
+                <ProjectCard project={project} />
+              </Reveal>
+            );
+          })}
         </div>
 
         {ordered.length === 0 && (

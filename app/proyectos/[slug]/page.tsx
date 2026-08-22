@@ -5,6 +5,7 @@ import { SectionLabel } from "@/components/SectionLabel";
 import { StatusBadge } from "@/components/StatusBadge";
 import { StackTable } from "@/components/StackTable";
 import { Timeline } from "@/components/Timeline";
+import { Reveal } from "@/components/Reveal";
 import { projects } from "@/content/projects";
 
 type Props = {
@@ -76,18 +77,23 @@ export default async function ProjectPage({ params }: Props) {
         </div>
 
         {project.timeline && project.timeline.length > 0 && (
+          <Reveal>
           <section className="mt-14">
             <h2 className="mb-4 font-mono text-lg font-bold tracking-tight">Línea de evolución</h2>
             <Timeline phases={project.timeline} />
           </section>
+          </Reveal>
         )}
 
-        <section className="mt-14">
-          <h2 className="mb-3 font-mono text-lg font-bold tracking-tight">Contexto</h2>
-          <p className="max-w-[65ch] text-ink-soft">{caseStudy.problem}</p>
-        </section>
+        <Reveal>
+          <section className="mt-14">
+            <h2 className="mb-3 font-mono text-lg font-bold tracking-tight">Contexto</h2>
+            <p className="max-w-[65ch] text-ink-soft">{caseStudy.problem}</p>
+          </section>
+        </Reveal>
 
         {caseStudy.decisions.length > 0 && (
+          <Reveal>
           <section className="mt-12">
             <h2 className="mb-4 font-mono text-lg font-bold tracking-tight">Decisiones técnicas clave</h2>
             <div className="flex flex-col gap-6">
@@ -99,23 +105,30 @@ export default async function ProjectPage({ params }: Props) {
               ))}
             </div>
           </section>
+          </Reveal>
         )}
 
+        <Reveal>
         <section className="mt-12">
           <h2 className="mb-3 font-mono text-lg font-bold tracking-tight">Reto técnico destacado</h2>
           <p className="max-w-[65ch] text-ink-soft">{caseStudy.challenge}</p>
         </section>
+        </Reveal>
 
-        <section className="mt-12">
-          <h2 className="mb-3 font-mono text-lg font-bold tracking-tight">Resultado</h2>
-          <p className="max-w-[65ch] text-ink-soft">{caseStudy.result}</p>
-        </section>
+        <Reveal>
+          <section className="mt-12">
+            <h2 className="mb-3 font-mono text-lg font-bold tracking-tight">Resultado</h2>
+            <p className="max-w-[65ch] text-ink-soft">{caseStudy.result}</p>
+          </section>
+        </Reveal>
 
         {project.stack.length > 0 && (
+          <Reveal>
           <section className="mt-14">
             <h2 className="mb-4 font-mono text-lg font-bold tracking-tight">Stack</h2>
             <StackTable stack={project.stack} />
           </section>
+          </Reveal>
         )}
       </article>
     </Container>

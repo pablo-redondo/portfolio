@@ -6,9 +6,7 @@ export function ProjectCard({ project }: { project: Project }) {
   return (
     <Link
       href={`/proyectos/${project.slug}`}
-      className={`group flex flex-col gap-3 rounded-sm border border-line bg-surface p-6 transition-colors hover:border-accent ${
-        project.featured ? "sm:col-span-2" : ""
-      }`}
+      className="card-lift group flex h-full flex-col gap-3 rounded-sm border border-line bg-surface p-6"
     >
       <div className="flex items-center justify-between gap-3">
         <p className="font-mono text-[11px] text-ink-faint">

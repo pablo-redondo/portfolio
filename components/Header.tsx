@@ -30,7 +30,7 @@ export function Header() {
                   key={item.href}
                   href={item.href}
                   aria-current={isActive ? "page" : undefined}
-                  className={`rounded-sm px-2 py-1 font-mono text-xs ${
+                  className={`nav-link rounded-sm px-2 py-1 font-mono text-xs ${
                     isActive ? "text-accent" : "text-ink-soft hover:text-ink"
                   }`}
                 >

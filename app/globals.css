@@ -13,6 +13,15 @@
   --accent-soft: #e7c9a8;
   --teal: #2f5750;
   --code-bg: #e2e1d8;
+
+  /* En claro la elevación se comunica con sombra. */
+  --shadow-lift: 0 3px 14px -6px rgba(23, 27, 26, 0.3);
+
+  /* Tokens de movimiento — una sola escala para todo el sitio. */
+  --motion-fast: 140ms;
+  --motion-base: 220ms;
+  --motion-slow: 420ms;
+  --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -29,6 +38,7 @@
     --accent-soft: #3a2a18;
     --teal: #6fa79d;
     --code-bg: #101416;
+    --shadow-lift: none;
   }
 }
 
@@ -45,6 +55,7 @@
   --accent-soft: #3a2a18;
   --teal: #6fa79d;
   --code-bg: #101416;
+  --shadow-lift: none;
 }
 
 @theme inline {
@@ -85,6 +96,215 @@ body {
   outline-offset: 2px;
 }
 
+/* ============================================================
+   Capa de movimiento
+   Reglas: todo se apaga con prefers-reduced-motion, y ningún
+   estado inicial puede dejar contenido invisible si falla el JS.
+   ============================================================ */
+
+/* --- Scroll reveals ---------------------------------------- */
+
+/* El estado oculto SOLO existe si hay JS que pueda revelarlo y si
+   el usuario no ha pedido menos movimiento. Fuera de esa condición
+   no hace falta ninguna regla: el contenido es visible por defecto,
+   así que todos los caminos de fallo terminan en "se ve". */
+@media (prefers-reduced-motion: no-preference) and (scripting: enabled) {
+  [data-reveal] {
+    transition:
+      opacity var(--motion-slow) var(--ease-out),
+      transform var(--motion-slow) var(--ease-out);
+  }
+
+  [data-reveal="out"] {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+/* --- Hero: el prompt que arranca --------------------------- */
+
+/* El texto completo está siempre en el DOM; lo que se anima es la
+   máscara que lo tapa. Sin cambio de contenido no hay CLS, y el
+   rastreador y el lector de pantalla ven la cadena entera. */
+.type-in {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.type-cursor {
+  display: inline-block;
+  width: 0.5em;
+  height: 1em;
+  margin-left: 0.2em;
+  transform: translateY(0.15em);
+  background: var(--accent);
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .type-in {
+    animation: type-in 620ms steps(var(--type-steps, 14), end) both;
+  }
+
+  /* Dos animaciones sobre propiedades distintas: el cursor viaja con la
+     escritura (transform) y luego parpadea (opacity). El backwards fill
+     de cursor-blink lo mantiene visible durante el viaje; tras 4
+     parpadeos termina apagado. */
+  .type-cursor {
+    animation:
+      cursor-travel 620ms steps(var(--type-steps, 14), end) both,
+      cursor-blink 380ms steps(1, end) 620ms 4 both;
+  }
+}
+
+@keyframes cursor-travel {
+  from {
+    transform: translateX(calc(var(--type-steps, 14) * -1ch)) translateY(0.15em);
+  }
+  to {
+    transform: translateX(0) translateY(0.15em);
+  }
+}
+
+@keyframes type-in {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes cursor-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* --- Cards: elevación, no distorsión ----------------------- */
+
+.card-lift {
+  transition:
+    border-color var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out),
+    box-shadow var(--motion-fast) var(--ease-out),
+    transform var(--motion-fast) var(--ease-out);
+}
+
+.card-lift:hover,
+.card-lift:focus-visible {
+  border-color: var(--accent);
+  background-color: var(--surface-2);
+  box-shadow: var(--shadow-lift);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .card-lift:hover,
+  .card-lift:focus-visible {
+    transform: translateY(-2px);
+  }
+}
+
+/* --- Botones: presión, no rebote --------------------------- */
+
+.btn-primary {
+  transition:
+    filter var(--motion-fast) var(--ease-out),
+    transform 90ms var(--ease-out);
+}
+
+.btn-primary:hover {
+  filter: brightness(0.92);
+}
+
+.btn-secondary {
+  transition:
+    border-color var(--motion-fast) var(--ease-out),
+    color var(--motion-fast) var(--ease-out),
+    transform 90ms var(--ease-out);
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* La única animación del sitio que dice algo semántico: "se descarga". */
+.btn-arrow {
+  display: inline-block;
+  transition: transform var(--motion-base) var(--ease-out);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .btn-primary:active,
+  .btn-secondary:active {
+    transform: translateY(1px);
+  }
+
+  .btn-secondary:hover .btn-arrow,
+  .btn-secondary:focus-visible .btn-arrow {
+    transform: translateY(3px);
+  }
+}
+
+/* --- Nav: subrayado que barre ------------------------------ */
+
+.nav-link {
+  position: relative;
+  transition: color var(--motion-fast) var(--ease-out);
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0.5rem;
+  right: 0.5rem;
+  bottom: 0.125rem;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--motion-fast) var(--ease-out);
+}
+
+.nav-link:hover::after,
+.nav-link:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* --- Timeline: entrada del detalle ------------------------- */
+
+/* Va sobre el div interior, no sobre el <details>, para que el
+   toggle nativo siga siendo instantáneo. El cierre no se anima. */
+@media (prefers-reduced-motion: no-preference) {
+  details[open] > .detail-in {
+    animation: detail-in var(--motion-base) var(--ease-out) both;
+  }
+}
+
+@keyframes detail-in {
+  from {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* --- Red de seguridad -------------------------------------- */
+
+/* Apaga movimiento, no feedback: los cambios de color y borde de
+   hover/focus sobreviven porque son la señal de "esto es
+   interactivo", y quitarla degradaría la usabilidad justo para
+   quien pidió una interfaz más tranquila. */
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;

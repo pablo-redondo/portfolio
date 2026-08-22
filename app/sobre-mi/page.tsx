@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Container } from "@/components/Container";
 import { SectionLabel } from "@/components/SectionLabel";
 import { StackByCategory } from "@/components/StackByCategory";
+import { Reveal } from "@/components/Reveal";
 import { aboutStack } from "@/content/stack";
 
 const TITLE = "Sobre mí";
@@ -47,12 +48,15 @@ export default function SobreMiPage() {
       </section>
 
       <section className="border-t border-line py-16">
+        <Reveal>
         <SectionLabel>cat stack.json --grouped</SectionLabel>
         <h2 className="mb-6 font-mono text-lg font-bold tracking-tight">Stack</h2>
         <StackByCategory stack={aboutStack} />
+        </Reveal>
       </section>
 
       <section className="border-t border-line py-16">
+        <Reveal>
         <SectionLabel>cat asir.log</SectionLabel>
         <h2 className="mb-4 font-mono text-lg font-bold tracking-tight">
           Qué me llevo de sistemas y redes
@@ -79,6 +83,7 @@ export default function SobreMiPage() {
             hacerse antes de que exploten en producción.
           </li>
         </ul>
+        </Reveal>
       </section>
     </Container>
   );

@@ -54,10 +54,12 @@ export default function ContactoPage() {
           {SITE.cvUrl ? (
             <a
               href={SITE.cvUrl}
-              className="flex items-center justify-between py-4 font-mono text-sm text-ink hover:text-accent"
+              className="btn-secondary flex items-center justify-between border-0 py-4 font-mono text-sm text-ink"
             >
               <span>CV (PDF)</span>
-              <span className="text-ink-soft">descargar ↓</span>
+              <span className="text-ink-soft">
+                descargar <span className="btn-arrow">↓</span>
+              </span>
             </a>
           ) : (
             <div className="flex items-center justify-between py-4 font-mono text-sm text-ink-faint">
