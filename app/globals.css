@@ -2,7 +2,7 @@
 
 /* ============================================================
    Paleta
-   Tres niveles de superficie (bg → surface → surface-2) para que
+   Tres niveles de superficie (bg, surface, surface-2) para que
    las cards tengan profundidad real en vez de flotar sobre un
    único plano. Todos los pares texto/fondo verificados ≥4.5:1.
    ============================================================ */
@@ -146,14 +146,43 @@ body {
    es lo que le da borde definido sin recurrir a un borde duro. */
 .surface-card {
   background: var(--surface);
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-strong);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
 }
 
+/* Barra de acción al pie de una card.
+   Un enlace de texto suelto no se lee como pulsable; una barra con su
+   propia superficie, ancho completo y separador sí. Al pasar por la card
+   entera se rellena de acento, que es la señal inequívoca. */
+.card-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 1rem;
+  border-top: 1px solid var(--line-strong);
+  background: var(--surface-2);
+  color: var(--ink);
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition:
+    background-color var(--motion-fast) var(--ease-out),
+    color var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out);
+}
+
+.group:hover .card-action,
+.group:focus-visible .card-action {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
 .surface-panel {
   background: var(--surface-2);
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-strong);
   border-radius: var(--radius-md);
 }
 
@@ -164,6 +193,7 @@ body {
     linear-gradient(180deg, var(--accent-soft) 0%, transparent 42%),
     var(--surface);
   border: 1px solid var(--accent-line);
+  --card-action-border: var(--accent-line);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
 }
@@ -408,54 +438,31 @@ body {
   background: var(--surface-2);
 }
 
-/* Enlace de texto con icono, para navegar dentro del contenido. */
-.link-arrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4375rem;
+/* Enlace de texto dentro del contenido. Se subraya, que es lo que
+   distingue un enlace de una etiqueta sin recurrir a un icono. */
+.link-quiet {
   font-family: var(--font-mono), monospace;
   font-size: 13px;
   font-weight: 500;
   color: var(--teal);
-  transition: color var(--motion-fast) var(--ease-out);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--teal) 35%, transparent);
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+  transition:
+    color var(--motion-fast) var(--ease-out),
+    text-decoration-color var(--motion-fast) var(--ease-out);
 }
 
-.link-arrow:hover,
-.link-arrow:focus-visible {
+.link-quiet:hover,
+.link-quiet:focus-visible {
   color: var(--accent);
+  text-decoration-color: currentColor;
 }
 
-/* --- Movimiento de los iconos ------------------------------- */
-
-[data-icon] {
-  transition: transform var(--motion-base) var(--ease-out);
-}
+/* --- Pulsación de los botones ------------------------------- */
 
 @media (prefers-reduced-motion: no-preference) {
-  a:hover [data-icon="right"],
-  button:hover [data-icon="right"],
-  .group:hover [data-icon="right"] {
-    transform: translateX(3px);
-  }
-
-  a:hover [data-icon="left"],
-  button:hover [data-icon="left"],
-  .group:hover [data-icon="left"] {
-    transform: translateX(-3px);
-  }
-
-  a:hover [data-icon="up-right"],
-  button:hover [data-icon="up-right"],
-  .group:hover [data-icon="up-right"] {
-    transform: translate(2px, -2px);
-  }
-
-  a:hover [data-icon="down"],
-  button:hover [data-icon="down"],
-  .group:hover [data-icon="down"] {
-    transform: translateY(3px);
-  }
-
   .btn-primary:active,
   .btn-secondary:active,
   .btn-ghost:active {

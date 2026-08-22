@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { ArrowUpRight, Play } from "@/components/icons";
 
 type Props = {
   slug: string;
@@ -52,9 +51,9 @@ export function LiveDemo({ slug, url, title, note, hasPoster = false }: Props) {
           href={url}
           target="_blank"
           rel="noopener noreferrer"
-          className="ml-auto inline-flex shrink-0 items-center gap-1.5 font-mono text-[11px] text-teal hover:text-accent"
+          className="ml-auto shrink-0 font-mono text-[11px] text-teal underline decoration-1 underline-offset-4 hover:text-accent"
         >
-          Abrir <ArrowUpRight />
+          Abrir en pestaña
         </a>
       </div>
 
@@ -91,7 +90,7 @@ export function LiveDemo({ slug, url, title, note, hasPoster = false }: Props) {
                 onClick={() => setLoaded(true)}
                 className="btn btn-primary"
               >
-                <Play /> Cargar demo en vivo
+                Cargar demo en vivo
               </button>
               <p className="max-w-[46ch] text-sm text-ink-soft">
                 {note ??

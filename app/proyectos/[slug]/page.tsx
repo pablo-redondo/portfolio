@@ -10,7 +10,6 @@ import { LiveDemo } from "@/components/LiveDemo";
 import { DeploymentBadge } from "@/components/DeploymentStatus";
 import { projects } from "@/content/projects";
 import { hasScreenshot } from "@/lib/screenshots";
-import { ArrowLeft, ArrowRight, ArrowUpRight } from "@/components/icons";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -63,7 +62,7 @@ export default async function ProjectPage({ params }: Props) {
         <Container>
           <div className="py-16 sm:py-20">
             <Link href="/proyectos" className="btn btn-ghost -ml-2.5">
-              <ArrowLeft /> proyectos
+              Volver a proyectos
             </Link>
 
             <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3">
@@ -88,12 +87,12 @@ export default async function ProjectPage({ params }: Props) {
             <div className="mt-8 flex flex-wrap gap-3">
               {project.repos.map((repo) => (
                 <a key={repo.url} href={repo.url} className="btn btn-secondary">
-                  {repo.label} <ArrowUpRight />
+                  {repo.label}
                 </a>
               ))}
               {project.demoUrl && (
                 <a href={project.demoUrl} className="btn btn-primary">
-                  Ver demo <ArrowUpRight />
+                  Abrir demo
                 </a>
               )}
             </div>
@@ -222,7 +221,7 @@ export default async function ProjectPage({ params }: Props) {
               <div className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-line pt-8">
                 <p className="text-ink-soft">¿Quieres ver el resto de proyectos?</p>
                 <Link href="/proyectos" className="btn btn-secondary">
-                  Todos los proyectos <ArrowRight />
+                  Todos los proyectos
                 </Link>
               </div>
             </Reveal>

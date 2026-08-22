@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Container } from "@/components/Container";
 import { SectionLabel } from "@/components/SectionLabel";
 import { SITE } from "@/content/site";
-import { ArrowDown, ArrowUpRight } from "@/components/icons";
 
 const TITLE = "Contacto";
 const DESCRIPTION = "Contacta con Pablo Redondo — email, GitHub, LinkedIn y CV.";
@@ -18,7 +17,8 @@ type Channel = {
   value: string;
   href?: string;
   hint: string;
-  arrow?: boolean;
+  /** Texto de la barra de acción al pie de la card. */
+  cta: string;
 };
 
 export default function ContactoPage() {
@@ -28,25 +28,28 @@ export default function ContactoPage() {
       value: SITE.email,
       href: `mailto:${SITE.email}`,
       hint: "La vía más directa",
+      cta: "Escribir un email",
     },
     {
       label: "GitHub",
       value: SITE.github.replace("https://", ""),
       href: SITE.github,
       hint: "El código de todo lo que hay aquí",
+      cta: "Ver el perfil",
     },
     {
       label: "LinkedIn",
       value: SITE.linkedin ? SITE.linkedin.replace("https://www.", "") : "próximamente",
       href: SITE.linkedin,
       hint: "Para conectar",
+      cta: "Ir a LinkedIn",
     },
     {
       label: "CV",
       value: SITE.cvUrl ? "descargar PDF" : "próximamente",
       href: SITE.cvUrl,
       hint: "Un folio, sin florituras",
-      arrow: true,
+      cta: "Descargar el CV",
     },
   ];
 
@@ -65,22 +68,18 @@ export default function ContactoPage() {
 
           <div className="mt-12 grid gap-4 sm:grid-cols-2">
             {channels.map((channel) => {
-              const inner = (
+              const body = (
                 <>
-                  <div className="flex items-center justify-between gap-3">
+                  <div className="flex flex-1 flex-col p-6">
                     <span className="font-mono text-xs tracking-wide text-ink-faint uppercase">
                       {channel.label}
                     </span>
-                    {channel.href && (
-                      <span className="text-base text-ink-faint transition-colors group-hover:text-accent">
-                        {channel.arrow ? <ArrowDown /> : <ArrowUpRight />}
-                      </span>
-                    )}
+                    <p className="mt-3 font-mono text-base break-all text-ink transition-colors group-hover:text-accent">
+                      {channel.value}
+                    </p>
+                    <p className="mt-1.5 text-sm text-ink-soft">{channel.hint}</p>
                   </div>
-                  <p className="mt-3 font-mono text-base break-all text-ink transition-colors group-hover:text-accent">
-                    {channel.value}
-                  </p>
-                  <p className="mt-1.5 text-sm text-ink-soft">{channel.hint}</p>
+                  {channel.href && <span className="card-action">{channel.cta}</span>}
                 </>
               );
 
@@ -88,13 +87,16 @@ export default function ContactoPage() {
                 <a
                   key={channel.label}
                   href={channel.href}
-                  className="card-lift surface-card group block p-6"
+                  className="card-lift surface-card group flex h-full flex-col overflow-hidden"
                 >
-                  {inner}
+                  {body}
                 </a>
               ) : (
-                <div key={channel.label} className="surface-card block p-6 opacity-60">
-                  {inner}
+                <div
+                  key={channel.label}
+                  className="surface-card flex h-full flex-col overflow-hidden opacity-60"
+                >
+                  {body}
                 </div>
               );
             })}

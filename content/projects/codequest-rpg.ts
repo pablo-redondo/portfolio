@@ -45,12 +45,12 @@ export const codequestRpg: Project = {
     {
       name: "Playwright",
       category: "tooling",
-      why: "Un único e2e del flujo completo (título → mapa → reto real → resultados), deliberadamente el único test que toca el navegador.",
+      why: "Un único e2e del flujo completo (título, mapa, reto real y resultados), deliberadamente el único test que toca el navegador.",
     },
     {
       name: "GitHub Actions",
       category: "tooling",
-      why: "CI gratuito para un proyecto personal: typecheck → lint → Vitest → Playwright antes de cada merge.",
+      why: "CI gratuito para un proyecto personal: typecheck, lint, Vitest y Playwright antes de cada merge.",
     },
   ],
   caseStudy: {
@@ -60,7 +60,7 @@ export const codequestRpg: Project = {
       {
         title: "key={challenge.id} en vez de useEffect para resetear el editor",
         detail:
-          "La primera versión usaba un useEffect que llamaba a setCode/setStatus al detectar un challenge.id distinto; eslint-plugin-react-hooks lo marcó como antipatrón (setState síncrono dentro de un efecto → renders en cascada). Remontar el subárbol con <ChallengeRunner key={challenge.id} /> hace que React destruya y recree la instancia en cada reto, con estado limpio sin sincronización manual.",
+          "La primera versión usaba un useEffect que llamaba a setCode/setStatus al detectar un challenge.id distinto; eslint-plugin-react-hooks lo marcó como antipatrón (un setState síncrono dentro de un efecto provoca renders en cascada). Remontar el subárbol con <ChallengeRunner key={challenge.id} /> hace que React destruya y recree la instancia en cada reto, con estado limpio sin sincronización manual.",
       },
       {
         title: "TypeScript progresivo, no una reescritura completa",
@@ -114,7 +114,7 @@ export const codequestRpg: Project = {
     {
       order: 5,
       label: "CI/CD",
-      summary: "Pipeline typecheck → lint → Vitest → Playwright, y despliegue documentado.",
+      summary: "Pipeline de typecheck, lint, Vitest y Playwright, con despliegue documentado.",
       detail:
         "GitHub Actions corre la suite completa en cada push; el deploy a Vercel usa la CLI (no la integración nativa) para que el mismo pipeline decida qué se despliega, y se salta en silencio si faltan los secrets.",
       commitRange: "9ef5487–f2d5c9e",
@@ -124,7 +124,7 @@ export const codequestRpg: Project = {
       label: "Rediseño",
       summary: "Identidad pixel-art retro en 5 pasos, sin romper el juego entre pasos.",
       detail:
-        "Paleta y tipografía retro → HP por segmentos → animaciones steps() → sonido vía Web Audio API → overlay CRT. Cada paso se integró jugable de principio a fin.",
+        "Paleta y tipografía retro, luego HP por segmentos, animaciones con steps(), sonido vía Web Audio API y, para cerrar, el overlay CRT. Cada paso se integró jugable de principio a fin.",
       commitRange: "7998db1–95fb652",
     },
   ],

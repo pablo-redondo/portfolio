@@ -6,7 +6,6 @@ import { StackByCategory } from "@/components/StackByCategory";
 import { Reveal } from "@/components/Reveal";
 import { aboutStack } from "@/content/stack";
 import { SITE } from "@/content/site";
-import { ArrowDown, ArrowRight } from "@/components/icons";
 
 const TITLE = "Sobre mí";
 const DESCRIPTION = "De ASIR y redes al desarrollo web — trayectoria y stack de Pablo Redondo.";
@@ -66,11 +65,11 @@ export default function SobreMiPage() {
             <div className="mt-9 flex flex-wrap gap-3">
               {SITE.cvUrl && (
                 <a href={SITE.cvUrl} className="btn btn-primary">
-                  Descargar CV <ArrowDown />
+                  Descargar CV
                 </a>
               )}
               <Link href="/proyectos" className="btn btn-secondary">
-                Ver proyectos <ArrowRight />
+                Ver proyectos
               </Link>
             </div>
           </div>

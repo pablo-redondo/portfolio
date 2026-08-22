@@ -11,7 +11,6 @@ import { aboutStack } from "@/content/stack";
 import { SITE } from "@/content/site";
 import { HOME_HERO } from "@/content/home";
 import { spanForLastInRow } from "@/lib/grid";
-import { ArrowDown, ArrowRight } from "@/components/icons";
 
 const TITLE = "Pablo Redondo — Desarrollador full-stack";
 const DESCRIPTION =
@@ -63,7 +62,7 @@ export default function HomePage() {
                 </Link>
                 {SITE.cvUrl ? (
                   <a href={SITE.cvUrl} className="btn btn-secondary">
-                    Descargar CV <ArrowDown />
+                    Descargar CV
                   </a>
                 ) : (
                   <span className="btn btn-secondary opacity-60">
@@ -118,8 +117,8 @@ export default function HomePage() {
                   Otros proyectos
                 </h2>
               </div>
-              <Link href="/proyectos" className="link-arrow">
-                Ver todos <ArrowRight />
+              <Link href="/proyectos" className="btn btn-secondary">
+                Ver todos los proyectos
               </Link>
             </div>
           </Reveal>
@@ -152,8 +151,8 @@ export default function HomePage() {
                 </span>
               ))}
             </div>
-            <Link href="/sobre-mi" className="link-arrow mt-7">
-              Por qué cada una de estas elecciones <ArrowRight />
+            <Link href="/sobre-mi" className="link-quiet mt-7 inline-block">
+              Por qué cada una de estas elecciones
             </Link>
           </Reveal>
         </Container>

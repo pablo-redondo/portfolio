@@ -65,7 +65,7 @@ export const restaurant: Project = {
   ],
   caseStudy: {
     problem:
-      "Sistema de reservas real para un restaurante: comprobar disponibilidad de mesa sin dobles reservas, gestionar el ciclo de vida de una reserva (pendiente → confirmada → cancelada) y permitir reseñas solo a quien realmente tuvo una reserva confirmada — con un backend y un frontend que se despliegan y evolucionan por separado.",
+      "Sistema de reservas real para un restaurante: comprobar disponibilidad de mesa sin dobles reservas, gestionar el ciclo de vida de una reserva (de pendiente a confirmada o cancelada) y permitir reseñas solo a quien realmente tuvo una reserva confirmada — con un backend y un frontend que se despliegan y evolucionan por separado.",
     decisions: [
       {
         title: "Disponibilidad garantizada a nivel de base de datos, no solo de aplicación",
