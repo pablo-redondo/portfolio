@@ -6,6 +6,7 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { StackTable } from "@/components/StackTable";
 import { Timeline } from "@/components/Timeline";
 import { Reveal } from "@/components/Reveal";
+import { LiveDemo } from "@/components/LiveDemo";
 import { projects } from "@/content/projects";
 
 type Props = {
@@ -99,6 +100,22 @@ export default async function ProjectPage({ params }: Props) {
           </div>
         </Container>
       </section>
+
+      {/* --- Demo en vivo --- */}
+      {project.demoUrl && (
+        <section className="border-b border-line py-16">
+          <Container>
+            <Reveal>
+              <SectionHeading eyebrow="pruébalo tú" title="Demo en vivo" />
+              <LiveDemo
+                url={project.demoUrl}
+                title={project.title}
+                note={project.demoNote}
+              />
+            </Reveal>
+          </Container>
+        </section>
+      )}
 
       {/* --- Línea de evolución --- */}
       {project.timeline && project.timeline.length > 0 && (

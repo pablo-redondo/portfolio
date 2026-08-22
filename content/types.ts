@@ -52,6 +52,11 @@ export interface Project {
   stack: TechChoice[];
   repos: ProjectRepo[];
   demoUrl?: string;
+  /**
+   * Aviso honesto sobre la demo antes de cargarla: por ejemplo, que el
+   * backend duerme por inactividad y la primera petición tarda.
+   */
+  demoNote?: string;
   images: ProjectImage[];
   caseStudy: CaseStudy;
   /** Solo presente en codequest-rpg. */
