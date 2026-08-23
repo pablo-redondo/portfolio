@@ -38,6 +38,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+/**
+ * El primer bloque de contenido tras la cabecera entra dentro del pliegue y
+ * suele ser el elemento LCP de la página. <Reveal> lo arrancaría en
+ * opacity 0, y Chrome no contabiliza lo que está invisible: la métrica se
+ * retrasaría hasta que hidrate y dispare el observer. Ahí va sin animar.
+ */
+function MaybeReveal({
+  animate,
+  children,
+}: {
+  animate: boolean;
+  children: React.ReactNode;
+}) {
+  return animate ? <Reveal>{children}</Reveal> : <>{children}</>;
+}
+
 function SectionHeading({ eyebrow, title }: { eyebrow: string; title: string }) {
   return (
     <div className="mb-6">
@@ -56,6 +72,15 @@ export default async function ProjectPage({ params }: Props) {
   if (!project) notFound();
 
   const { caseStudy } = project;
+
+  // El siguiente de la lista, volviendo al principio tras el último: así
+  // ningún caso de estudio termina sin a dónde ir.
+  const indice = projects.findIndex((p) => p.slug === project.slug);
+  const next = projects[(indice + 1) % projects.length];
+
+  // La línea de evolución abre la página cuando existe; si no, lo hace
+  // Contexto. La primera es la que no puede arrancar invisible.
+  const hayTimeline = Boolean(project.timeline && project.timeline.length > 0);
 
   return (
     <>
@@ -111,47 +136,16 @@ export default async function ProjectPage({ params }: Props) {
         </Container>
       </section>
 
-      {/* --- Demo en vivo --- */}
-      {project.demoUrl && (
-        <section className="border-b border-line py-16">
-          <Container>
-            <Reveal>
-              <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
-                <div>
-                  <p className="mb-2 font-mono text-[11px] tracking-wide text-accent uppercase">
-                    pruébalo tú
-                  </p>
-                  <h2 className="font-mono text-2xl font-bold tracking-tight">
-                    Demo en vivo
-                  </h2>
-                  <span className="heading-rule mt-3.5" aria-hidden />
-                </div>
-                <DeploymentBadge slug={project.slug} />
-              </div>
-              <LiveDemo
-                slug={project.slug}
-                url={project.demoUrl}
-                title={project.title}
-                note={project.demoNote}
-                hasPoster={hasScreenshot(project.slug)}
-              />
-            </Reveal>
-          </Container>
-        </section>
-      )}
-
       {/* --- Línea de evolución --- */}
       {project.timeline && project.timeline.length > 0 && (
         <section className="border-b border-line py-16">
           <Container>
-            <Reveal>
-              <SectionHeading eyebrow="cómo llegó hasta aquí" title="Línea de evolución" />
-              <p className="mb-8 max-w-[65ch] text-ink-soft">
-                Seis fases reconstruyendo el proyecto sin dejarlo roto entre
-                pasos. Cada una se despliega con su detalle y su rango de
-                commits.
-              </p>
-            </Reveal>
+            <SectionHeading eyebrow="cómo llegó hasta aquí" title="Línea de evolución" />
+            <p className="mb-8 max-w-[65ch] text-ink-soft">
+              Seis fases reconstruyendo el proyecto sin dejarlo roto entre
+              pasos. Cada una se despliega con su detalle y su rango de
+              commits.
+            </p>
             <Timeline phases={project.timeline} />
           </Container>
         </section>
@@ -161,19 +155,19 @@ export default async function ProjectPage({ params }: Props) {
       <section className="border-b border-line py-16">
         <Container>
           <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
-            <Reveal>
+            <MaybeReveal animate={hayTimeline}>
               <SectionHeading eyebrow="por qué existe" title="Contexto" />
               <p className="max-w-[62ch] leading-relaxed text-ink-soft">
                 {caseStudy.problem}
               </p>
-            </Reveal>
+            </MaybeReveal>
 
-            <Reveal delay={80}>
+            <MaybeReveal animate={hayTimeline}>
               <SectionHeading eyebrow="lo más difícil" title="Reto técnico" />
               <p className="max-w-[62ch] leading-relaxed text-ink-soft">
                 {caseStudy.challenge}
               </p>
-            </Reveal>
+            </MaybeReveal>
           </div>
         </Container>
       </section>
@@ -223,24 +217,90 @@ export default async function ProjectPage({ params }: Props) {
 
       {/* --- Stack --- */}
       {project.stack.length > 0 && (
-        <section className="py-16">
+        <section className="border-b border-line py-16">
           <Container>
             <Reveal>
               <SectionHeading eyebrow="con qué está construido" title="Stack" />
             </Reveal>
             <StackTable stack={project.stack} />
+          </Container>
+        </section>
+      )}
 
+      {/* --- Demo en vivo ---
+           Al final a propósito: la página es un caso de estudio y la demo
+           es el premio, no la introducción. Arriba interrumpía el hilo
+           problema → reto → decisiones → resultado, y empujaba todo ese
+           contenido por debajo de un iframe de 500px. Quien solo quiera
+           probarlo tiene el botón "Abrir demo" en la cabecera. --- */}
+      {project.demoUrl && (
+        <section className="border-b border-line py-16">
+          <Container>
             <Reveal>
-              <div className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-line pt-8">
-                <p className="text-ink-soft">¿Quieres ver el resto de proyectos?</p>
-                <Link href="/proyectos" className="btn btn-secondary">
-                  Todos los proyectos
-                </Link>
+              <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+                <div>
+                  <p className="mb-2 font-mono text-[11px] tracking-wide text-accent uppercase">
+                    pruébalo tú
+                  </p>
+                  <h2 className="font-mono text-2xl font-bold tracking-tight">
+                    Demo en vivo
+                  </h2>
+                  <span className="heading-rule mt-3.5" aria-hidden />
+                </div>
+                <DeploymentBadge slug={project.slug} />
               </div>
+              <LiveDemo
+                slug={project.slug}
+                url={project.demoUrl}
+                title={project.title}
+                note={project.demoNote}
+                hasPoster={hasScreenshot(project.slug)}
+              />
             </Reveal>
           </Container>
         </section>
       )}
+
+      {/* Cierre: el siguiente caso de estudio, no un cartel preguntando si
+          quieres ver más. Terminar la lectura ofreciendo el siguiente da
+          continuidad; un enlace suelto al índice es un callejón sin salida.
+          Y no cuelga del bloque de Stack, porque colgando de él un proyecto
+          sin stack —Carrera Vóley— se quedaba sin salida ninguna. */}
+      <section className="py-16">
+        <Container>
+          <Reveal>
+            <p className="mb-4 font-mono text-[11px] tracking-wide text-accent uppercase">
+              sigue por aquí
+            </p>
+            <Link
+              href={`/proyectos/${next.slug}`}
+              className="card-lift card-scan surface-card group block overflow-hidden"
+            >
+              <div className="p-7 sm:p-9">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="min-w-0 truncate font-mono text-[11px] text-ink-faint">
+                    {next.slug}
+                  </span>
+                  <StatusBadge status={next.status} />
+                </div>
+                <h2 className="mt-3.5 font-mono text-2xl leading-snug font-bold tracking-tight text-balance text-ink transition-colors group-hover:text-accent sm:text-3xl">
+                  {next.title}
+                </h2>
+                <p className="mt-3 max-w-[62ch] leading-relaxed text-ink-soft">
+                  {next.tagline}
+                </p>
+              </div>
+              <span className="card-action">Ver caso de estudio</span>
+            </Link>
+          </Reveal>
+
+          <Reveal>
+            <Link href="/proyectos" className="link-quiet mt-7 inline-block">
+              Ver los seis proyectos
+            </Link>
+          </Reveal>
+        </Container>
+      </section>
     </>
   );
 }
