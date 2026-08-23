@@ -30,9 +30,14 @@ export default function HomePage() {
           escalonada que arranca con el primer pintado. El h1 es el
           elemento LCP, así que el suyo mueve solo el transform y nunca la
           opacidad: Chrome no contabiliza un elemento en opacity 0. */}
-      <section className="hero-glow border-b border-line">
-        <Container>
-          <div className="grid items-center gap-12 py-20 sm:py-28 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16">
+      {/* El hero ocupa la primera pantalla entera (menos la cabecera, que
+          es sticky y sí ocupa sitio en el flujo). `svh` y no `dvh`: dvh
+          cambia cuando el navegador móvil esconde su barra, y eso movería
+          el bloque a mitad de scroll. `min-h` en vez de `h` para que en
+          pantallas bajas el contenido siga creciendo en vez de cortarse. */}
+      <section className="hero-glow relative flex min-h-[calc(100svh-4rem)] items-center border-b border-line">
+        <Container className="w-full">
+          <div className="grid items-center gap-12 py-16 sm:py-20 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16">
             <div className="min-w-0">
               <div data-enter="1">
                 <SectionLabel>whoami --stack</SectionLabel>
@@ -78,6 +83,11 @@ export default function HomePage() {
               <DeploymentStatusPanel />
             </div>
           </div>
+
+          {/* Con la primera pantalla completa no queda ni un borde que
+              insinúe que hay más abajo. Un trazo que recorre hacia abajo lo
+              sugiere sin texto ni flecha. Decorativo: aria-hidden. */}
+          <span className="scroll-hint" aria-hidden />
         </Container>
       </section>
 

@@ -249,7 +249,7 @@ body {
      resuelve contra el alto de la sección, y al recomponerse el titular al
      cargar la tipografía el resplandor se movía y contaba como CLS. */
   inset: -140px 0 auto 0;
-  height: 460px;
+  height: 620px;
   background: radial-gradient(60% 60% at 20% 30%, var(--glow), transparent 70%);
   pointer-events: none;
 }
@@ -516,6 +516,46 @@ body {
   50%,
   100% {
     opacity: 0;
+  }
+}
+
+/* --- Pista de scroll al pie del hero -----------------------
+   Un trazo fino que recorre hacia abajo dentro de su carril. Sin texto
+   ni flecha, y `aria-hidden` en el marcado: no aporta nada a quien
+   navega con lector de pantalla. */
+
+.scroll-hint {
+  position: absolute;
+  bottom: 1.75rem;
+  left: 50%;
+  width: 1px;
+  height: 2.5rem;
+  overflow: hidden;
+  background: var(--line-strong);
+  transform: translateX(-50%);
+}
+
+.scroll-hint::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 45%;
+  background: var(--accent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .scroll-hint::after {
+    animation: scroll-hint 2.4s var(--ease-out) infinite;
+  }
+}
+
+@keyframes scroll-hint {
+  0% {
+    transform: translateY(-100%);
+  }
+  55%,
+  100% {
+    transform: translateY(222%);
   }
 }
 
