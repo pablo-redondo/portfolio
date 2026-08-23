@@ -715,14 +715,125 @@ body {
   );
 }
 
+/* Cada fase es UNA card, no un resumen suelto con una segunda caja
+   flotando debajo: cerrada es una fila, abierta crece hacia abajo y el
+   detalle queda dentro, separado por una línea. */
 .rail-node {
   position: relative;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  transition:
+    border-color var(--motion-fast) var(--ease-out),
+    box-shadow var(--motion-fast) var(--ease-out);
+}
+
+.rail-node:hover {
+  border-color: var(--line-strong);
+}
+
+.rail-node[open] {
+  border-color: var(--accent-line);
+  box-shadow: var(--shadow-md);
+}
+
+.phase-summary {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem 1.125rem;
+  border-radius: inherit;
+  cursor: pointer;
+  list-style: none;
+}
+
+/* El triángulo por defecto de <summary>: fuera en los dos motores. */
+.phase-summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Indicador de estado. Sin flecha: dos trazos que forman un "+" y se
+   funden en un "−" cuando la fase se abre. */
+.phase-toggle {
+  position: relative;
+  flex-shrink: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-top: 0.0625rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line-strong);
+  background: var(--surface-2);
+  color: var(--ink-faint);
+  transition:
+    color var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out);
+}
+
+.phase-summary:hover .phase-toggle {
+  color: var(--ink);
+  border-color: var(--accent-line);
+}
+
+.rail-node[open] .phase-toggle {
+  color: var(--accent-ink);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.phase-toggle::before,
+.phase-toggle::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 28%;
+  right: 28%;
+  height: 1.5px;
+  border-radius: 1px;
+  background: currentColor;
+  transform: translateY(-50%);
+  transition: transform var(--motion-base) var(--ease-out);
+}
+
+/* El trazo vertical rota hasta solaparse con el horizontal: "+" → "−". */
+.phase-toggle::after {
+  transform: translateY(-50%) rotate(90deg);
+}
+
+.rail-node[open] .phase-toggle::after {
+  transform: translateY(-50%) rotate(0deg);
+}
+
+/* El detalle vive dentro de la card, con su propia superficie y una
+   hairline que lo separa del resumen. */
+.phase-detail {
+  border-top: 1px solid var(--line);
+  background: var(--surface-2);
+  padding: 1rem 1.125rem;
+  /* -1px: por dentro del borde de la card, si no asoma una esquina. */
+  border-bottom-left-radius: calc(var(--radius-lg) - 1px);
+  border-bottom-right-radius: calc(var(--radius-lg) - 1px);
+}
+
+/* El rango de commits, con etiqueta: solo el hash no dice qué es. */
+.phase-commits {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.875rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  padding: 0.25rem 0.5rem;
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  line-height: 1.6;
 }
 
 .rail-dot {
   position: absolute;
   left: -2.75rem;
-  top: 0.0625rem;
+  top: 0.625rem;
   display: flex;
   align-items: center;
   justify-content: center;

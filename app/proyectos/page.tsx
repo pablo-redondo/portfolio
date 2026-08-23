@@ -6,7 +6,6 @@ import { ProjectCard } from "@/components/ProjectCard";
 import { Reveal } from "@/components/Reveal";
 import { projects } from "@/content/projects";
 import { PROJECT_TAGS } from "@/content/types";
-import { spanForLastInRow } from "@/lib/grid";
 
 const TITLE = "Proyectos";
 const DESCRIPTION = "Proyectos full-stack, herramientas y experimentos de Pablo Redondo.";
@@ -83,30 +82,24 @@ export default async function ProyectosPage({ searchParams }: Props) {
             </div>
           )}
 
+          {/* Todas las cards del mismo ancho. Estirar la última fila para
+              rellenar el hueco dejaba una card ancha medio vacía, que
+              descompensaba la rejilla más que el propio hueco. */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {rest.map((project, i) => {
-              const span = spanForLastInRow(i, rest.length, 3);
-
+            {rest.map((project, i) =>
               // Las primeras cards caen dentro del pliegue y una de ellas es
               // el elemento LCP: animarlas de entrada retrasa la métrica.
-              if (i < ABOVE_FOLD_CARDS) {
-                return (
-                  <div key={project.slug} className={span}>
-                    <ProjectCard project={project} />
-                  </div>
-                );
-              }
-
-              return (
+              i < ABOVE_FOLD_CARDS ? (
+                <ProjectCard key={project.slug} project={project} />
+              ) : (
                 <Reveal
                   key={project.slug}
                   delay={((i - ABOVE_FOLD_CARDS) % 3) * 60}
-                  className={span}
                 >
                   <ProjectCard project={project} />
                 </Reveal>
-              );
-            })}
+              ),
+            )}
           </div>
 
           {filtered.length === 0 && (

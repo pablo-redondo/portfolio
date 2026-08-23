@@ -3,14 +3,13 @@ import Link from "next/link";
 import { Container } from "@/components/Container";
 import { SectionLabel } from "@/components/SectionLabel";
 import { ProjectCard } from "@/components/ProjectCard";
-import { EvolutionPreview } from "@/components/EvolutionPreview";
+import { StackSummary } from "@/components/StackSummary";
 import { Reveal } from "@/components/Reveal";
 import { DeploymentStatusPanel } from "@/components/DeploymentStatus";
 import { projects } from "@/content/projects";
 import { aboutStack } from "@/content/stack";
 import { SITE } from "@/content/site";
 import { HOME_HERO } from "@/content/home";
-import { spanForLastInRow } from "@/lib/grid";
 
 const TITLE = "Pablo Redondo — Desarrollador full-stack";
 const DESCRIPTION =
@@ -22,21 +21,9 @@ export const metadata: Metadata = {
   openGraph: { title: TITLE, description: DESCRIPTION },
 };
 
-const HOME_STACK_STRIP = [
-  "TypeScript",
-  "React",
-  "Next.js (App Router)",
-  "Node.js + Express",
-  "NestJS",
-  "PostgreSQL",
-  "Tailwind CSS",
-  "Docker",
-];
-
 export default function HomePage() {
   const featured = projects.find((project) => project.featured);
   const rest = projects.filter((project) => !project.featured);
-  const stripStack = aboutStack.filter((tech) => HOME_STACK_STRIP.includes(tech.name));
 
   return (
     <>
@@ -105,19 +92,10 @@ export default function HomePage() {
                 El proyecto que mejor me explica
               </h2>
               <span className="heading-rule mt-4 mb-8" aria-hidden />
+              {/* Sin resumen de fases aquí: la línea de evolución ya vive
+                  en el caso de estudio, con su detalle y sus commits. */}
               <ProjectCard project={featured} featured />
             </Reveal>
-
-            {featured.timeline && (
-              <div className="mt-6">
-                <Reveal>
-                  <p className="mb-3 font-mono text-[11px] tracking-wide text-ink-faint uppercase">
-                    Seis fases documentadas por commits
-                  </p>
-                </Reveal>
-                <EvolutionPreview phases={featured.timeline} />
-              </div>
-            )}
           </Container>
         </section>
       )}
@@ -125,20 +103,16 @@ export default function HomePage() {
       <section className="border-b border-line py-20">
         <Container>
           <Reveal>
-            <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-              <div>
-                <SectionLabel>ls proyectos/</SectionLabel>
-                <h2 className="mt-3 font-mono text-2xl font-bold tracking-tight sm:text-3xl">
-                  Otros proyectos
-                </h2>
-                <span className="heading-rule mt-4" aria-hidden />
-              </div>
-              <Link href="/proyectos" className="btn btn-secondary">
-                Ver todos los proyectos
-              </Link>
-            </div>
+            <SectionLabel>ls proyectos/</SectionLabel>
+            <h2 className="mt-3 font-mono text-2xl font-bold tracking-tight sm:text-3xl">
+              Otros proyectos
+            </h2>
+            <span className="heading-rule mt-4 mb-8" aria-hidden />
           </Reveal>
 
+          {/* Las cinco cards restantes más la del índice cuadran justo en dos
+              filas de tres. Antes la última fila se estiraba para rellenar el
+              hueco y dejaba una card ancha medio vacía. */}
           {/* `stagger`: la rejilla entera comparte un observador y el CSS
               reparte el retardo por hijo, en vez de montar un observador
               por card. */}
@@ -146,11 +120,30 @@ export default function HomePage() {
             stagger
             className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
           >
-            {rest.map((project, i) => (
-              <div key={project.slug} className={spanForLastInRow(i, rest.length, 3)}>
-                <ProjectCard project={project} />
-              </div>
+            {rest.map((project) => (
+              <ProjectCard key={project.slug} project={project} />
             ))}
+
+            <Link
+              href="/proyectos"
+              data-spot
+              className="card-lift surface-card group flex h-full flex-col overflow-hidden"
+            >
+              <span className="spot-glow" aria-hidden />
+              <div className="flex flex-1 flex-col p-6">
+                <span className="font-mono text-[11px] text-ink-faint">
+                  proyectos/
+                </span>
+                <p className="mt-3 font-mono text-lg font-bold tracking-tight text-ink transition-colors group-hover:text-accent">
+                  Los {projects.length} con su caso de estudio
+                </p>
+                <p className="mt-3 text-sm leading-relaxed text-ink-soft">
+                  El problema que resuelven, las decisiones técnicas y lo que
+                  no salió bien.
+                </p>
+              </div>
+              <span className="card-action">Ver el índice completo</span>
+            </Link>
           </Reveal>
         </Container>
       </section>
@@ -162,19 +155,17 @@ export default function HomePage() {
             <h2 className="mt-3 font-mono text-2xl font-bold tracking-tight sm:text-3xl">
               Stack actual
             </h2>
-            <span className="heading-rule mt-4 mb-6" aria-hidden />
+            <span className="heading-rule mt-4 mb-5" aria-hidden />
+            <p className="mb-8 max-w-[62ch] text-ink-soft">
+              Agrupado por la capa en la que trabaja cada cosa. El motivo
+              concreto de cada elección está en los casos de estudio.
+            </p>
           </Reveal>
 
-          <Reveal stagger className="flex flex-wrap gap-2">
-            {stripStack.map((tech) => (
-              <span key={tech.name} className="chip">
-                {tech.name}
-              </span>
-            ))}
-          </Reveal>
+          <StackSummary stack={aboutStack} />
 
           <Reveal>
-            <Link href="/sobre-mi" className="link-quiet mt-7 inline-block">
+            <Link href="/sobre-mi" className="link-quiet mt-8 inline-block">
               Por qué cada una de estas elecciones
             </Link>
           </Reveal>
