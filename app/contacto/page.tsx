@@ -40,7 +40,10 @@ export default function ContactoPage() {
     },
     {
       label: "LinkedIn",
-      value: SITE.linkedin ? SITE.linkedin.replace("https://www.", "") : "próximamente",
+      // Sin la barra final: en móvil se quedaba sola en una segunda línea.
+      value: SITE.linkedin
+        ? SITE.linkedin.replace("https://www.", "").replace(/\/$/, "")
+        : "próximamente",
       href: SITE.linkedin,
       hint: "Para conectar",
       cta: "Ir a LinkedIn",
