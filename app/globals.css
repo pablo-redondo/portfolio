@@ -682,7 +682,22 @@ body {
 
 .rail {
   position: relative;
+  /* Los dos trazos del raíl (el estático y el que se rellena al hacer
+     scroll) van en z-index -1 para quedar SIEMPRE por detrás de los
+     números, hagan lo que hagan las fases: mientras entran escalonadas
+     tienen opacidad < 1, y eso les crea contexto de apilamiento propio,
+     así que subir el z-index del número no bastaría.
+     `isolation` mantiene esa capa negativa dentro del raíl en vez de
+     dejarla caer por detrás del fondo de la sección. */
+  isolation: isolate;
   padding-left: 2.75rem;
+}
+
+/* Los dos comparten capa, así que el orden del DOM decide: el relleno se
+   dibuja encima del trazo estático, que es justo lo que se busca. */
+.rail::before,
+.rail::after {
+  z-index: -1;
 }
 
 .rail::before {
