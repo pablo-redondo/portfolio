@@ -15,11 +15,11 @@ type Props = {
   stagger?: boolean;
   /**
    * Etiqueta del envoltorio. Con `stagger` el envoltorio pasa a ser el
-   * contenedor real de la lista, así que a veces tiene que ser `ol`/`ul`
+   * contenedor real de la lista, así que a veces tiene que ser `ol`/`ul`/`dl`
    * para no romper el marcado (un `li` suelto dentro de un `div` no es
    * HTML válido, y el lector de pantalla pierde el conteo de la lista).
    */
-  as?: "div" | "ol" | "ul";
+  as?: "div" | "ol" | "ul" | "dl";
   className?: string;
 };
 
@@ -135,8 +135,8 @@ export function Reveal({
 
   return (
     <Tag
-      // `ol`/`ul` no son HTMLDivElement, pero el efecto solo usa la parte
-      // común de HTMLElement: dataset y getBoundingClientRect.
+      // `ol`/`ul`/`dl` no son HTMLDivElement, pero el efecto solo usa la
+      // parte común de HTMLElement: dataset y getBoundingClientRect.
       ref={ref as React.RefObject<never>}
       className={className}
       data-reveal="out"

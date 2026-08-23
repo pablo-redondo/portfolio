@@ -10,35 +10,42 @@ const CATEGORY_LABELS: Record<TechCategory, string> = {
   tooling: "Tooling",
 };
 
+/**
+ * Stack por capas, en filas separadas por hairline en lugar de una card por
+ * tecnología: dieciséis marcos llenaban la sección de cajas y competían con
+ * el texto que de verdad importa, que es el porqué de cada elección.
+ *
+ * Marcado como lista de definiciones porque es literalmente lo que es —
+ * término y su motivo — y así un lector de pantalla anuncia la relación.
+ */
 export function StackByCategory({ stack }: { stack: TechChoice[] }) {
   return (
-    <div className="flex flex-col gap-12">
+    <div className="flex flex-col gap-14">
       {CATEGORY_ORDER.map((category) => {
         const items = stack.filter((tech) => tech.category === category);
         if (items.length === 0) return null;
 
         return (
           <section key={category}>
-            <Reveal className="mb-5 flex items-center gap-3">
-              <h3 className="font-mono text-sm font-semibold tracking-wide text-accent uppercase">
+            <Reveal className="mb-1 flex items-baseline gap-4">
+              <h3 className="font-mono text-sm font-semibold tracking-wider text-accent uppercase">
                 {CATEGORY_LABELS[category]}
               </h3>
               <span className="divider flex-1" />
               <span className="font-mono text-[11px] text-ink-faint">
-                {items.length}
+                {String(items.length).padStart(2, "0")}
               </span>
             </Reveal>
 
-            <Reveal stagger className="grid gap-3 sm:grid-cols-2">
+            <Reveal stagger as="dl" className="flex flex-col">
               {items.map((tech) => (
-                <div key={tech.name} data-spot className="surface-card group p-5">
-                  <span className="spot-glow" aria-hidden />
-                  <h4 className="font-mono text-sm font-semibold text-ink">
+                <div key={tech.name} className="stack-row">
+                  <dt className="font-mono text-sm font-semibold text-ink">
                     {tech.name}
-                  </h4>
-                  <p className="mt-1.5 text-sm leading-relaxed text-ink-soft">
+                  </dt>
+                  <dd className="text-sm leading-relaxed text-ink-soft">
                     {tech.why}
-                  </p>
+                  </dd>
                 </div>
               ))}
             </Reveal>
