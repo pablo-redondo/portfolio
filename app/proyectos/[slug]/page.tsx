@@ -51,7 +51,10 @@ function MaybeReveal({
   animate: boolean;
   children: React.ReactNode;
 }) {
-  return animate ? <Reveal>{children}</Reveal> : <>{children}</>;
+  // Un <div> y no un fragmento: sin envoltorio, el encabezado y el párrafo
+  // dejan de ser una sola celda y pasan a ocupar dos de la rejilla de dos
+  // columnas, que es como se partieron Contexto y Reto técnico.
+  return animate ? <Reveal>{children}</Reveal> : <div>{children}</div>;
 }
 
 function SectionHeading({ eyebrow, title }: { eyebrow: string; title: string }) {
@@ -73,14 +76,19 @@ export default async function ProjectPage({ params }: Props) {
 
   const { caseStudy } = project;
 
-  // El siguiente de la lista, volviendo al principio tras el último: así
-  // ningún caso de estudio termina sin a dónde ir.
-  const indice = projects.findIndex((p) => p.slug === project.slug);
-  const next = projects[(indice + 1) % projects.length];
-
   // La línea de evolución abre la página cuando existe; si no, lo hace
   // Contexto. La primera es la que no puede arrancar invisible.
   const hayTimeline = Boolean(project.timeline && project.timeline.length > 0);
+
+  // La salida al índice se pinta dentro de la última sección que exista, no
+  // en una sección propia. Antes colgaba del bloque de Stack y Carrera
+  // Vóley, que no tiene stack, se quedaba sin salida ninguna; así no
+  // depende de qué secciones traiga cada proyecto.
+  const ultimaSeccion = project.demoUrl
+    ? "demo"
+    : project.stack.length > 0
+      ? "stack"
+      : "resultado";
 
   return (
     <>
@@ -211,6 +219,12 @@ export default async function ProjectPage({ params }: Props) {
                 {caseStudy.result}
               </p>
             </div>
+
+            {ultimaSeccion === "resultado" && (
+              <Link href="/proyectos" className="btn btn-secondary mt-10">
+                Ver el resto de proyectos
+              </Link>
+            )}
           </Reveal>
         </Container>
       </section>
@@ -223,6 +237,14 @@ export default async function ProjectPage({ params }: Props) {
               <SectionHeading eyebrow="con qué está construido" title="Stack" />
             </Reveal>
             <StackTable stack={project.stack} />
+
+            {ultimaSeccion === "stack" && (
+              <Reveal>
+                <Link href="/proyectos" className="btn btn-secondary mt-10">
+                  Ver el resto de proyectos
+                </Link>
+              </Reveal>
+            )}
           </Container>
         </section>
       )}
@@ -257,38 +279,17 @@ export default async function ProjectPage({ params }: Props) {
                 hasPoster={hasScreenshot(project.slug)}
               />
             </Reveal>
+
+            {ultimaSeccion === "demo" && (
+              <Reveal>
+                <Link href="/proyectos" className="btn btn-secondary mt-10">
+                  Ver el resto de proyectos
+                </Link>
+              </Reveal>
+            )}
           </Container>
         </section>
       )}
-
-      {/* Cierre: una sola línea de navegación, no una card.
-          Como card a ancho completo, con titular grande y barra de acción,
-          competía con el propio caso de estudio que acabas de leer. Esto es
-          lo que es —el enlace al siguiente— y pesa lo que le toca. */}
-      <section className="py-12">
-        <Container>
-          <Reveal className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-            <span className="font-mono text-[11px] tracking-wide text-ink-faint uppercase">
-              siguiente
-            </span>
-            <Link
-              href={`/proyectos/${next.slug}`}
-              className="font-mono text-sm font-semibold text-ink underline decoration-line-strong underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
-            >
-              {next.title}
-            </Link>
-            <span aria-hidden className="font-mono text-xs text-ink-faint">
-              ·
-            </span>
-            <Link
-              href="/proyectos"
-              className="font-mono text-xs text-ink-faint transition-colors hover:text-accent"
-            >
-              los seis proyectos
-            </Link>
-          </Reveal>
-        </Container>
-      </section>
     </>
   );
 }
