@@ -6,6 +6,7 @@ import { ProjectCard } from "@/components/ProjectCard";
 import { StackSummary } from "@/components/StackSummary";
 import { Reveal } from "@/components/Reveal";
 import { DeploymentStatusPanel } from "@/components/DeploymentStatus";
+import { HeroGrid } from "@/components/HeroGrid";
 import { projects } from "@/content/projects";
 import { aboutStack } from "@/content/stack";
 import { SITE } from "@/content/site";
@@ -36,6 +37,7 @@ export default function HomePage() {
           el bloque a mitad de scroll. `min-h` en vez de `h` para que en
           pantallas bajas el contenido siga creciendo en vez de cortarse. */}
       <section className="hero-glow relative flex min-h-[calc(100svh-4rem)] items-center border-b border-line">
+        <HeroGrid />
         <Container className="w-full">
           <div className="grid items-center gap-12 py-16 sm:py-20 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16">
             <div className="min-w-0">

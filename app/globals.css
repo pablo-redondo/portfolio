@@ -253,6 +253,185 @@ body {
   pointer-events: none;
 }
 
+/* ============================================================
+   Retícula del hero
+   Una cuadrícula técnica con pulsos de luz recorriendo sus líneas.
+   Todo CSS: ni un byte de descarga, ni un listener.
+   ============================================================ */
+
+.hero-grid {
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  /* Recorta los pulsos que se salen por abajo al terminar su recorrido. */
+  overflow: hidden;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, var(--line-strong) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--line-strong) 1px, transparent 1px);
+  background-size: 60px 60px;
+  /* La máscara apaga la retícula hacia los bordes para que no choque
+     contra el borde de la sección, y de paso se lleva con ella los
+     pulsos, que son hijos suyos. */
+  mask-image: radial-gradient(
+    ellipse 78% 68% at 50% 32%,
+    #000 8%,
+    transparent 74%
+  );
+}
+
+/* Parallax al hacer scroll: la retícula sube algo menos que la página, lo
+   justo para que se lea profundidad. Guiado por scroll, sin JS ni estado.
+   Es transform, así que no puede provocar ningún salto de layout. */
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-grid {
+      animation: grid-drift linear both;
+      animation-timeline: scroll(root block);
+      animation-range: 0 100vh;
+    }
+  }
+}
+
+@keyframes grid-drift {
+  to {
+    transform: translateY(-48px);
+  }
+}
+
+/* --- Pulsos que recorren las líneas ------------------------
+   Cada uno es un trazo de 1px con un degradado que se desvanece por los
+   dos extremos, así que parece un paquete cruzando el cable en vez de una
+   barra deslizándose. Se mueven con transform, que va en el compositor. */
+
+.grid-beam {
+  position: absolute;
+  top: 0;
+  width: 1px;
+  height: 180px;
+  /* El halo es un clon desenfocado del propio trazo: a 1px, sin él, el
+     pulso se pierde contra la retícula. No vale un box-shadow porque
+     seguiría a la caja rectangular, no al degradado. */
+  background: linear-gradient(
+    180deg,
+    transparent,
+    var(--accent) 45%,
+    var(--accent) 55%,
+    transparent
+  );
+  opacity: 0;
+}
+
+.grid-beam::after {
+  content: "";
+  position: absolute;
+  inset: -3px -4px;
+  background: inherit;
+  filter: blur(5px);
+  opacity: 0.9;
+}
+
+/* Los horizontales cruzan a lo ancho y llevan el otro color de la paleta,
+   para que las dos direcciones se distingan de un vistazo. */
+.grid-beam-h {
+  top: auto;
+  width: 180px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--teal) 45%,
+    var(--teal) 55%,
+    transparent
+  );
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .grid-beam {
+    animation: beam-fall 9s linear infinite;
+  }
+
+  .grid-beam-h {
+    animation-name: beam-cross;
+  }
+
+  /* Posición sobre una línea real de la retícula (múltiplos de 60px,
+     medidos desde la izquierda, que es donde arranca el patrón) y ritmo
+     distinto en cada uno: si coincidieran, se leerían como una sola cosa
+     parpadeando. En pantallas estrechas los dos últimos quedan fuera y los
+     recorta el contenedor. */
+  .grid-beam:nth-child(1) {
+    left: 180px;
+    animation-duration: 7.5s;
+    animation-delay: -1s;
+  }
+  .grid-beam:nth-child(2) {
+    left: 480px;
+    animation-duration: 11s;
+    animation-delay: -5s;
+  }
+  .grid-beam:nth-child(3) {
+    left: 840px;
+    animation-duration: 9s;
+    animation-delay: -3.5s;
+  }
+  .grid-beam:nth-child(4) {
+    left: 1260px;
+    animation-duration: 13s;
+    animation-delay: -8s;
+  }
+  .grid-beam:nth-child(5) {
+    top: 240px;
+    left: 0;
+    animation-duration: 12s;
+    animation-delay: -2s;
+  }
+  .grid-beam:nth-child(6) {
+    top: 540px;
+    left: 0;
+    animation-duration: 15s;
+    animation-delay: -9s;
+  }
+}
+
+/* Los delays son negativos a propósito: arrancan a mitad de recorrido, así
+   al cargar la página ya hay pulsos en marcha en vez de una retícula
+   muerta esperando al primero. */
+
+@keyframes beam-fall {
+  0% {
+    transform: translateY(-180px);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.85;
+  }
+  78% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translateY(115vh);
+    opacity: 0;
+  }
+}
+
+@keyframes beam-cross {
+  0% {
+    transform: translateX(-180px);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.7;
+  }
+  78% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateX(115vw);
+    opacity: 0;
+  }
+}
+
 .divider {
   height: 1px;
   background: linear-gradient(
