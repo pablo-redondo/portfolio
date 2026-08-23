@@ -9,7 +9,7 @@ import { SITE } from "@/content/site";
 
 const TITLE = "Sobre mí";
 const DESCRIPTION =
-  "Cómo trabajo: automatizar lo repetitivo, diagnosticar antes de parchear, moverme cómodo en código que no escribí yo.";
+  "Cómo trabajo: diagnosticar antes que parchear, moverme cómodo en código que no escribí yo, hacerme cargo del ciclo completo.";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -22,8 +22,8 @@ export const metadata: Metadata = {
 // con la de cualquier otro portfolio.
 const RASGOS = [
   {
-    title: "Si algo se repite, lo automatizo",
-    body: "La planificación de turnos del equipo en EDNON se hacía a mano cada semana. Escribí un script en Python (pandas + openpyxl) que la genera sola y saca el informe en Excel para dirección.",
+    title: "Entiendo el ciclo completo, no solo el código",
+    body: "En Doezos no me limitaba a la web del cliente: el hosting, el dominio y el servidor detrás también corrían por mi cuenta. Eso es lo que me hace preguntarme, antes de escribir una línea, dónde va a vivir de verdad lo que estoy construyendo.",
   },
   {
     title: "Diagnóstico antes que reinicio",
@@ -35,7 +35,7 @@ const RASGOS = [
   },
 ];
 
-// Los tres puestos anteriores al desarrollo, tal como constan en el CV.
+// Los cuatro puestos anteriores al desarrollo, tal como constan en el CV.
 // Nada de resumen genérico: fecha, empresa y lo único que de verdad importa
 // de cada uno.
 const EXPERIENCIA = [
@@ -58,7 +58,7 @@ const EXPERIENCIA = [
     company: "EDNON",
     dates: "ago. 2022 → sept. 2023",
     detail:
-      "Mismas funciones que el puesto actual. De aquí sale el script de turnos con Python que menciono más arriba.",
+      "Mismas funciones que el puesto actual.",
   },
   {
     role: "Técnico y administrador de sistemas",
@@ -85,21 +85,17 @@ export default function SobreMiPage() {
               Antes de escribir la solución, quiero entender qué se rompe de verdad
             </h1>
 
-            <div data-enter="3" className="mt-8 grid gap-6 lg:grid-cols-2 lg:gap-12">
-              <p className="text-lg leading-relaxed text-ink-soft">
-                Soy desarrollador full-stack, titulado en Desarrollo de
-                Aplicaciones Web. Pero antes de tocar el primer componente ya
-                llevaba años dando soporte a sistemas en producción 24×7, y
-                eso cambia cómo abordo un problema: primero busco la causa,
-                no el parche más rápido.
-              </p>
-              <p className="leading-relaxed text-ink-soft">
-                Se nota en cosas concretas: automatizo lo que se repite en vez
-                de rehacerlo a mano, y cuando algo falla miro un nivel más
-                abajo del mensaje de error. La sección de abajo son tres
-                ejemplos reales, no adjetivos sueltos.
-              </p>
-            </div>
+            <p
+              data-enter="3"
+              className="mt-8 max-w-[62ch] text-lg leading-relaxed text-ink-soft"
+            >
+              Soy desarrollador full-stack, titulado en Desarrollo de
+              Aplicaciones Web. Pero antes de tocar el primer componente ya
+              llevaba años dando soporte a sistemas en producción 24×7, y eso
+              cambia cómo abordo un problema: primero busco la causa, no el
+              parche más rápido. Debajo van tres ejemplos reales de eso, no
+              adjetivos sueltos.
+            </p>
 
             <div data-enter="4" className="mt-9 flex flex-wrap gap-3">
               {SITE.cvUrl && (
