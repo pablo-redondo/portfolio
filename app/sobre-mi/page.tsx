@@ -5,6 +5,7 @@ import { SectionLabel } from "@/components/SectionLabel";
 import { StackExplorer } from "@/components/StackExplorer";
 import { CareerRail, type Job } from "@/components/CareerRail";
 import { Reveal } from "@/components/Reveal";
+import { HeroGrid } from "@/components/HeroGrid";
 import { aboutStack } from "@/content/stack";
 import { SITE } from "@/content/site";
 
@@ -111,6 +112,7 @@ export default function SobreMiPage() {
       {/* Hero a dos columnas, como el de la home: el texto no se queda solo
           ocupando media pantalla con el otro lado vacío. */}
       <section className="hero-glow border-b border-line">
+        <HeroGrid />
         <Container>
           <div className="grid items-center gap-12 py-16 sm:py-20 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
             <div className="min-w-0">

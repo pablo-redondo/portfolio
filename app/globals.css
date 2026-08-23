@@ -300,50 +300,59 @@ body {
 }
 
 /* --- Pulsos que recorren las líneas ------------------------
-   Cada uno es un trazo de 1px con un degradado que se desvanece por los
-   dos extremos, así que parece un paquete cruzando el cable en vez de una
-   barra deslizándose. Se mueven con transform, que va en el compositor. */
+   Cada pulso ocupa TODO el alto (o el ancho) de la retícula y lo que se
+   mueve es su degradado, no el elemento. Así el recorrido se mide contra
+   la altura real de cada hero: el de la home ocupa la pantalla entera y
+   los de las páginas interiores son mucho más bajos, y con un recorrido
+   en `vh` los pulsos se habrían pasado de largo casi todo el ciclo.
+
+   `background-position` solo repinta, no invalida el layout, y son
+   elementos de 1px: el coste es despreciable frente a tener que ajustar
+   números a mano en cada página.
+
+   El halo es un drop-shadow y no un clon desenfocado: drop-shadow sigue
+   el canal alfa de lo que se pinta, así que se ciñe al degradado y se
+   desvanece con él por los extremos. Un box-shadow seguiría a la caja
+   rectangular. */
 
 .grid-beam {
   position: absolute;
   top: 0;
+  bottom: 0;
   width: 1px;
-  height: 180px;
-  /* El halo es un clon desenfocado del propio trazo: a 1px, sin él, el
-     pulso se pierde contra la retícula. No vale un box-shadow porque
-     seguiría a la caja rectangular, no al degradado. */
-  background: linear-gradient(
+  background-image: linear-gradient(
     180deg,
     transparent,
     var(--accent) 45%,
     var(--accent) 55%,
     transparent
   );
+  background-size: 100% 180px;
+  background-repeat: no-repeat;
+  background-position: 0 -180px;
+  filter: drop-shadow(0 0 6px var(--accent));
   opacity: 0;
-}
-
-.grid-beam::after {
-  content: "";
-  position: absolute;
-  inset: -3px -4px;
-  background: inherit;
-  filter: blur(5px);
-  opacity: 0.9;
 }
 
 /* Los horizontales cruzan a lo ancho y llevan el otro color de la paleta,
    para que las dos direcciones se distingan de un vistazo. */
 .grid-beam-h {
   top: auto;
-  width: 180px;
+  bottom: auto;
+  left: 0;
+  right: 0;
+  width: auto;
   height: 1px;
-  background: linear-gradient(
+  background-image: linear-gradient(
     90deg,
     transparent,
     var(--teal) 45%,
     var(--teal) 55%,
     transparent
   );
+  background-size: 180px 100%;
+  background-position: -180px 0;
+  filter: drop-shadow(0 0 6px var(--teal));
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -355,11 +364,11 @@ body {
     animation-name: beam-cross;
   }
 
-  /* Posición sobre una línea real de la retícula (múltiplos de 60px,
-     medidos desde la izquierda, que es donde arranca el patrón) y ritmo
-     distinto en cada uno: si coincidieran, se leerían como una sola cosa
-     parpadeando. En pantallas estrechas los dos últimos quedan fuera y los
-     recorta el contenedor. */
+  /* Los verticales, sobre una línea real de la retícula (múltiplos de
+     60px medidos desde la izquierda, que es donde arranca el patrón). Los
+     horizontales van en porcentaje para caer dentro del hero mida lo que
+     mida. Ritmos todos distintos: con duraciones parecidas los seis se
+     leerían como una sola cosa parpadeando. */
   .grid-beam:nth-child(1) {
     left: 180px;
     animation-duration: 7.5s;
@@ -381,14 +390,12 @@ body {
     animation-delay: -8s;
   }
   .grid-beam:nth-child(5) {
-    top: 240px;
-    left: 0;
+    top: 32%;
     animation-duration: 12s;
     animation-delay: -2s;
   }
   .grid-beam:nth-child(6) {
-    top: 540px;
-    left: 0;
+    top: 68%;
     animation-duration: 15s;
     animation-delay: -9s;
   }
@@ -400,7 +407,7 @@ body {
 
 @keyframes beam-fall {
   0% {
-    transform: translateY(-180px);
+    background-position: 0 -180px;
     opacity: 0;
   }
   12% {
@@ -410,14 +417,15 @@ body {
     opacity: 0.85;
   }
   100% {
-    transform: translateY(115vh);
+    /* (alto − 180) + 180 = el alto exacto: justo fuera por abajo. */
+    background-position: 0 calc(100% + 180px);
     opacity: 0;
   }
 }
 
 @keyframes beam-cross {
   0% {
-    transform: translateX(-180px);
+    background-position: -180px 0;
     opacity: 0;
   }
   12% {
@@ -427,7 +435,7 @@ body {
     opacity: 0.7;
   }
   100% {
-    transform: translateX(115vw);
+    background-position: calc(100% + 180px) 0;
     opacity: 0;
   }
 }

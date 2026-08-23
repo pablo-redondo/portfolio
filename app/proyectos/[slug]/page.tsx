@@ -8,6 +8,7 @@ import { Timeline } from "@/components/Timeline";
 import { Reveal } from "@/components/Reveal";
 import { LiveDemo } from "@/components/LiveDemo";
 import { DeploymentBadge } from "@/components/DeploymentStatus";
+import { HeroGrid } from "@/components/HeroGrid";
 import { projects } from "@/content/projects";
 import { hasScreenshot } from "@/lib/screenshots";
 
@@ -60,6 +61,7 @@ export default async function ProjectPage({ params }: Props) {
     <>
       {/* --- Cabecera --- */}
       <section className="hero-glow border-b border-line">
+        <HeroGrid />
         <Container>
           <div className="py-16 sm:py-20">
             <Link href="/proyectos" className="btn btn-ghost -ml-2.5" data-enter="1">

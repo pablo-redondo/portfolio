@@ -4,6 +4,7 @@ import { Container } from "@/components/Container";
 import { SectionLabel } from "@/components/SectionLabel";
 import { ProjectCard } from "@/components/ProjectCard";
 import { Reveal } from "@/components/Reveal";
+import { HeroGrid } from "@/components/HeroGrid";
 import { projects } from "@/content/projects";
 import { PROJECT_TAGS } from "@/content/types";
 
@@ -31,6 +32,7 @@ export default async function ProyectosPage({ searchParams }: Props) {
   return (
     <>
       <section className="hero-glow border-b border-line">
+        <HeroGrid />
         <Container>
           <div className="py-16 sm:py-20">
             <div data-enter="1">

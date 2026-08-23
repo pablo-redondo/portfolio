@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Container } from "@/components/Container";
 import { SectionLabel } from "@/components/SectionLabel";
 import { Reveal } from "@/components/Reveal";
+import { HeroGrid } from "@/components/HeroGrid";
 import { SITE } from "@/content/site";
 
 const TITLE = "Contacto";
@@ -59,6 +60,7 @@ export default function ContactoPage() {
 
   return (
     <section className="hero-glow">
+      <HeroGrid />
       <Container>
         <div className="py-16 sm:py-24">
           <div data-enter="1">
