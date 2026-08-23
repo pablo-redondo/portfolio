@@ -28,9 +28,6 @@ export default async function ProyectosPage({ searchParams }: Props) {
     ? projects.filter((project) => project.tags.includes(activeTag))
     : projects;
 
-  const featured = filtered.find((project) => project.featured);
-  const rest = filtered.filter((project) => !project.featured);
-
   return (
     <>
       <section className="hero-glow border-b border-line">
@@ -76,17 +73,11 @@ export default async function ProyectosPage({ searchParams }: Props) {
 
       <section className="py-16">
         <Container>
-          {featured && (
-            <div className="mb-4">
-              <ProjectCard project={featured} featured />
-            </div>
-          )}
-
-          {/* Todas las cards del mismo ancho. Estirar la última fila para
-              rellenar el hueco dejaba una card ancha medio vacía, que
-              descompensaba la rejilla más que el propio hueco. */}
+          {/* Las seis con el mismo peso y el mismo tamaño. Sacar una a una
+              banda aparte a ancho completo dejaba a las otras cinco
+              descuadradas. */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {rest.map((project, i) =>
+            {filtered.map((project, i) =>
               // Las primeras cards caen dentro del pliegue y una de ellas es
               // el elemento LCP: animarlas de entrada retrasa la métrica.
               i < ABOVE_FOLD_CARDS ? (

@@ -214,8 +214,10 @@ body {
   border-radius: var(--radius-md);
 }
 
-/* Card del proyecto insignia: se distingue por tinte de acento y
-   brillo, no solo por ocupar más ancho. */
+/* Superficie destacada: tinte de acento y algo más de brillo para el
+   bloque que cierra una sección, como el resultado de un caso de
+   estudio. Las cards de proyecto ya no la usan — en las rejillas los
+   seis van con el mismo peso. */
 .surface-featured {
   position: relative;
   isolation: isolate;
@@ -485,6 +487,24 @@ body {
   }
   to {
     transform: translateX(0) translateY(0.15em);
+  }
+}
+
+/* Una etiqueta dentro de un bloque con reveal espera a que el bloque
+   entre en pantalla para teclearse: si arrancase al cargar, para cuando
+   el usuario baja hasta ella ya habría terminado. Al pasar `data-reveal`
+   a "in" estas reglas dejan de aplicar y la animación empieza.
+
+   Va detrás de `scripting: enabled` a propósito: sin JS el atributo se
+   queda en "out" para siempre y el texto quedaría recortado a cero. */
+@media (prefers-reduced-motion: no-preference) and (scripting: enabled) {
+  [data-reveal="out"] .type-in {
+    animation: none;
+    clip-path: inset(0 100% 0 0);
+  }
+
+  [data-reveal="out"] .type-cursor {
+    animation: none;
   }
 }
 

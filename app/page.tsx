@@ -22,8 +22,6 @@ export const metadata: Metadata = {
 };
 
 export default function HomePage() {
-  const featured = projects.find((project) => project.featured);
-  const rest = projects.filter((project) => !project.featured);
 
   return (
     <>
@@ -37,7 +35,7 @@ export default function HomePage() {
           <div className="grid items-center gap-12 py-20 sm:py-28 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16">
             <div className="min-w-0">
               <div data-enter="1">
-                <SectionLabel typed>whoami --stack</SectionLabel>
+                <SectionLabel>whoami --stack</SectionLabel>
               </div>
 
               <h1 data-enter="lcp" className="mt-4 max-w-[15ch] font-mono text-[1.75rem] leading-[1.05] font-bold tracking-tight text-balance min-[400px]:text-4xl sm:text-5xl lg:text-6xl">
@@ -83,36 +81,23 @@ export default function HomePage() {
         </Container>
       </section>
 
-      {featured && (
-        <section className="border-b border-line py-20">
-          <Container>
-            <Reveal>
-              <SectionLabel>cat proyectos/insignia.md</SectionLabel>
-              <h2 className="mt-3 font-mono text-2xl font-bold tracking-tight sm:text-3xl">
-                El proyecto que mejor me explica
-              </h2>
-              <span className="heading-rule mt-4 mb-8" aria-hidden />
-              {/* Sin resumen de fases aquí: la línea de evolución ya vive
-                  en el caso de estudio, con su detalle y sus commits. */}
-              <ProjectCard project={featured} featured />
-            </Reveal>
-          </Container>
-        </section>
-      )}
-
+      {/* Los seis en la misma rejilla y con el mismo peso: sacar uno a una
+          banda aparte partía la sección en dos y dejaba a los otros cinco
+          descuadrados. */}
       <section className="border-b border-line py-20">
         <Container>
           <Reveal>
             <SectionLabel>ls proyectos/</SectionLabel>
             <h2 className="mt-3 font-mono text-2xl font-bold tracking-tight sm:text-3xl">
-              Otros proyectos
+              Proyectos
             </h2>
-            <span className="heading-rule mt-4 mb-8" aria-hidden />
+            <span className="heading-rule mt-4 mb-5" aria-hidden />
+            <p className="mb-8 max-w-[62ch] text-ink-soft">
+              Los seis, cada uno con su caso de estudio: qué problema
+              resuelven, qué decidí y por qué.
+            </p>
           </Reveal>
 
-          {/* Las cinco cards restantes más la del índice cuadran justo en dos
-              filas de tres. Antes la última fila se estiraba para rellenar el
-              hueco y dejaba una card ancha medio vacía. */}
           {/* `stagger`: la rejilla entera comparte un observador y el CSS
               reparte el retardo por hijo, en vez de montar un observador
               por card. */}
@@ -120,55 +105,36 @@ export default function HomePage() {
             stagger
             className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
           >
-            {rest.map((project) => (
+            {projects.map((project) => (
               <ProjectCard key={project.slug} project={project} />
             ))}
-
-            <Link
-              href="/proyectos"
-              data-spot
-              className="card-lift surface-card group flex h-full flex-col overflow-hidden"
-            >
-              <span className="spot-glow" aria-hidden />
-              <div className="flex flex-1 flex-col p-6">
-                <span className="font-mono text-[11px] text-ink-faint">
-                  proyectos/
-                </span>
-                <p className="mt-3 font-mono text-lg font-bold tracking-tight text-ink transition-colors group-hover:text-accent">
-                  Los {projects.length} con su caso de estudio
-                </p>
-                <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-                  El problema que resuelven, las decisiones técnicas y lo que
-                  no salió bien.
-                </p>
-              </div>
-              <span className="card-action">Ver el índice completo</span>
-            </Link>
           </Reveal>
         </Container>
       </section>
 
       <section className="py-20">
         <Container>
-          <Reveal>
-            <SectionLabel>cat stack.txt</SectionLabel>
-            <h2 className="mt-3 font-mono text-2xl font-bold tracking-tight sm:text-3xl">
-              Stack actual
-            </h2>
-            <span className="heading-rule mt-4 mb-5" aria-hidden />
-            <p className="mb-8 max-w-[62ch] text-ink-soft">
-              Agrupado por la capa en la que trabaja cada cosa. El motivo
-              concreto de cada elección está en los casos de estudio.
-            </p>
+          {/* El enlace al porqué va en la cabecera, no colgando bajo las
+              cards: ahí ocupa el hueco que dejaba el titular y queda a la
+              altura de la línea, en vez de suelto al final. */}
+          <Reveal className="mb-8 flex flex-wrap items-end justify-between gap-x-8 gap-y-5">
+            <div>
+              <SectionLabel>cat stack.txt</SectionLabel>
+              <h2 className="mt-3 font-mono text-2xl font-bold tracking-tight sm:text-3xl">
+                Stack actual
+              </h2>
+              <span className="heading-rule mt-4 mb-5" aria-hidden />
+              <p className="max-w-[54ch] text-ink-soft">
+                Agrupado por la capa en la que trabaja cada cosa. El motivo
+                concreto de cada elección está en los casos de estudio.
+              </p>
+            </div>
+            <Link href="/sobre-mi" className="btn btn-secondary">
+              Por qué cada elección
+            </Link>
           </Reveal>
 
           <StackSummary stack={aboutStack} />
-
-          <Reveal>
-            <Link href="/sobre-mi" className="link-quiet mt-8 inline-block">
-              Por qué cada una de estas elecciones
-            </Link>
-          </Reveal>
         </Container>
       </section>
     </>

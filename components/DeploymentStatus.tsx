@@ -91,6 +91,16 @@ export function DeploymentBadge({ slug }: { slug: string }) {
 }
 
 /** Panel con todos los despliegues. El portfolio monitorizándose a sí mismo. */
+/**
+ * El panel es un monitor compacto: una línea por servicio, con la latencia
+ * y el estado a la derecha. Se queda con el nombre del proyecto y deja
+ * fuera el subtítulo que va tras el guión largo, que era lo único que
+ * llegaba a recortarse con puntos suspensivos en pantallas estrechas.
+ */
+function nombreCorto(title: string) {
+  return title.split(" — ")[0];
+}
+
 export function DeploymentStatusPanel() {
   const { state, services } = useStatus();
 
@@ -113,7 +123,7 @@ export function DeploymentStatusPanel() {
                 className="flex min-w-0 items-center justify-between gap-4 px-4 py-3"
               >
                 <span className="min-w-0 truncate font-mono text-[13px] text-ink">
-                  {service.title}
+                  {nombreCorto(service.title)}
                 </span>
                 <span
                   className={`flex shrink-0 items-center gap-1.5 font-mono text-[11px] ${TONES[service.state]}`}
