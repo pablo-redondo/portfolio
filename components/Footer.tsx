@@ -10,7 +10,7 @@ export function Footer() {
           <div>
             <p className="font-mono text-sm font-bold text-ink">pablo-redondo.dev</p>
             <p className="mt-1 text-sm text-ink-faint">
-              Desarrollador full-stack · ASIR y redes
+              Desarrollador full-stack · React, TypeScript y Node.js
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-xs">

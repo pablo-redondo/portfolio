@@ -71,8 +71,8 @@ export default function HomePage() {
             </div>
 
             {/* El portfolio comprobando sus propios despliegues. Da peso al
-                lado derecho del hero y demuestra el ángulo de redes en la
-                primera pantalla, en vez de solo contarlo. */}
+                lado derecho del hero y enseña el criterio de infraestructura
+                en la primera pantalla, en vez de solo contarlo. */}
             {/* Sin self-start: hereda el items-center de la rejilla, así el
                 panel queda centrado respecto a la columna de la izquierda
                 en vez de alineado por arriba. */}

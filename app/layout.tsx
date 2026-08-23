@@ -19,7 +19,7 @@ const manrope = Manrope({
 
 const DEFAULT_TITLE = "Pablo Redondo — Desarrollador full-stack";
 const DEFAULT_DESCRIPTION =
-  "Portfolio de Pablo Redondo, desarrollador full-stack en transición desde ASIR y redes hacia el desarrollo web.";
+  "Portfolio de Pablo Redondo, desarrollador full-stack. Cada proyecto con su caso de estudio: React, Next.js, Node.js y TypeScript, con pruebas automatizadas y despliegue real.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
