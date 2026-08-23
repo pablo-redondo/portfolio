@@ -730,10 +730,18 @@ body {
   border-color: var(--line-strong);
 }
 
-.filter-pill[data-active="true"] {
+.filter-pill[data-active="true"],
+.filter-pill:has(input:checked) {
   background: var(--accent);
   border-color: var(--accent);
   color: var(--accent-ink);
+}
+
+/* El radio va oculto dentro de la etiqueta, así que el anillo de foco lo
+   tiene que llevar la pastilla o se navega a ciegas con el teclado. */
+.filter-pill:has(input:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
 }
 
 /* --- Timeline: raíl vertical -------------------------------
@@ -1127,7 +1135,8 @@ body {
 /* --- Filtros: la pastilla activa se marca al entrar --------- */
 
 @media (prefers-reduced-motion: no-preference) {
-  .filter-pill[data-active="true"] {
+  .filter-pill[data-active="true"],
+  .filter-pill:has(input:checked) {
     animation: pill-in var(--motion-base) var(--ease-out);
   }
 
@@ -1171,50 +1180,6 @@ body {
   opacity: 0.16;
 }
 
-/* --- Stack: filas con hairline, no una caja por tecnología -
-   Dieciséis cards con su borde llenaban la sección de marcos. Una rejilla
-   de dos columnas separada por hairlines pesa mucho menos y se lee como
-   una tabla de definiciones, que es justo lo que es. */
-
-.stack-row {
-  position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 12rem) minmax(0, 1fr);
-  gap: 0.375rem 1.5rem;
-  padding: 1rem 0.875rem;
-  border-top: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  transition: background-color var(--motion-fast) var(--ease-out);
-}
-
-@media (max-width: 40rem) {
-  .stack-row {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-
-.stack-row:hover {
-  background: var(--surface);
-}
-
-/* Marca de acento a la izquierda, del mismo lenguaje que .heading-rule. */
-.stack-row::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0.75rem;
-  bottom: 0.75rem;
-  width: 2px;
-  border-radius: 1px;
-  background: var(--accent);
-  transform: scaleY(0);
-  transition: transform var(--motion-base) var(--ease-out);
-}
-
-.stack-row:hover::before {
-  transform: scaleY(1);
-}
-
 /* --- Ficha del hero: una fila por dato --------------------- */
 
 .fact-row {
@@ -1227,6 +1192,128 @@ body {
 @media (max-width: 26rem) {
   .fact-row {
     grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* --- Filtro del stack, sin una línea de JavaScript ---------
+   Un grupo de radios ocultos dentro de las pastillas y `:has()` para
+   ocultar lo que no toca. Se elige así en vez de con estado de React
+   porque funciona igual con el JavaScript desactivado, que es el listón
+   del resto de la web.
+
+   Si el navegador no soporta `:has()` no se pinta el filtro y se ven las
+   dieciséis: mejor eso que unas pastillas que no hacen nada. */
+
+.stack-filter {
+  display: none;
+}
+
+@supports selector(:has(*)) {
+  .stack-filter {
+    display: flex;
+  }
+
+  .stack-scope:has(input[value="frontend"]:checked)
+    [data-capa]:not([data-capa="frontend"]),
+  .stack-scope:has(input[value="backend"]:checked)
+    [data-capa]:not([data-capa="backend"]),
+  .stack-scope:has(input[value="infra"]:checked)
+    [data-capa]:not([data-capa="infra"]),
+  .stack-scope:has(input[value="tooling"]:checked)
+    [data-capa]:not([data-capa="tooling"]) {
+    display: none;
+  }
+}
+
+/* Card de tecnología. Usa la superficie intermedia y un radio menor que
+   las tarjetas de método, para que dieciséis piezas pequeñas no se lean
+   como otra rejilla de las de arriba. */
+
+.tech-card {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  padding: 1.125rem;
+  transition:
+    border-color var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out),
+    transform var(--motion-fast) var(--ease-out);
+}
+
+.tech-card:hover {
+  border-color: var(--accent-line);
+  background: var(--surface);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tech-card:hover {
+    transform: translateY(-2px);
+  }
+}
+
+/* --- Entrada de las cards del stack ------------------------
+   Una animación, no una transición, porque las animaciones vuelven a
+   arrancar cuando un elemento pasa de `display: none` a visible. Es lo que
+   hace que al cambiar de filtro las que aparecen entren en cascada en vez
+   de aparecer de golpe, sin una línea de JavaScript.
+
+   `backwards` y no `both`: con `both` el fotograma final dejaría fijado
+   `transform: none` y se cargaría el desplazamiento del hover, porque una
+   animación pisa a las declaraciones normales. */
+
+@media (prefers-reduced-motion: no-preference) {
+  .tech-card {
+    animation: tech-in 420ms var(--ease-out) backwards;
+  }
+
+  .tech-card:nth-child(2) {
+    animation-delay: 35ms;
+  }
+  .tech-card:nth-child(3) {
+    animation-delay: 70ms;
+  }
+  .tech-card:nth-child(4) {
+    animation-delay: 105ms;
+  }
+  .tech-card:nth-child(5) {
+    animation-delay: 140ms;
+  }
+  .tech-card:nth-child(6) {
+    animation-delay: 175ms;
+  }
+  .tech-card:nth-child(7) {
+    animation-delay: 210ms;
+  }
+  /* A partir de la octava el escalonado ya no se percibe y solo retrasa
+     contenido: entran juntas. */
+  .tech-card:nth-child(n + 8) {
+    animation-delay: 245ms;
+  }
+}
+
+/* Dentro de un bloque con reveal la cascada espera a que el bloque entre en
+   pantalla; si arrancase al cargar, habría terminado antes de que el
+   usuario baje hasta ella. Detrás de `scripting: enabled` porque sin JS el
+   atributo se queda en "out" para siempre. */
+@media (prefers-reduced-motion: no-preference) and (scripting: enabled) {
+  [data-reveal="out"] .tech-card {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+@keyframes tech-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
 

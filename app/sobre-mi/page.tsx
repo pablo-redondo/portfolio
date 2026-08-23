@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/Container";
 import { SectionLabel } from "@/components/SectionLabel";
-import { StackByCategory } from "@/components/StackByCategory";
+import { StackExplorer } from "@/components/StackExplorer";
 import { CareerRail, type Job } from "@/components/CareerRail";
 import { Reveal } from "@/components/Reveal";
 import { aboutStack } from "@/content/stack";
@@ -222,11 +222,12 @@ export default function SobreMiPage() {
           <SectionHead label="ls stack/" title="Stack">
             <p className="mt-6 max-w-[62ch] text-ink-soft">
               No es una lista de logos: cada tecnología está aquí por un motivo
-              concreto, el mismo que aparece en los casos de estudio.
+              concreto, el mismo que aparece en los casos de estudio. Filtra
+              por capa si buscas una en concreto.
             </p>
           </SectionHead>
 
-          <StackByCategory stack={aboutStack} />
+          <StackExplorer stack={aboutStack} />
         </Container>
       </section>
     </>
