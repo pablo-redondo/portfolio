@@ -13,7 +13,7 @@ import { HOME_HERO } from "@/content/home";
 
 const TITLE = "Pablo Redondo — Desarrollador full-stack";
 const DESCRIPTION =
-  "De la sala de servidores al código: desarrollador full-stack con base en ASIR y redes. Proyectos, stack y case studies.";
+  "Full-stack con base de infraestructura real: React, Next.js, Node.js y TypeScript, con pruebas automatizadas, CI y despliegue real. Proyectos, stack y casos de estudio.";
 
 export const metadata: Metadata = {
   title: { absolute: TITLE },
