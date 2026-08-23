@@ -261,42 +261,30 @@ export default async function ProjectPage({ params }: Props) {
         </section>
       )}
 
-      {/* Cierre: el siguiente caso de estudio, no un cartel preguntando si
-          quieres ver más. Terminar la lectura ofreciendo el siguiente da
-          continuidad; un enlace suelto al índice es un callejón sin salida.
-          Y no cuelga del bloque de Stack, porque colgando de él un proyecto
-          sin stack —Carrera Vóley— se quedaba sin salida ninguna. */}
-      <section className="py-16">
+      {/* Cierre: una sola línea de navegación, no una card.
+          Como card a ancho completo, con titular grande y barra de acción,
+          competía con el propio caso de estudio que acabas de leer. Esto es
+          lo que es —el enlace al siguiente— y pesa lo que le toca. */}
+      <section className="py-12">
         <Container>
-          <Reveal>
-            <p className="mb-4 font-mono text-[11px] tracking-wide text-accent uppercase">
-              sigue por aquí
-            </p>
+          <Reveal className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <span className="font-mono text-[11px] tracking-wide text-ink-faint uppercase">
+              siguiente
+            </span>
             <Link
               href={`/proyectos/${next.slug}`}
-              className="card-lift card-scan surface-card group block overflow-hidden"
+              className="font-mono text-sm font-semibold text-ink underline decoration-line-strong underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
             >
-              <div className="p-7 sm:p-9">
-                <div className="flex items-center justify-between gap-3">
-                  <span className="min-w-0 truncate font-mono text-[11px] text-ink-faint">
-                    {next.slug}
-                  </span>
-                  <StatusBadge status={next.status} />
-                </div>
-                <h2 className="mt-3.5 font-mono text-2xl leading-snug font-bold tracking-tight text-balance text-ink transition-colors group-hover:text-accent sm:text-3xl">
-                  {next.title}
-                </h2>
-                <p className="mt-3 max-w-[62ch] leading-relaxed text-ink-soft">
-                  {next.tagline}
-                </p>
-              </div>
-              <span className="card-action">Ver caso de estudio</span>
+              {next.title}
             </Link>
-          </Reveal>
-
-          <Reveal>
-            <Link href="/proyectos" className="link-quiet mt-7 inline-block">
-              Ver los seis proyectos
+            <span aria-hidden className="font-mono text-xs text-ink-faint">
+              ·
+            </span>
+            <Link
+              href="/proyectos"
+              className="font-mono text-xs text-ink-faint transition-colors hover:text-accent"
+            >
+              los seis proyectos
             </Link>
           </Reveal>
         </Container>
