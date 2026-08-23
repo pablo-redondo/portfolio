@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/Container";
 import { SectionLabel } from "@/components/SectionLabel";
+import { Reveal } from "@/components/Reveal";
 import { SITE } from "@/content/site";
 
 const TITLE = "Contacto";
@@ -57,19 +58,25 @@ export default function ContactoPage() {
     <section className="hero-glow">
       <Container>
         <div className="py-16 sm:py-24">
-          <SectionLabel>cat contacto.md</SectionLabel>
-          <h1 className="mt-4 font-mono text-4xl font-bold tracking-tight sm:text-5xl">
+          <div data-enter="1">
+            <SectionLabel>cat contacto.md</SectionLabel>
+          </div>
+          <h1
+            data-enter="lcp"
+            className="mt-4 font-mono text-4xl font-bold tracking-tight sm:text-5xl"
+          >
             Hablemos
           </h1>
-          <p className="mt-5 max-w-[54ch] text-lg text-ink-soft">
+          <p data-enter="3" className="mt-5 max-w-[54ch] text-lg text-ink-soft">
             Busco mi primera posición como desarrollador full-stack. Sin
             formulario ni backend de por medio: un email directo funciona mejor.
           </p>
 
-          <div className="mt-12 grid gap-4 sm:grid-cols-2">
+          <Reveal stagger className="mt-12 grid gap-4 sm:grid-cols-2">
             {channels.map((channel) => {
               const body = (
                 <>
+                  <span className="spot-glow" aria-hidden />
                   <div className="flex flex-1 flex-col p-6">
                     <span className="font-mono text-xs tracking-wide text-ink-faint uppercase">
                       {channel.label}
@@ -87,6 +94,7 @@ export default function ContactoPage() {
                 <a
                   key={channel.label}
                   href={channel.href}
+                  data-spot
                   className="card-lift surface-card group flex h-full flex-col overflow-hidden"
                 >
                   {body}
@@ -100,7 +108,7 @@ export default function ContactoPage() {
                 </div>
               );
             })}
-          </div>
+          </Reveal>
         </div>
       </Container>
     </section>

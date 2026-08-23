@@ -16,10 +16,16 @@ export function ProjectCard({ project, featured = false }: Props) {
   return (
     <Link
       href={`/proyectos/${project.slug}`}
+      data-spot
       className={`card-lift group flex h-full flex-col overflow-hidden ${
         featured ? "surface-featured" : "surface-card"
       }`}
     >
+      {/* Foco que sigue al cursor. Lo posiciona el listener delegado de
+          <Spotlight />; sin él se queda en el centro y simplemente no se
+          enciende, porque solo es visible en hover. */}
+      <span className="spot-glow" aria-hidden />
+
       <div className={`flex flex-1 flex-col ${featured ? "p-7 sm:p-9" : "p-6"}`}>
         <div className="flex items-center justify-between gap-3">
           <span className="min-w-0 truncate font-mono text-[11px] text-ink-faint">

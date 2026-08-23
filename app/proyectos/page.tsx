@@ -37,16 +37,21 @@ export default async function ProyectosPage({ searchParams }: Props) {
       <section className="hero-glow border-b border-line">
         <Container>
           <div className="py-16 sm:py-20">
-            <SectionLabel>ls proyectos/</SectionLabel>
-            <h1 className="mt-4 font-mono text-4xl font-bold tracking-tight sm:text-5xl">
+            <div data-enter="1">
+              <SectionLabel>ls proyectos/</SectionLabel>
+            </div>
+            <h1
+              data-enter="lcp"
+              className="mt-4 font-mono text-4xl font-bold tracking-tight sm:text-5xl"
+            >
               Proyectos
             </h1>
-            <p className="mt-5 max-w-[60ch] text-lg text-ink-soft">
+            <p data-enter="3" className="mt-5 max-w-[60ch] text-lg text-ink-soft">
               Seis proyectos con su caso de estudio: el problema real que
               resuelven, las decisiones técnicas y lo que no salió bien.
             </p>
 
-            <nav className="mt-8 flex flex-wrap gap-2">
+            <nav data-enter="4" className="mt-8 flex flex-wrap gap-2">
               <Link href="/proyectos" data-active={!activeTag} className="filter-pill">
                 todos
                 <span className="ml-1.5 text-[10px] opacity-70">{projects.length}</span>

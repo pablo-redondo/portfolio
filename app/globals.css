@@ -143,8 +143,13 @@ body {
    ============================================================ */
 
 /* Card: superficie elevada + hairline interior. El anillo interior
-   es lo que le da borde definido sin recurrir a un borde duro. */
+   es lo que le da borde definido sin recurrir a un borde duro.
+   position + isolation: para que el foco del cursor (.spot-glow, en
+   z-index -1) quede por encima del fondo de la card pero por debajo de
+   su contenido, sin necesidad de tocar el z-index de cada hijo. */
 .surface-card {
+  position: relative;
+  isolation: isolate;
   background: var(--surface);
   border: 1px solid var(--line-strong);
   border-radius: var(--radius-lg);
@@ -156,6 +161,9 @@ body {
    propia superficie, ancho completo y separador sí. Al pasar por la card
    entera se rellena de acento, que es la señal inequívoca. */
 .card-action {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -173,14 +181,34 @@ body {
     border-color var(--motion-fast) var(--ease-out);
 }
 
+/* El relleno entra barriendo de izquierda a derecha. Va en z-index -1
+   dentro del contexto aislado de la barra, así que se pinta sobre el
+   fondo de la barra y bajo su texto sin envolverlo en un span. */
+.card-action::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--motion-base) var(--ease-out);
+}
+
+.group:hover .card-action::before,
+.group:focus-visible .card-action::before {
+  transform: scaleX(1);
+}
+
 .group:hover .card-action,
 .group:focus-visible .card-action {
-  background: var(--accent);
   border-color: var(--accent);
   color: var(--accent-ink);
 }
 
 .surface-panel {
+  position: relative;
+  isolation: isolate;
   background: var(--surface-2);
   border: 1px solid var(--line-strong);
   border-radius: var(--radius-md);
@@ -189,6 +217,8 @@ body {
 /* Card del proyecto insignia: se distingue por tinte de acento y
    brillo, no solo por ocupar más ancho. */
 .surface-featured {
+  position: relative;
+  isolation: isolate;
   background:
     linear-gradient(180deg, var(--accent-soft) 0%, transparent 42%),
     var(--surface);
@@ -284,7 +314,130 @@ body {
 
   [data-reveal="out"] {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(12px) scale(0.985);
+  }
+}
+
+/* --- Entrada del hero al cargar ----------------------------
+   Secuencia escalonada en CSS puro: cero JS y cero espera a la
+   hidratación. El h1 entra solo con transform, sin tocar opacidad,
+   porque es el elemento LCP y arrancarlo invisible retrasaría la
+   métrica (Chrome no cuenta un elemento con opacity 0). */
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-enter] {
+    animation: enter-up 620ms var(--ease-out) both;
+  }
+
+  [data-enter="lcp"] {
+    animation-name: enter-lcp;
+    animation-duration: 700ms;
+  }
+
+  [data-enter="2"] {
+    animation-delay: 120ms;
+  }
+  [data-enter="3"] {
+    animation-delay: 220ms;
+  }
+  [data-enter="4"] {
+    animation-delay: 320ms;
+  }
+}
+
+@keyframes enter-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Solo desplazamiento: la opacidad se queda a 1 para no tocar el LCP. */
+@keyframes enter-lcp {
+  from {
+    transform: translateY(12px);
+  }
+  to {
+    transform: none;
+  }
+}
+
+/* --- Foco que sigue al cursor sobre las cards --------------
+   Un degradado radial anclado a la posición del puntero. Las
+   coordenadas llegan como custom properties, que solo repintan: no
+   invalidan el layout, así que leer el rect en el siguiente
+   movimiento no fuerza reflow. */
+
+.spot-glow {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: radial-gradient(
+    260px circle at var(--mx, 50%) var(--my, 0%),
+    var(--accent-soft),
+    transparent 68%
+  );
+  opacity: 0;
+  transition: opacity var(--motion-base) var(--ease-out);
+  pointer-events: none;
+}
+
+.group:hover > .spot-glow,
+.group:focus-within > .spot-glow {
+  opacity: 1;
+}
+
+/* --- Barra de progreso de lectura --------------------------
+   Animación guiada por scroll, sin JS. Solo donde el navegador la
+   soporta: si no, no se pinta nada en vez de dejar una barra muerta. */
+
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .scroll-progress {
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 60;
+      height: 2px;
+      transform-origin: 0 50%;
+      background: linear-gradient(90deg, var(--accent), var(--teal));
+      animation: progress-grow linear both;
+      animation-timeline: scroll(root block);
+    }
+  }
+}
+
+@keyframes progress-grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* --- Subrayado de los encabezados de sección --------------- */
+
+.heading-rule {
+  display: block;
+  height: 2px;
+  width: 2.5rem;
+  border-radius: 999px;
+  background: var(--accent);
+  transform-origin: left center;
+}
+
+@media (prefers-reduced-motion: no-preference) and (scripting: enabled) {
+  [data-reveal="out"] .heading-rule {
+    transform: scaleX(0);
+  }
+
+  .heading-rule {
+    transition: transform var(--motion-slow) var(--ease-out) 120ms;
   }
 }
 
@@ -597,6 +750,201 @@ body {
   to {
     opacity: 1;
     transform: none;
+  }
+}
+
+/* --- Entrada escalonada dentro de un contenedor -------------
+   Alternativa a envolver cada hijo en su propio <Reveal>: un único
+   observador para toda la rejilla y el retardo lo reparte el CSS con
+   nth-child. El contenedor no se anima a sí mismo (si no, las
+   opacidades se multiplicarían y la entrada se vería turbia). */
+
+@media (prefers-reduced-motion: no-preference) and (scripting: enabled) {
+  [data-stagger][data-reveal="out"] {
+    opacity: 1;
+    transform: none;
+  }
+
+  [data-stagger] > * {
+    transition:
+      opacity var(--motion-slow) var(--ease-out),
+      transform var(--motion-slow) var(--ease-out);
+  }
+
+  [data-stagger][data-reveal="out"] > * {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  [data-stagger] > *:nth-child(2) {
+    transition-delay: 50ms;
+  }
+  [data-stagger] > *:nth-child(3) {
+    transition-delay: 100ms;
+  }
+  [data-stagger] > *:nth-child(4) {
+    transition-delay: 150ms;
+  }
+  [data-stagger] > *:nth-child(5) {
+    transition-delay: 200ms;
+  }
+  [data-stagger] > *:nth-child(6) {
+    transition-delay: 250ms;
+  }
+  [data-stagger] > *:nth-child(7) {
+    transition-delay: 300ms;
+  }
+  [data-stagger] > *:nth-child(8) {
+    transition-delay: 350ms;
+  }
+  /* A partir del noveno el escalonado ya no se percibe y alargarlo solo
+     retrasa contenido: todos entran juntos. */
+  [data-stagger] > *:nth-child(n + 9) {
+    transition-delay: 400ms;
+  }
+}
+
+/* --- Chips: reaccionan a la card que los contiene ----------- */
+
+.chip {
+  transition:
+    border-color var(--motion-fast) var(--ease-out),
+    color var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out);
+}
+
+.group:hover .chip {
+  border-color: var(--line-strong);
+  color: var(--ink);
+}
+
+/* --- Barrido de luz sobre el botón principal ----------------
+   Se dispara una vez por hover, no en bucle: un brillo que no para
+   distrae de lo que hay alrededor. */
+
+.btn-primary {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.btn-primary::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    115deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.26) 50%,
+    transparent 65%
+  );
+  transform: translateX(-130%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .btn-primary:hover::after,
+  .btn-primary:focus-visible::after {
+    animation: sheen 720ms var(--ease-out);
+  }
+}
+
+@keyframes sheen {
+  to {
+    transform: translateX(130%);
+  }
+}
+
+/* --- Cabecera: se despega al hacer scroll ------------------
+   Animación guiada por scroll, sin listener ni estado en React.
+   Solo el primer tramo de recorrido: pasados 80px ya está en su
+   estado final. */
+
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .header-shell {
+      animation: header-lift linear both;
+      animation-timeline: scroll(root block);
+      animation-range: 0 80px;
+    }
+  }
+}
+
+@keyframes header-lift {
+  from {
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+    border-bottom-color: transparent;
+  }
+  to {
+    box-shadow: var(--shadow-md);
+    border-bottom-color: var(--line-strong);
+  }
+}
+
+/* --- Raíl del timeline: se rellena al pasar por delante -----
+   view() mide el elemento contra el viewport, así que el acento va
+   dibujando el raíl a medida que la sección lo cruza. */
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .rail::after {
+      content: "";
+      position: absolute;
+      left: 1.0625rem;
+      top: 0.5rem;
+      bottom: 0.5rem;
+      width: 2px;
+      background: linear-gradient(180deg, var(--accent), var(--teal));
+      transform: scaleY(0);
+      transform-origin: top center;
+      animation: rail-fill linear both;
+      animation-timeline: view(block);
+      animation-range: cover 12% cover 68%;
+    }
+  }
+}
+
+@keyframes rail-fill {
+  to {
+    transform: scaleY(1);
+  }
+}
+
+/* --- Punto del raíl: late al abrirse la fase ---------------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .rail-node[open] > summary .rail-dot {
+    animation: dot-pop var(--motion-base) var(--ease-out);
+  }
+}
+
+@keyframes dot-pop {
+  50% {
+    transform: scale(1.14);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+/* --- Filtros: la pastilla activa se marca al entrar --------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .filter-pill[data-active="true"] {
+    animation: pill-in var(--motion-base) var(--ease-out);
+  }
+
+  .filter-pill:active {
+    transform: translateY(1px);
+  }
+}
+
+@keyframes pill-in {
+  from {
+    transform: scale(0.94);
+  }
+  to {
+    transform: scale(1);
   }
 }
 

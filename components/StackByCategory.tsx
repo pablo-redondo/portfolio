@@ -1,4 +1,5 @@
 import type { TechCategory, TechChoice } from "@/content/types";
+import { Reveal } from "@/components/Reveal";
 
 const CATEGORY_ORDER: TechCategory[] = ["frontend", "backend", "infra", "tooling"];
 
@@ -18,7 +19,7 @@ export function StackByCategory({ stack }: { stack: TechChoice[] }) {
 
         return (
           <section key={category}>
-            <div className="mb-5 flex items-center gap-3">
+            <Reveal className="mb-5 flex items-center gap-3">
               <h3 className="font-mono text-sm font-semibold tracking-wide text-accent uppercase">
                 {CATEGORY_LABELS[category]}
               </h3>
@@ -26,11 +27,12 @@ export function StackByCategory({ stack }: { stack: TechChoice[] }) {
               <span className="font-mono text-[11px] text-ink-faint">
                 {items.length}
               </span>
-            </div>
+            </Reveal>
 
-            <div className="grid gap-3 sm:grid-cols-2">
+            <Reveal stagger className="grid gap-3 sm:grid-cols-2">
               {items.map((tech) => (
-                <div key={tech.name} className="surface-card p-5">
+                <div key={tech.name} data-spot className="surface-card group p-5">
+                  <span className="spot-glow" aria-hidden />
                   <h4 className="font-mono text-sm font-semibold text-ink">
                     {tech.name}
                   </h4>
@@ -39,7 +41,7 @@ export function StackByCategory({ stack }: { stack: TechChoice[] }) {
                   </p>
                 </div>
               ))}
-            </div>
+            </Reveal>
           </section>
         );
       })}

@@ -44,6 +44,7 @@ function SectionHeading({ eyebrow, title }: { eyebrow: string; title: string }) 
         {eyebrow}
       </p>
       <h2 className="font-mono text-2xl font-bold tracking-tight">{title}</h2>
+      <span className="heading-rule mt-3.5" aria-hidden />
     </div>
   );
 }
@@ -61,22 +62,30 @@ export default async function ProjectPage({ params }: Props) {
       <section className="hero-glow border-b border-line">
         <Container>
           <div className="py-16 sm:py-20">
-            <Link href="/proyectos" className="btn btn-ghost -ml-2.5">
+            <Link href="/proyectos" className="btn btn-ghost -ml-2.5" data-enter="1">
               Volver a proyectos
             </Link>
 
-            <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3">
+            {/* El h1 es el LCP de esta página: su entrada mueve solo el
+                transform, nunca la opacidad. */}
+            <div
+              data-enter="lcp"
+              className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3"
+            >
               <h1 className="font-mono text-4xl font-bold tracking-tight sm:text-5xl">
                 {project.title}
               </h1>
               <StatusBadge status={project.status} />
             </div>
 
-            <p className="mt-5 max-w-[65ch] text-lg leading-relaxed text-ink-soft">
+            <p
+              data-enter="3"
+              className="mt-5 max-w-[65ch] text-lg leading-relaxed text-ink-soft"
+            >
               {project.tagline}
             </p>
 
-            <div className="mt-6 flex flex-wrap gap-2">
+            <div data-enter="4" className="mt-6 flex flex-wrap gap-2">
               {project.tags.map((tag) => (
                 <span key={tag} className="chip">
                   {tag}
@@ -84,7 +93,7 @@ export default async function ProjectPage({ params }: Props) {
               ))}
             </div>
 
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div data-enter="4" className="mt-8 flex flex-wrap gap-3">
               {project.repos.map((repo) => (
                 <a key={repo.url} href={repo.url} className="btn btn-secondary">
                   {repo.label}
@@ -113,6 +122,7 @@ export default async function ProjectPage({ params }: Props) {
                   <h2 className="font-mono text-2xl font-bold tracking-tight">
                     Demo en vivo
                   </h2>
+                  <span className="heading-rule mt-3.5" aria-hidden />
                 </div>
                 <DeploymentBadge slug={project.slug} />
               </div>
@@ -139,8 +149,8 @@ export default async function ProjectPage({ params }: Props) {
                 pasos. Cada una se despliega con su detalle y su rango de
                 commits.
               </p>
-              <Timeline phases={project.timeline} />
             </Reveal>
+            <Timeline phases={project.timeline} />
           </Container>
         </section>
       )}
@@ -173,23 +183,26 @@ export default async function ProjectPage({ params }: Props) {
             <Reveal>
               <SectionHeading eyebrow="el porqué, no solo el qué" title="Decisiones técnicas" />
             </Reveal>
-            <div className="grid gap-4 lg:grid-cols-3">
+            <Reveal stagger className="grid gap-4 lg:grid-cols-3">
               {caseStudy.decisions.map((decision, i) => (
-                <Reveal key={decision.title} delay={(i % 3) * 60}>
-                  <div className="surface-card h-full p-6">
-                    <span className="font-mono text-[11px] text-accent">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <h3 className="mt-2 font-mono text-base font-semibold text-ink">
-                      {decision.title}
-                    </h3>
-                    <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-                      {decision.detail}
-                    </p>
-                  </div>
-                </Reveal>
+                <div
+                  key={decision.title}
+                  data-spot
+                  className="surface-card group h-full p-6"
+                >
+                  <span className="spot-glow" aria-hidden />
+                  <span className="font-mono text-[11px] text-accent">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <h3 className="mt-2 font-mono text-base font-semibold text-ink">
+                    {decision.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-relaxed text-ink-soft">
+                    {decision.detail}
+                  </p>
+                </div>
               ))}
-            </div>
+            </Reveal>
           </Container>
         </section>
       )}
@@ -199,7 +212,8 @@ export default async function ProjectPage({ params }: Props) {
         <Container>
           <Reveal>
             <SectionHeading eyebrow="dónde está hoy" title="Resultado" />
-            <div className="surface-featured p-7 sm:p-9">
+            <div data-spot className="surface-featured group p-7 sm:p-9">
+              <span className="spot-glow" aria-hidden />
               <p className="max-w-[70ch] leading-relaxed text-ink-soft">
                 {caseStudy.result}
               </p>
@@ -214,8 +228,8 @@ export default async function ProjectPage({ params }: Props) {
           <Container>
             <Reveal>
               <SectionHeading eyebrow="con qué está construido" title="Stack" />
-              <StackTable stack={project.stack} />
             </Reveal>
+            <StackTable stack={project.stack} />
 
             <Reveal>
               <div className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-line pt-8">

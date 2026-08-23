@@ -1,10 +1,11 @@
 import type { TimelinePhase } from "@/content/types";
+import { Reveal } from "@/components/Reveal";
 
 export function Timeline({ phases }: { phases: TimelinePhase[] }) {
   const sorted = phases.slice().sort((a, b) => a.order - b.order);
 
   return (
-    <div className="rail flex flex-col gap-3">
+    <Reveal stagger className="rail flex flex-col gap-3">
       {sorted.map((phase, i) => (
         <details key={phase.order} className="rail-node group" open={i === 0}>
           <summary className="cursor-pointer list-none rounded-xl border border-transparent px-4 py-3 transition-colors hover:border-line hover:bg-surface">
@@ -34,6 +35,6 @@ export function Timeline({ phases }: { phases: TimelinePhase[] }) {
           </div>
         </details>
       ))}
-    </div>
+    </Reveal>
   );
 }

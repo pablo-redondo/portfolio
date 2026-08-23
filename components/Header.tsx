@@ -15,7 +15,7 @@ export function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-line bg-bg/85 backdrop-blur-md">
+    <header className="header-shell sticky top-0 z-50 border-b border-line bg-bg/85 backdrop-blur-md">
       <Container>
         <div className="flex h-16 items-center justify-between gap-4">
           {/* En pantallas muy estrechas el logo se oculta: "inicio" ya está

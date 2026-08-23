@@ -37,12 +37,14 @@ export default function SobreMiPage() {
       <section className="hero-glow border-b border-line">
         <Container>
           <div className="py-16 sm:py-20">
-            <SectionLabel>cat sobre-mi.md</SectionLabel>
-            <h1 className="mt-4 max-w-[20ch] font-mono text-4xl leading-tight font-bold tracking-tight text-balance sm:text-5xl">
+            <div data-enter="1">
+              <SectionLabel>cat sobre-mi.md</SectionLabel>
+            </div>
+            <h1 data-enter="lcp" className="mt-4 max-w-[20ch] font-mono text-4xl leading-tight font-bold tracking-tight text-balance sm:text-5xl">
               Vengo de mantener la máquina, no solo de programarla
             </h1>
 
-            <div className="mt-8 grid gap-6 lg:grid-cols-2 lg:gap-12">
+            <div data-enter="3" className="mt-8 grid gap-6 lg:grid-cols-2 lg:gap-12">
               <p className="text-lg leading-relaxed text-ink-soft">
                 Empecé en ASIR: administración de sistemas, redes, Linux, la
                 parte de la infraestructura que la mayoría del desarrollo web da
@@ -62,7 +64,7 @@ export default function SobreMiPage() {
               </p>
             </div>
 
-            <div className="mt-9 flex flex-wrap gap-3">
+            <div data-enter="4" className="mt-9 flex flex-wrap gap-3">
               {SITE.cvUrl && (
                 <a href={SITE.cvUrl} className="btn btn-primary">
                   Descargar CV
@@ -82,24 +84,28 @@ export default function SobreMiPage() {
             <p className="mb-2 font-mono text-[11px] tracking-wide text-accent uppercase">
               lo que traigo de sistemas
             </p>
-            <h2 className="mb-8 font-mono text-2xl font-bold tracking-tight sm:text-3xl">
+            <h2 className="font-mono text-2xl font-bold tracking-tight sm:text-3xl">
               Qué me llevo de ASIR
             </h2>
+            <span className="heading-rule mt-4 mb-8" aria-hidden />
           </Reveal>
-          <div className="grid gap-4 lg:grid-cols-3">
-            {TAKEAWAYS.map((item, i) => (
-              <Reveal key={item.title} delay={(i % 3) * 60}>
-                <div className="surface-card h-full p-6">
-                  <h3 className="font-mono text-base font-semibold text-ink">
-                    {item.title}
-                  </h3>
-                  <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-                    {item.body}
-                  </p>
-                </div>
-              </Reveal>
+          <Reveal stagger className="grid gap-4 lg:grid-cols-3">
+            {TAKEAWAYS.map((item) => (
+              <div
+                key={item.title}
+                data-spot
+                className="surface-card group h-full p-6"
+              >
+                <span className="spot-glow" aria-hidden />
+                <h3 className="font-mono text-base font-semibold text-ink">
+                  {item.title}
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed text-ink-soft">
+                  {item.body}
+                </p>
+              </div>
             ))}
-          </div>
+          </Reveal>
         </Container>
       </section>
 
@@ -109,9 +115,10 @@ export default function SobreMiPage() {
             <p className="mb-2 font-mono text-[11px] tracking-wide text-accent uppercase">
               el porqué de cada elección
             </p>
-            <h2 className="mb-3 font-mono text-2xl font-bold tracking-tight sm:text-3xl">
+            <h2 className="font-mono text-2xl font-bold tracking-tight sm:text-3xl">
               Stack
             </h2>
+            <span className="heading-rule mt-4 mb-3" aria-hidden />
             <p className="mb-10 max-w-[62ch] text-ink-soft">
               No es una lista de logos: cada tecnología está aquí por un motivo
               concreto, el mismo que aparece en los casos de estudio.
