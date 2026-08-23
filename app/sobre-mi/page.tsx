@@ -57,7 +57,7 @@ const EXPERIENCIA: Job[] = [
     dates: "mar. 2024 → actualidad",
     year: "24",
     detail:
-      "Compaginado con la búsqueda de mi primera posición como desarrollador. Diagnóstico y resolución de incidencias en una red corporativa 24×7 — datos, voz, WiFi y seguridad — con gestión de tickets, informes y copias de seguridad.",
+      "Compaginado con la búsqueda de mi primera posición como desarrollador. Gestión, soporte y monitorización de una red corporativa 24×7 — datos, voz, WiFi y seguridad — con resolución de incidencias de primer nivel, tickets, informes periódicos y copias de seguridad.",
   },
   {
     role: "Desarrollador de aplicaciones web",

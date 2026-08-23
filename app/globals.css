@@ -753,26 +753,39 @@ body {
   padding-left: 2.75rem;
 }
 
-/* Los dos comparten capa, así que el orden del DOM decide: el relleno se
-   dibuja encima del trazo estático, que es justo lo que se busca. */
-.rail::before,
-.rail::after {
-  z-index: -1;
-}
+/* El raíl se dibuja en cada fase, no en el contenedor: cada una traza el
+   segmento que va del centro de SU círculo al centro del siguiente, y la
+   última no traza nada.
 
-.rail::before {
+   Anclado al alto del contenedor, como estaba antes, la línea sobresalía
+   3 px por encima del primer círculo y hasta 150 px por debajo del último
+   —el sobrante crecía al desplegarse las fases—, porque la altura de la
+   última fase no se puede restar desde CSS. Por segmentos la geometría es
+   exacta y no depende de cuánto mida ninguna. */
+
+.rail-node::before,
+.rail-node::after {
   content: "";
   position: absolute;
-  left: 1.0625rem;
-  top: 0.5rem;
-  bottom: 0.5rem;
+  z-index: -1;
+  /* Centro horizontal del círculo: su sangrado (2.75rem) menos su radio. */
+  left: -1.6875rem;
   width: 2px;
-  background: linear-gradient(
-    180deg,
-    var(--accent-line) 0%,
-    var(--line) 60%,
-    transparent 100%
-  );
+  /* Centro vertical del círculo: 1px de borde de la card + 0.625rem de
+     desplazamiento + el radio del círculo. */
+  top: 1.75rem;
+  /* Hasta el centro del círculo siguiente: el hueco de la columna
+     (0.75rem) más ese mismo 1.75rem. */
+  bottom: -2.5rem;
+}
+
+.rail-node:last-child::before,
+.rail-node:last-child::after {
+  content: none;
+}
+
+.rail-node::before {
+  background: var(--line);
 }
 
 /* Cada fase es UNA card, no un resumen suelto con una segunda caja
@@ -1073,19 +1086,17 @@ body {
 
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
-    .rail::after {
-      content: "";
-      position: absolute;
-      left: 1.0625rem;
-      top: 0.5rem;
-      bottom: 0.5rem;
-      width: 2px;
+    .rail-node::after {
       background: linear-gradient(180deg, var(--accent), var(--teal));
       transform: scaleY(0);
       transform-origin: top center;
       animation: rail-fill linear both;
+      /* Cada segmento se rellena mientras su fase cruza la franja central
+         del viewport. Un rango estrecho: con uno amplio el relleno de un
+         segmento de 40 px tardaría cientos de píxeles de scroll y se
+         quedaría muy por detrás del dedo. */
       animation-timeline: view(block);
-      animation-range: cover 12% cover 68%;
+      animation-range: cover 42% cover 58%;
     }
   }
 }
