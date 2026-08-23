@@ -12,8 +12,7 @@ export function StackTable({ stack }: { stack: TechChoice[] }) {
   return (
     <Reveal stagger className="grid gap-3 sm:grid-cols-2">
       {stack.map((tech) => (
-        <div key={tech.name} data-spot className="surface-panel group p-4">
-          <span className="spot-glow" aria-hidden />
+        <div key={tech.name} className="card-scan surface-panel group p-4">
           <div className="flex items-baseline justify-between gap-3">
             <h3 className="font-mono text-sm font-semibold text-ink">{tech.name}</h3>
             <span className="shrink-0 font-mono text-[10px] tracking-wide text-ink-faint uppercase">

@@ -60,11 +60,8 @@ export function StackExplorer({ stack }: { stack: TechChoice[] }) {
           <article
             key={tech.name}
             data-capa={tech.category}
-            data-spot
-            className="tech-card group"
+            className="card-scan tech-card group"
           >
-            <span className="spot-glow" aria-hidden />
-
             <div className="flex items-baseline justify-between gap-3">
               <h3 className="min-w-0 font-mono text-sm font-semibold text-ink">
                 {tech.name}

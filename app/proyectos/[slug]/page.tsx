@@ -187,10 +187,8 @@ export default async function ProjectPage({ params }: Props) {
               {caseStudy.decisions.map((decision, i) => (
                 <div
                   key={decision.title}
-                  data-spot
-                  className="surface-card group h-full p-6"
+                  className="card-scan surface-card group h-full p-6"
                 >
-                  <span className="spot-glow" aria-hidden />
                   <span className="font-mono text-[11px] text-accent">
                     {String(i + 1).padStart(2, "0")}
                   </span>
@@ -212,8 +210,7 @@ export default async function ProjectPage({ params }: Props) {
         <Container>
           <Reveal>
             <SectionHeading eyebrow="dónde está hoy" title="Resultado" />
-            <div data-spot className="surface-featured group p-7 sm:p-9">
-              <span className="spot-glow" aria-hidden />
+            <div className="card-scan surface-featured group p-7 sm:p-9">
               <p className="max-w-[70ch] leading-relaxed text-ink-soft">
                 {caseStudy.result}
               </p>

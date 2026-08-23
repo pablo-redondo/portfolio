@@ -184,10 +184,8 @@ export default function SobreMiPage() {
             {RASGOS.map((item, i) => (
               <div
                 key={item.title}
-                data-spot
-                className="card-lift surface-card group relative h-full overflow-hidden p-6"
+                className="card-lift card-scan surface-card group relative h-full overflow-hidden p-6"
               >
-                <span className="spot-glow" aria-hidden />
                 <span className="trait-index" aria-hidden>
                   {String(i + 1).padStart(2, "0")}
                 </span>

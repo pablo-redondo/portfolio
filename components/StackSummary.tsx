@@ -26,11 +26,8 @@ export function StackSummary({ stack }: { stack: TechChoice[] }) {
         return (
           <div
             key={category}
-            data-spot
-            className="surface-card group flex h-full flex-col p-5"
+            className="card-scan surface-card group flex h-full flex-col p-5"
           >
-            <span className="spot-glow" aria-hidden />
-
             <div className="flex items-baseline justify-between gap-3 border-b border-line pb-3">
               <h3 className="font-mono text-xs font-semibold tracking-wider text-accent uppercase">
                 {CATEGORY_LABELS[category]}

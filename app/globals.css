@@ -144,9 +144,8 @@ body {
 
 /* Card: superficie elevada + hairline interior. El anillo interior
    es lo que le da borde definido sin recurrir a un borde duro.
-   position + isolation: para que el foco del cursor (.spot-glow, en
-   z-index -1) quede por encima del fondo de la card pero por debajo de
-   su contenido, sin necesidad de tocar el z-index de cada hijo. */
+   `position` para que el anillo de luz de .card-scan pueda anclarse al
+   borde, e `isolation` para que ninguna capa suya se escape de la card. */
 .surface-card {
   position: relative;
   isolation: isolate;
@@ -368,30 +367,81 @@ body {
   }
 }
 
-/* --- Foco que sigue al cursor sobre las cards --------------
-   Un degradado radial anclado a la posición del puntero. Las
-   coordenadas llegan como custom properties, que solo repintan: no
-   invalidan el layout, así que leer el rect en el siguiente
-   movimiento no fuerza reflow. */
+/* --- Trazo de luz por el borde de la card ------------------
+   Un filo de acento recorre el perímetro una sola vez al pasar por
+   encima. Una vuelta y se apaga, no en bucle: un brillo que no para
+   distrae de lo que hay alrededor — el mismo criterio que el barrido del
+   botón principal.
 
-.spot-glow {
+   El ángulo va en una custom property registrada con @property: sin
+   registrar, el navegador no sabe que es un <angle> y no puede
+   interpolarlo, así que el trazo daría un salto en vez de girar. */
+
+@property --scan-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.card-scan {
+  position: relative;
+}
+
+/* El anillo se recorta a 1px con dos máscaras que se restan: una cubre la
+   caja de contenido y la otra la caja entera, así solo sobrevive el
+   reborde. Hereda el radio de la card para seguir sus esquinas. */
+.card-scan::after {
+  content: "";
   position: absolute;
   inset: 0;
-  z-index: -1;
+  z-index: 1;
   border-radius: inherit;
-  background: radial-gradient(
-    260px circle at var(--mx, 50%) var(--my, 0%),
-    var(--accent-soft),
-    transparent 68%
+  /* 2px y no 1: a un píxel el trazo casi no se ve en pantallas normales. */
+  padding: 2px;
+  background: conic-gradient(
+    from var(--scan-angle),
+    transparent 0deg,
+    var(--accent) 20deg,
+    var(--teal) 44deg,
+    transparent 70deg
   );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
   opacity: 0;
-  transition: opacity var(--motion-base) var(--ease-out);
   pointer-events: none;
 }
 
-.group:hover > .spot-glow,
-.group:focus-within > .spot-glow {
-  opacity: 1;
+@media (prefers-reduced-motion: no-preference) {
+  .card-scan:hover::after,
+  .card-scan:focus-visible::after,
+  .card-scan:focus-within::after {
+    animation: card-scan 1s var(--ease-out);
+  }
+}
+
+/* La opacidad la lleva la propia animación: al terminar vuelve al 0 de
+   base, así no se queda un arco fijo mientras el puntero siga encima. */
+@keyframes card-scan {
+  0% {
+    --scan-angle: 0deg;
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  82% {
+    opacity: 1;
+  }
+  100% {
+    --scan-angle: 360deg;
+    opacity: 0;
+  }
 }
 
 /* --- Barra de progreso de lectura --------------------------

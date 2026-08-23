@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { JetBrains_Mono, Manrope } from "next/font/google";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { Spotlight } from "@/components/Spotlight";
 import { SITE } from "@/content/site";
 import "./globals.css";
 
@@ -48,7 +47,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             navegador no lo soporta, la regla entera no aplica y no se
             pinta una barra muerta a cero. */}
         <div className="scroll-progress" aria-hidden />
-        <Spotlight />
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />

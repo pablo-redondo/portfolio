@@ -79,7 +79,6 @@ export default function ContactoPage() {
             {channels.map((channel) => {
               const body = (
                 <>
-                  <span className="spot-glow" aria-hidden />
                   <div className="flex flex-1 flex-col p-6">
                     <span className="font-mono text-xs tracking-wide text-ink-faint uppercase">
                       {channel.label}
@@ -97,8 +96,7 @@ export default function ContactoPage() {
                 <a
                   key={channel.label}
                   href={channel.href}
-                  data-spot
-                  className="card-lift surface-card group flex h-full flex-col overflow-hidden"
+                  className="card-lift card-scan surface-card group flex h-full flex-col overflow-hidden"
                 >
                   {body}
                 </a>
