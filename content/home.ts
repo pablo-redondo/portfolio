@@ -6,6 +6,9 @@
  */
 export const HOME_HERO = {
   headline: "Full-stack con base de infraestructura real.",
+  // Qué construyo y cómo, no de dónde vengo. La referencia a producción se
+  // queda porque es lo que sostiene el titular, pero como criterio de hoy y
+  // no como biografía.
   intro:
-    "Vengo de redes. Años gestionando sistemas en entornos 24×7, resolviendo lo que fallaba en producción. Me saqué el ciclo de desarrollo web por mi cuenta, currando a la vez, porque quería pasar a construir aplicaciones. Lo que me llevo de ahí es saber lo que pasa por debajo: cuando algo va lento o falla, sé dónde mirar.",
+    "Construyo aplicaciones completas con React, Next.js, Node.js y TypeScript sobre PostgreSQL, con tests, CI y despliegue real — no solo funcionando en local. La diferencia está en lo que viene después del deploy: cuando algo va lento o falla, sé dónde mirar.",
 };
