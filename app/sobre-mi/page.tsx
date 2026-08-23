@@ -8,7 +8,8 @@ import { aboutStack } from "@/content/stack";
 import { SITE } from "@/content/site";
 
 const TITLE = "Sobre mí";
-const DESCRIPTION = "De ASIR y redes al desarrollo web — trayectoria y stack de Pablo Redondo.";
+const DESCRIPTION =
+  "Cómo trabajo: automatizar lo repetitivo, diagnosticar antes de parchear, moverme cómodo en código que no escribí yo.";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -16,18 +17,55 @@ export const metadata: Metadata = {
   openGraph: { title: `${TITLE} · Pablo Redondo`, description: DESCRIPTION },
 };
 
-const TAKEAWAYS = [
+// Cada tarjeta es un rasgo con una prueba real detrás, no una virtud
+// declarada. La prueba es el dato que hace que la frase no sea intercambiable
+// con la de cualquier otro portfolio.
+const RASGOS = [
   {
-    title: "Depuración",
-    body: "Un error de fetch, CORS o timeout se lee distinto cuando entiendes qué pasa en la capa de red que hay debajo, no solo el mensaje que enseña el navegador.",
+    title: "Si algo se repite, lo automatizo",
+    body: "La planificación de turnos del equipo en EDNON se hacía a mano cada semana. Escribí un script en Python (pandas + openpyxl) que la genera sola y saca el informe en Excel para dirección.",
   },
   {
-    title: "Linux y CLI",
-    body: "Terminal, Docker, systemd, logs de un servidor real. Cómodo operando fuera del editor, no solo dentro de él.",
+    title: "Diagnóstico antes que reinicio",
+    body: "Dando soporte a una red corporativa en 24×7 aprendes a no conformarte con 'no responde': hay que mirar dónde se rompe de verdad. Es el mismo criterio detrás de NetPulse: checks reales por TCP, DNS y TLS, no un ping que solo dice sí o no.",
   },
   {
-    title: "La infraestructura bajo el código",
-    body: "Por qué un servicio duerme en un plan gratuito, por qué un certificado caduca, o por qué un contenedor no puede abrir un raw socket. Son las preguntas que ASIR enseña a hacerse antes de que exploten en producción.",
+    title: "Cómodo en código que no es mío",
+    body: "En las prácticas en Indra no partía de cero: eran endpoints REST sobre microservicios ya en producción, con su propio flujo de revisión. Entender una convención ajena antes de tocarla es un hábito, no una excepción.",
+  },
+];
+
+// Los tres puestos anteriores al desarrollo, tal como constan en el CV.
+// Nada de resumen genérico: fecha, empresa y lo único que de verdad importa
+// de cada uno.
+const EXPERIENCIA = [
+  {
+    role: "Técnico de redes y soporte",
+    company: "EDNON",
+    dates: "mar. 2024 → actualidad",
+    detail:
+      "Compaginado con la búsqueda de mi primera posición como desarrollador. Diagnóstico y resolución de incidencias en una red corporativa 24×7 — datos, voz, WiFi y seguridad — con gestión de tickets, informes y copias de seguridad.",
+  },
+  {
+    role: "Desarrollador de aplicaciones web",
+    company: "Indra · prácticas",
+    dates: "oct. → dic. 2023",
+    detail:
+      "Backend sobre arquitectura de microservicios: endpoints REST, mantenimiento de la interfaz en React y refactorización de servicios existentes dentro del flujo de revisión del equipo.",
+  },
+  {
+    role: "Técnico de redes y soporte",
+    company: "EDNON",
+    dates: "ago. 2022 → sept. 2023",
+    detail:
+      "Mismas funciones que el puesto actual. De aquí sale el script de turnos con Python que menciono más arriba.",
+  },
+  {
+    role: "Técnico y administrador de sistemas",
+    company: "Doezos Consultoría IT",
+    dates: "2019 → 2020",
+    detail:
+      "Desarrollo y mantenimiento de webs de clientes en PrestaShop y WordPress, con el hosting, el dominio y el servidor detrás gestionados también por mí.",
   },
 ];
 
@@ -40,27 +78,26 @@ export default function SobreMiPage() {
             <div data-enter="1">
               <SectionLabel>cat sobre-mi.md</SectionLabel>
             </div>
-            <h1 data-enter="lcp" className="mt-4 max-w-[20ch] font-mono text-4xl leading-tight font-bold tracking-tight text-balance sm:text-5xl">
-              Vengo de mantener la máquina, no solo de programarla
+            <h1
+              data-enter="lcp"
+              className="mt-4 max-w-[22ch] font-mono text-4xl leading-tight font-bold tracking-tight text-balance sm:text-5xl"
+            >
+              Antes de escribir la solución, quiero entender qué se rompe de verdad
             </h1>
 
             <div data-enter="3" className="mt-8 grid gap-6 lg:grid-cols-2 lg:gap-12">
               <p className="text-lg leading-relaxed text-ink-soft">
-                Empecé en ASIR: administración de sistemas, redes, Linux, la
-                parte de la infraestructura que la mayoría del desarrollo web da
-                por sentada. De ahí pasé al desarrollo porque quería construir
-                las aplicaciones, no solo mantener la máquina donde corren. Esa
-                base no se quedó atrás: se convirtió en la lente con la que leo
-                cualquier proyecto.
+                Soy desarrollador full-stack, titulado en Desarrollo de
+                Aplicaciones Web. Pero antes de tocar el primer componente ya
+                llevaba años dando soporte a sistemas en producción 24×7, y
+                eso cambia cómo abordo un problema: primero busco la causa,
+                no el parche más rápido.
               </p>
               <p className="leading-relaxed text-ink-soft">
-                Se nota en decisiones concretas, no en una frase de LinkedIn. En
-                NetPulse, entender por qué un ping ICMP necesita privilegios
-                elevados fue lo que llevó a construir los checks sobre TCP, TLS
-                y un cliente NTP propio en vez de envolver un binario del
-                sistema. En restaurant-web, saber que un servicio en un PaaS
-                gratuito se duerme por inactividad es lo que explica el workflow
-                de keepalive, no una sorpresa en producción.
+                Se nota en cosas concretas: automatizo lo que se repite en vez
+                de rehacerlo a mano, y cuando algo falla miro un nivel más
+                abajo del mensaje de error. La sección de abajo son tres
+                ejemplos reales, no adjetivos sueltos.
               </p>
             </div>
 
@@ -82,15 +119,15 @@ export default function SobreMiPage() {
         <Container>
           <Reveal>
             <p className="mb-2 font-mono text-[11px] tracking-wide text-accent uppercase">
-              lo que traigo de sistemas
+              tres ejemplos, no tres adjetivos
             </p>
             <h2 className="font-mono text-2xl font-bold tracking-tight sm:text-3xl">
-              Qué me llevo de ASIR
+              Cómo trabajo
             </h2>
             <span className="heading-rule mt-4 mb-8" aria-hidden />
           </Reveal>
           <Reveal stagger className="grid gap-4 lg:grid-cols-3">
-            {TAKEAWAYS.map((item) => (
+            {RASGOS.map((item) => (
               <div
                 key={item.title}
                 data-spot
@@ -102,6 +139,41 @@ export default function SobreMiPage() {
                 </h3>
                 <p className="mt-3 text-sm leading-relaxed text-ink-soft">
                   {item.body}
+                </p>
+              </div>
+            ))}
+          </Reveal>
+        </Container>
+      </section>
+
+      <section className="border-b border-line py-16">
+        <Container>
+          <Reveal>
+            <p className="mb-2 font-mono text-[11px] tracking-wide text-accent uppercase">
+              antes del desarrollo
+            </p>
+            <h2 className="font-mono text-2xl font-bold tracking-tight sm:text-3xl">
+              Por dónde he pasado
+            </h2>
+            <span className="heading-rule mt-4 mb-8" aria-hidden />
+          </Reveal>
+
+          <Reveal stagger className="flex flex-col gap-3">
+            {EXPERIENCIA.map((job) => (
+              <div key={`${job.company}-${job.dates}`} className="surface-card p-5 sm:p-6">
+                <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                  <h3 className="font-mono text-sm font-semibold text-ink">
+                    {job.role}
+                    <span className="ml-2 font-normal text-ink-faint">
+                      · {job.company}
+                    </span>
+                  </h3>
+                  <span className="font-mono text-[11px] whitespace-nowrap text-ink-faint">
+                    {job.dates}
+                  </span>
+                </div>
+                <p className="mt-2.5 max-w-[70ch] text-sm leading-relaxed text-ink-soft">
+                  {job.detail}
                 </p>
               </div>
             ))}
