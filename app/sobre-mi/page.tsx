@@ -9,7 +9,7 @@ import { SITE } from "@/content/site";
 
 const TITLE = "Sobre mí";
 const DESCRIPTION =
-  "Cómo trabajo: diagnosticar antes que parchear, moverme cómodo en código que no escribí yo, hacerme cargo del ciclo completo.";
+  "Cómo trabajo: reconstruir por fases sin romper nada, diagnosticar antes que parchear, moverme cómodo en código que no escribí yo.";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -22,8 +22,8 @@ export const metadata: Metadata = {
 // con la de cualquier otro portfolio.
 const RASGOS = [
   {
-    title: "Entiendo el ciclo completo, no solo el código",
-    body: "En Doezos no me limitaba a la web del cliente: el hosting, el dominio y el servidor detrás también corrían por mi cuenta. Eso es lo que me hace preguntarme, antes de escribir una línea, dónde va a vivir de verdad lo que estoy construyendo.",
+    title: "Por fases, sin dejarlo roto entre pasos",
+    body: "CodeQuest RPG era una prueba de concepto abandonada a medias. Lo reconstruí en fases: la migración a TypeScript fue archivo por archivo, comprobando build y juego jugable en cada paso, en vez de una reescritura de golpe que se rompe a mitad sin que te enteres.",
   },
   {
     title: "Diagnóstico antes que reinicio",
