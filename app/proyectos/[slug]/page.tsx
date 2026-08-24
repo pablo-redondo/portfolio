@@ -156,29 +156,48 @@ export default async function ProjectPage({ params }: Props) {
       )}
 
       {/* --- Contexto y reto ---
-           Apilados y no a dos columnas: el largo de los dos textos lo marca
-           el contenido de cada proyecto, y la diferencia llega a ser de más
-           del doble —en Marqués, 328 caracteres contra 710—. Uno al lado del
-           otro, la columna corta dejaba un hueco enorme debajo que ningún
-           ajuste de estilos podía cuadrar. Apilados, cada uno ocupa lo que
-           necesita y la diferencia de largo deja de leerse como un
-           desequilibrio. --- */}
+           Encabezado en su propia columna y texto al lado, no uno encima de
+           otro. Apilados, el párrafo se quedaba en la mitad izquierda con el
+           ancho de lectura y dejaba media pantalla vacía a la derecha; a dos
+           columnas de contenido, en cambio, el largo de cada texto lo marca
+           el proyecto y la diferencia llega a más del doble (en Marqués, 328
+           caracteres contra 710), así que una columna quedaba coja.
+
+           Con el encabezado a la izquierda las dos filas ocupan el ancho
+           entero y el largo del texto deja de importar: cada bloque es una
+           fila completa. --- */}
       <section className="border-b border-line py-16">
         <Container>
-          <div className="flex flex-col gap-12">
-            <MaybeReveal animate={hayTimeline}>
-              <SectionHeading eyebrow="por qué existe" title="Contexto" />
-              <p className="max-w-[72ch] leading-relaxed text-ink-soft">
-                {caseStudy.problem}
-              </p>
-            </MaybeReveal>
-
-            <MaybeReveal animate={hayTimeline}>
-              <SectionHeading eyebrow="lo más difícil" title="Reto técnico" />
-              <p className="max-w-[72ch] leading-relaxed text-ink-soft">
-                {caseStudy.challenge}
-              </p>
-            </MaybeReveal>
+          <div className="flex flex-col gap-14">
+            {[
+              {
+                eyebrow: "por qué existe",
+                title: "Contexto",
+                body: caseStudy.problem,
+              },
+              {
+                eyebrow: "lo más difícil",
+                title: "Reto técnico",
+                body: caseStudy.challenge,
+              },
+            ].map((bloque) => (
+              <MaybeReveal key={bloque.title} animate={hayTimeline}>
+                <div className="grid gap-x-12 gap-y-5 lg:grid-cols-[minmax(0,17rem)_minmax(0,1fr)]">
+                  <div>
+                    <p className="mb-2 font-mono text-[11px] tracking-wide text-accent uppercase">
+                      {bloque.eyebrow}
+                    </p>
+                    <h2 className="font-mono text-2xl font-bold tracking-tight">
+                      {bloque.title}
+                    </h2>
+                    <span className="heading-rule mt-3.5" aria-hidden />
+                  </div>
+                  <p className="max-w-[70ch] leading-relaxed text-ink-soft">
+                    {bloque.body}
+                  </p>
+                </div>
+              </MaybeReveal>
+            ))}
           </div>
         </Container>
       </section>
