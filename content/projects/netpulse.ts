@@ -42,12 +42,7 @@ export const netpulse: Project = {
     {
       name: "Render",
       category: "infra",
-      why: "Proceso persistente para el backend, necesario porque el scheduler tiene que seguir vivo entre peticiones, no solo responder bajo demanda.",
-    },
-    {
-      name: "Vercel",
-      category: "infra",
-      why: "El frontend es un conjunto de páginas servidas bajo demanda; encaja mejor en un modelo serverless que en un proceso persistente.",
+      why: "Proceso persistente para el backend, necesario porque el scheduler tiene que seguir vivo entre peticiones y no solo responder bajo demanda. El frontend no lo necesita, así que va aparte en Vercel bajo demanda.",
     },
   ],
   caseStudy: {

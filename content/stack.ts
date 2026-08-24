@@ -67,11 +67,6 @@ export const aboutStack: TechChoice[] = [
     why: "Tipado en cliente y servidor; strict cuando el proyecto lo permite desde el principio, progresivo cuando se parte de JS existente.",
   },
   {
-    name: "Vite",
-    category: "tooling",
-    why: "Arranque y HMR instantáneos, clave para iterar rápido en un proyecto que cambia de forma por fases.",
-  },
-  {
     name: "Vitest + Playwright",
     category: "tooling",
     why: "Vitest para la lógica de negocio sin levantar navegador; Playwright para un e2e real del flujo completo cuando hace falta.",
