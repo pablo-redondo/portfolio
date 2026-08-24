@@ -796,6 +796,128 @@ body {
   }
 }
 
+/* --- Card de proyecto --------------------------------------
+   Tres capas de información y no cinco. Antes cada card llevaba, además
+   del título y la entradilla, una fila de chips de texto que saltaba a dos
+   alturas y una barra de acción a ancho completo con su propio separador y
+   su propio fondo: junto al borde de la card, tres marcos anidados. Lo que
+   queda ahora se apoya en el hover para lo que no hace falta ver siempre. */
+
+/* Separador que se dibuja al activar la card, en vez de partirla en dos de
+   forma permanente. Mismo lenguaje que el subrayado de los encabezados de
+   sección, a menor escala. */
+.card-rule {
+  display: block;
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    var(--accent) 0%,
+    var(--accent) 18%,
+    var(--line) 18%,
+    var(--line) 100%
+  );
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .card-rule {
+    transform: scaleX(0.14);
+    transition: transform var(--motion-slow) var(--ease-out);
+  }
+
+  .project-card:hover .card-rule,
+  .project-card:focus-visible .card-rule {
+    transform: scaleX(1);
+  }
+}
+
+/* Tira de logos del stack. Monocroma y del color más tenue del texto: es
+   textura, no contenido — el nombre de cada tecnología está en el caso de
+   estudio y en el `sr-only` de la card. */
+.logo-strip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-width: 0;
+  color: var(--ink-faint);
+}
+
+.logo-count {
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  color: var(--ink-faint);
+  white-space: nowrap;
+  transition: color var(--motion-fast) var(--ease-out);
+}
+
+/* Al pasar por la card los logos se encienden de izquierda a derecha. El
+   escalonado es lo que separa esto de un simple cambio de color: la tira
+   se lee como una secuencia, que es justo lo que es un stack. */
+@media (prefers-reduced-motion: no-preference) {
+  .logo-strip > * {
+    transition: color var(--motion-base) var(--ease-out);
+  }
+
+  .logo-strip > :nth-child(2) {
+    transition-delay: 45ms;
+  }
+  .logo-strip > :nth-child(3) {
+    transition-delay: 90ms;
+  }
+  .logo-strip > :nth-child(4) {
+    transition-delay: 135ms;
+  }
+  .logo-strip > :nth-child(5) {
+    transition-delay: 180ms;
+  }
+  .logo-strip > :nth-child(6) {
+    transition-delay: 225ms;
+  }
+}
+
+.project-card:hover .logo-strip,
+.project-card:focus-visible .logo-strip {
+  color: var(--accent);
+}
+
+/* Llamada del pie. Un enlace de texto pequeño y no una barra: la card
+   entera ya es el enlace, así que la barra solo repetía el área pulsable
+   con más peso del que le tocaba. La flecha es la que se mueve. */
+.card-cta {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.375rem;
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--ink-faint);
+  transition: color var(--motion-fast) var(--ease-out);
+}
+
+.project-card:hover .card-cta,
+.project-card:focus-visible .card-cta {
+  color: var(--accent);
+}
+
+.card-cta-arrow {
+  display: inline-block;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .card-cta-arrow {
+    transition: transform var(--motion-base) var(--ease-out);
+  }
+
+  .project-card:hover .card-cta-arrow,
+  .project-card:focus-visible .card-cta-arrow {
+    transform: translateX(3px);
+  }
+}
+
 /* --- Cards: elevación, no distorsión ----------------------- */
 
 .card-lift {
