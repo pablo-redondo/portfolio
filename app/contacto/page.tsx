@@ -72,12 +72,19 @@ function conCortes(value: string) {
 }
 
 export default function ContactoPage() {
-  // El resto de canales, en tarjeta pequeña. Van por el identificador y no
-  // por la URL entera: la etiqueta ya dice de qué sitio es, así que repetir
-  // "github.com/" delante de GITHUB solo gasta ancho. El CV va por el
-  // nombre del archivo, que dice lo que te vas a descargar mejor que un
-  // "descargar PDF" genérico.
-  const secundarios: Channel[] = [
+  // Los cuatro con el mismo peso, en rejilla de dos por dos. Van por su
+  // identificador y no por la URL entera: la etiqueta ya dice de qué sitio
+  // es, así que repetir "github.com/" delante de GITHUB solo gasta ancho.
+  // El CV va por el nombre del archivo, que dice lo que te vas a descargar
+  // mejor que un "descargar PDF" genérico.
+  const canales: Channel[] = [
+    {
+      icon: "email",
+      label: "Email",
+      value: SITE.email,
+      href: `mailto:${SITE.email}`,
+      hint: "La vía más directa",
+    },
     {
       icon: "github",
       label: "GitHub",
@@ -141,70 +148,48 @@ export default function ContactoPage() {
           </div>
         </div>
 
-        <div className="pb-16 sm:pb-24">
-          {/* El email no es un canal más: el propio texto de arriba dice que
-              es la vía directa. Con las cuatro tarjetas iguales, el diseño
-              decía lo contrario. Ahora ocupa el ancho entero y las otras
-              tres van debajo en fila. */}
-          <Reveal>
-            <div className="channel-main-slot">
-              <a href={`mailto:${SITE.email}`} className="channel-main group">
-                <span className="channel-head">
-                  <ChannelIcon name="email" className="channel-glyph" />
-                  <span className="channel-label">Email</span>
-                </span>
-
-                <span className="channel-mail">{conCortes(SITE.email)}</span>
-
+        {/* Dos por dos y todas del mismo tamaño: la rejilla estira las
+            tarjetas al ancho disponible y `mt-auto` en el pie las iguala de
+            alto aunque las pistas midan distinto. */}
+        <Reveal
+          stagger
+          as="ul"
+          className="grid gap-4 pb-16 sm:grid-cols-2 sm:pb-24"
+        >
+          {canales.map((canal) => {
+            const cuerpo = (
+              <>
+                <ChannelIcon name={canal.icon} className="channel-glyph" />
+                <span className="channel-label mt-5">{canal.label}</span>
+                <span className="channel-value">{conCortes(canal.value)}</span>
                 <span className="channel-foot">
-                  <span className="channel-hint">La vía más directa</span>
-                  <span className="channel-go">
-                    Escribir
-                    <span aria-hidden className="channel-arrow">
-                      →
-                    </span>
+                  <span className="channel-hint">{canal.hint}</span>
+                  <span aria-hidden className="channel-arrow">
+                    →
                   </span>
                 </span>
-              </a>
+              </>
+            );
 
-              {/* Fuera del <a>: un botón dentro de un enlace no es marcado
-                  válido y el teclado se pierde entre los dos. */}
-              <CopyEmail value={SITE.email} />
-            </div>
-          </Reveal>
+            return (
+              <li key={canal.label} className="relative flex">
+                {canal.href ? (
+                  <a href={canal.href} className="channel-tile group">
+                    {cuerpo}
+                  </a>
+                ) : (
+                  <span className="channel-tile opacity-60">{cuerpo}</span>
+                )}
 
-          <Reveal stagger as="ul" className="mt-4 grid gap-4 sm:grid-cols-3">
-            {secundarios.map((canal) => {
-              const cuerpo = (
-                <>
-                  <ChannelIcon name={canal.icon} className="channel-glyph" />
-                  <span className="channel-label mt-5">{canal.label}</span>
-                  <span className="channel-value">
-                    {conCortes(canal.value)}
-                  </span>
-                  <span className="channel-foot">
-                    <span className="channel-hint">{canal.hint}</span>
-                    <span aria-hidden className="channel-arrow">
-                      →
-                    </span>
-                  </span>
-                </>
-              );
-
-              return (
-                <li key={canal.label} className="flex">
-                  {canal.href ? (
-                    <a href={canal.href} className="channel-tile group">
-                      {cuerpo}
-                    </a>
-                  ) : (
-                    <span className="channel-tile opacity-60">{cuerpo}</span>
-                  )}
-                </li>
-              );
-            })}
-          </Reveal>
-        </div>
+                {/* Fuera del <a>: un botón dentro de un enlace no es marcado
+                    válido y el teclado se pierde entre los dos. */}
+                {canal.icon === "email" && canal.href && (
+                  <CopyEmail value={SITE.email} />
+                )}
+              </li>
+            );
+          })}
+        </Reveal>
       </Container>
     </section>
   );

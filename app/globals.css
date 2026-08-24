@@ -914,20 +914,13 @@ body {
 }
 
 /* --- Canales de contacto -----------------------------------
-   El email manda y las otras tres acompañan. Con cuatro tarjetas del mismo
-   tamaño el diseño contradecía al texto de al lado, que dice que el email
-   es la vía directa: ahora ocupa una tarjeta a ancho completo y el resto
-   van debajo en una fila de tres.
+   Cuatro tarjetas iguales en rejilla de dos por dos, estiradas al ancho
+   que haya.
 
    El glifo va suelto y grande, sin baldosa que lo encierre: cuatro
    cuadraditos con borde dentro de otras cuatro cajas con borde era lo que
    hacía que todo pareciese el mismo rectángulo repetido. */
 
-.channel-main-slot {
-  position: relative;
-}
-
-.channel-main,
 .channel-tile {
   position: relative;
   isolation: isolate;
@@ -945,8 +938,6 @@ body {
     transform var(--motion-fast) var(--ease-out);
 }
 
-a.channel-main:hover,
-a.channel-main:focus-visible,
 a.channel-tile:hover,
 a.channel-tile:focus-visible {
   border-color: var(--accent-line);
@@ -954,8 +945,6 @@ a.channel-tile:focus-visible {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  a.channel-main:hover,
-  a.channel-main:focus-visible,
   a.channel-tile:hover,
   a.channel-tile:focus-visible {
     transform: translateY(-3px);
@@ -965,7 +954,6 @@ a.channel-tile:focus-visible {
 /* Un velo de acento que sube desde el pie al activar la tarjeta. Es lo que
    les da carácter propio sin meterles otra caja dentro: la superficie
    cambia entera en vez de encenderse solo un borde. */
-.channel-main::before,
 .channel-tile::before {
   content: "";
   position: absolute;
@@ -981,17 +969,9 @@ a.channel-tile:focus-visible {
   transition: opacity var(--motion-base) var(--ease-out);
 }
 
-a.channel-main:hover::before,
-a.channel-main:focus-visible::before,
 a.channel-tile:hover::before,
 a.channel-tile:focus-visible::before {
   opacity: 1;
-}
-
-.channel-head {
-  display: flex;
-  align-items: center;
-  gap: 0.875rem;
 }
 
 .channel-glyph {
@@ -1003,16 +983,12 @@ a.channel-tile:focus-visible::before {
     transform var(--motion-base) var(--ease-out);
 }
 
-a.channel-main:hover .channel-glyph,
-a.channel-main:focus-visible .channel-glyph,
 a.channel-tile:hover .channel-glyph,
 a.channel-tile:focus-visible .channel-glyph {
   color: var(--accent);
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  a.channel-main:hover .channel-glyph,
-  a.channel-main:focus-visible .channel-glyph,
   a.channel-tile:hover .channel-glyph,
   a.channel-tile:focus-visible .channel-glyph {
     transform: scale(1.12) rotate(-6deg);
@@ -1028,32 +1004,16 @@ a.channel-tile:focus-visible .channel-glyph {
   color: var(--ink-faint);
 }
 
-/* La dirección es el dato que se viene a buscar: al tamaño del titular de
-   una sección, no al del cuerpo. */
-.channel-mail {
-  display: block;
-  margin-top: 1.25rem;
-  font-family: var(--font-mono), monospace;
-  font-size: clamp(1rem, 2.4vw, 1.5rem);
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  overflow-wrap: anywhere;
-  color: var(--ink);
-  transition: color var(--motion-fast) var(--ease-out);
-}
-
 .channel-value {
   display: block;
   margin-top: 0.35rem;
   font-family: var(--font-mono), monospace;
-  font-size: 15px;
+  font-size: 17px;
   overflow-wrap: anywhere;
   color: var(--ink);
   transition: color var(--motion-fast) var(--ease-out);
 }
 
-a.channel-main:hover .channel-mail,
-a.channel-main:focus-visible .channel-mail,
 a.channel-tile:hover .channel-value,
 a.channel-tile:focus-visible .channel-value {
   color: var(--accent);
@@ -1075,18 +1035,6 @@ a.channel-tile:focus-visible .channel-value {
   color: var(--ink-soft);
 }
 
-.channel-go {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  flex-shrink: 0;
-  font-family: var(--font-mono), monospace;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--ink-faint);
-  transition: color var(--motion-fast) var(--ease-out);
-}
-
 .channel-arrow {
   font-family: var(--font-mono), monospace;
   font-size: 14px;
@@ -1094,10 +1042,6 @@ a.channel-tile:focus-visible .channel-value {
   transition: color var(--motion-fast) var(--ease-out);
 }
 
-a.channel-main:hover .channel-go,
-a.channel-main:focus-visible .channel-go,
-a.channel-main:hover .channel-arrow,
-a.channel-main:focus-visible .channel-arrow,
 a.channel-tile:hover .channel-arrow,
 a.channel-tile:focus-visible .channel-arrow {
   color: var(--accent);
@@ -1110,8 +1054,6 @@ a.channel-tile:focus-visible .channel-arrow {
       transform var(--motion-base) var(--ease-out);
   }
 
-  a.channel-main:hover .channel-arrow,
-  a.channel-main:focus-visible .channel-arrow,
   a.channel-tile:hover .channel-arrow,
   a.channel-tile:focus-visible .channel-arrow {
     transform: translateX(3px);
@@ -1158,16 +1100,16 @@ a.channel-tile:focus-visible .channel-arrow {
 /* Al ir hacia el botón el ratón sale del <a> y la tarjeta se apagaba justo
    cuando el usuario iba a pulsar. */
 @supports selector(:has(*)) {
-  .channel-main-slot:has(.copy-btn:hover) .channel-main {
+  li:has(.copy-btn:hover) .channel-tile {
     border-color: var(--accent-line);
     box-shadow: var(--shadow-lg);
   }
 
-  .channel-main-slot:has(.copy-btn:hover) .channel-main::before {
+  li:has(.copy-btn:hover) .channel-tile::before {
     opacity: 1;
   }
 
-  .channel-main-slot:has(.copy-btn:hover) .channel-glyph {
+  li:has(.copy-btn:hover) .channel-glyph {
     color: var(--accent);
   }
 }
