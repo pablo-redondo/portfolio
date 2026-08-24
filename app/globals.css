@@ -882,18 +882,17 @@ body {
   color: var(--accent);
 }
 
-/* Llamada del pie. Un enlace de texto pequeño y no una barra: la card
-   entera ya es el enlace, así que la barra solo repetía el área pulsable
-   con más peso del que le tocaba. La flecha es la que se mueve. */
+/* Llamada del pie: una flecha y nada más. Ni barra ni rótulo — la card
+   entera es el enlace y el título ya le da nombre, así que un "caso de
+   estudio" repetido seis veces en la rejilla solo añadía texto. La flecha
+   marca la dirección; el movimiento lo hace ella. */
 .card-cta {
   display: inline-flex;
   flex-shrink: 0;
   align-items: center;
-  gap: 0.375rem;
   font-family: var(--font-mono), monospace;
-  font-size: 11px;
-  font-weight: 600;
-  white-space: nowrap;
+  font-size: 15px;
+  line-height: 1;
   color: var(--ink-faint);
   transition: color var(--motion-fast) var(--ease-out);
 }
@@ -901,10 +900,6 @@ body {
 .project-card:hover .card-cta,
 .project-card:focus-visible .card-cta {
   color: var(--accent);
-}
-
-.card-cta-arrow {
-  display: inline-block;
 }
 
 @media (prefers-reduced-motion: no-preference) {

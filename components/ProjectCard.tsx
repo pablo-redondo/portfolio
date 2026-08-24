@@ -71,11 +71,10 @@ export function ProjectCard({ project }: Props) {
           <span className="logo-count">sin dependencias</span>
         )}
 
-        <span className="card-cta">
-          caso de estudio
-          <span aria-hidden className="card-cta-arrow">
-            →
-          </span>
+        {/* Solo la flecha: la card entera es el enlace y el título ya le da
+            nombre, así que el rótulo repetía seis veces lo mismo. */}
+        <span aria-hidden className="card-cta card-cta-arrow">
+          →
         </span>
       </div>
 
