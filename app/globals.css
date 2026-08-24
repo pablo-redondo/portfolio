@@ -1511,31 +1511,36 @@ body {
 
 @media (prefers-reduced-motion: no-preference) {
   .tech-card {
-    animation: tech-in 420ms var(--ease-out) backwards;
+    animation: tech-in 380ms var(--ease-out) backwards;
+    /* Índice dentro de lo que enseña el filtro activo: por defecto el de la
+       lista completa, y la regla de abajo lo cambia al de la capa cuando hay
+       una marcada. Los dos los pone el componente en cada tarjeta. El tope
+       corta la cascada donde deja de leerse como cascada y empieza a ser
+       espera. */
+    --n: var(--i);
+    animation-delay: calc(min(var(--n, 0), 7) * 32ms);
   }
 
-  .tech-card:nth-child(2) {
-    animation-delay: 35ms;
-  }
-  .tech-card:nth-child(3) {
-    animation-delay: 70ms;
-  }
-  .tech-card:nth-child(4) {
-    animation-delay: 105ms;
-  }
-  .tech-card:nth-child(5) {
-    animation-delay: 140ms;
-  }
-  .tech-card:nth-child(6) {
-    animation-delay: 175ms;
-  }
-  .tech-card:nth-child(7) {
-    animation-delay: 210ms;
-  }
-  /* A partir de la octava el escalonado ya no se percibe y solo retrasa
-     contenido: entran juntas. */
-  .tech-card:nth-child(n + 8) {
-    animation-delay: 245ms;
+  /* `nth-child` cuenta hijos del DOM, no tarjetas visibles: con el filtro
+     en infra (las tarjetas 9, 10 y 11 de la lista) las tres caían en el
+     mismo escalón y entraban de golpe tras una pausa muerta, mientras que
+     frontend (1 a 4) sí escalonaba. De ahí que cada filtro se moviera
+     distinto. Con "todo" manda el índice global; con una capa, el índice
+     dentro de esa capa, que es justo el orden en que se ven. */
+  .stack-scope:has(input[value="frontend"]:checked) .tech-card,
+  .stack-scope:has(input[value="backend"]:checked) .tech-card,
+  .stack-scope:has(input[value="infra"]:checked) .tech-card,
+  .stack-scope:has(input[value="tooling"]:checked) .tech-card {
+    --n: var(--j);
+    /* Mismos fotogramas que `tech-in`, otro nombre a propósito. Una
+       animación solo vuelve a arrancar si cambia de nombre o si el elemento
+       pasa por `display: none`. Entre dos capas distintas no se salvaba
+       ninguna tarjeta, así que reentraban solas; pero entre "todo" y una
+       capa las de esa capa nunca se ocultan, y se quedaban quietas
+       saltando a su nueva posición mientras el resto sí animaba. Con el
+       nombre distinto la rejilla se recompone entera, venga de donde
+       venga. */
+    animation-name: tech-in-capa;
   }
 }
 
@@ -1551,6 +1556,19 @@ body {
 }
 
 @keyframes tech-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Copia deliberada de `tech-in`: lo que importa aquí es el nombre, no los
+   fotogramas (ver el bloque de arriba). */
+@keyframes tech-in-capa {
   from {
     opacity: 0;
     transform: translateY(10px) scale(0.98);

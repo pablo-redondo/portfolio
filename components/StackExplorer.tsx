@@ -46,6 +46,19 @@ export function StackExplorer({ stack }: { stack: TechChoice[] }) {
     filtros.map((f) => [`--cols-${f.value}`, columnas(f.count)]),
   ) as CSSProperties;
 
+  // El escalonado de entrada tiene que seguir el orden de lo que se VE, no
+  // la posición en el DOM: con `nth-child` la capa infra (tarjetas 9 a 11)
+  // arrancaba entera en el mismo fotograma tras una pausa muerta, mientras
+  // que frontend (1 a 4) sí cascadeaba. Cada tarjeta lleva su índice en la
+  // lista completa y su índice dentro de su capa, y el CSS usa uno u otro
+  // según el filtro marcado.
+  const porCapa = new Map<TechCategory, number>();
+  const indices = ordenadas.map((tech, i) => {
+    const j = porCapa.get(tech.category) ?? 0;
+    porCapa.set(tech.category, j + 1);
+    return { "--i": i, "--j": j } as CSSProperties;
+  });
+
   return (
     <fieldset className="stack-scope min-w-0" style={cuentas}>
       <legend className="sr-only">Filtrar el stack por capa</legend>
@@ -69,10 +82,11 @@ export function StackExplorer({ stack }: { stack: TechChoice[] }) {
       </Reveal>
 
       <Reveal stagger className="stack-grid grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {ordenadas.map((tech) => (
+        {ordenadas.map((tech, i) => (
           <article
             key={tech.name}
             data-capa={tech.category}
+            style={indices[i]}
             className="card-scan tech-card group"
           >
             <div className="flex items-center justify-between gap-3">
