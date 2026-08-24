@@ -872,22 +872,6 @@ body {
   background: var(--surface-2);
 }
 
-/* Terciario: acciones de menor peso, como volver atrás. */
-.btn-ghost {
-  background: transparent;
-  color: var(--ink-soft);
-  padding-inline: 0.625rem;
-  transition:
-    color var(--motion-fast) var(--ease-out),
-    background-color var(--motion-fast) var(--ease-out);
-}
-
-.btn-ghost:hover,
-.btn-ghost:focus-visible {
-  color: var(--ink);
-  background: var(--surface-2);
-}
-
 /* Enlace de texto dentro del contenido. Se subraya, que es lo que
    distingue un enlace de una etiqueta sin recurrir a un icono. */
 .link-quiet {
@@ -914,8 +898,7 @@ body {
 
 @media (prefers-reduced-motion: no-preference) {
   .btn-primary:active,
-  .btn-secondary:active,
-  .btn-ghost:active {
+  .btn-secondary:active {
     transform: translateY(1px);
   }
 }

@@ -97,15 +97,11 @@ export default async function ProjectPage({ params }: Props) {
         <HeroGrid />
         <Container>
           <div className="py-16 sm:py-20">
-            <Link href="/proyectos" className="btn btn-ghost -ml-2.5" data-enter="1">
-              Volver a proyectos
-            </Link>
-
             {/* El h1 es el LCP de esta página: su entrada mueve solo el
                 transform, nunca la opacidad. */}
             <div
               data-enter="lcp"
-              className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3"
+              className="flex flex-wrap items-center gap-x-4 gap-y-3"
             >
               <h1 className="font-mono text-4xl font-bold tracking-tight sm:text-5xl">
                 {project.title}
@@ -159,20 +155,27 @@ export default async function ProjectPage({ params }: Props) {
         </section>
       )}
 
-      {/* --- Contexto y reto, a dos columnas --- */}
+      {/* --- Contexto y reto ---
+           Apilados y no a dos columnas: el largo de los dos textos lo marca
+           el contenido de cada proyecto, y la diferencia llega a ser de más
+           del doble —en Marqués, 328 caracteres contra 710—. Uno al lado del
+           otro, la columna corta dejaba un hueco enorme debajo que ningún
+           ajuste de estilos podía cuadrar. Apilados, cada uno ocupa lo que
+           necesita y la diferencia de largo deja de leerse como un
+           desequilibrio. --- */}
       <section className="border-b border-line py-16">
         <Container>
-          <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
+          <div className="flex flex-col gap-12">
             <MaybeReveal animate={hayTimeline}>
               <SectionHeading eyebrow="por qué existe" title="Contexto" />
-              <p className="max-w-[62ch] leading-relaxed text-ink-soft">
+              <p className="max-w-[72ch] leading-relaxed text-ink-soft">
                 {caseStudy.problem}
               </p>
             </MaybeReveal>
 
             <MaybeReveal animate={hayTimeline}>
               <SectionHeading eyebrow="lo más difícil" title="Reto técnico" />
-              <p className="max-w-[62ch] leading-relaxed text-ink-soft">
+              <p className="max-w-[72ch] leading-relaxed text-ink-soft">
                 {caseStudy.challenge}
               </p>
             </MaybeReveal>
