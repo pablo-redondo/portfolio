@@ -913,17 +913,92 @@ body {
   }
 }
 
-/* --- Canales de contacto -----------------------------------
-   Una card por vía. El glifo va en su propia baldosa arriba a la
-   izquierda en vez de como marca de agua al fondo: a ese tamaño se
-   reconoce, y la baldosa da dónde apoyar el color de acento al pasar. */
+/* --- Lista de canales de contacto --------------------------
+   Cuatro cards en rejilla eran cuatro cajas iguales repitiendo la misma
+   forma, y con la terminal ya en el hero la página se quedaba en un
+   muestrario de rectángulos. Una sola pieza con cuatro filas separadas por
+   hairlines contrasta con ella y ordena mejor: el valor de cada canal
+   ocupa el ancho que necesita en vez de partirse dentro de una card
+   estrecha. */
+
+.channel-list {
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.channel-item {
+  position: relative;
+}
+
+.channel-item + .channel-item {
+  border-top: 1px solid var(--line);
+}
+
+.channel-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.125rem 1.25rem;
+  transition: background-color var(--motion-fast) var(--ease-out);
+}
+
+@media (min-width: 48rem) {
+  .channel-row {
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    gap: 1.5rem;
+    padding: 1.25rem 1.5rem;
+  }
+}
+
+/* El botón de copiar va superpuesto y no en la rejilla, así que quien deja
+   sitio es la pista: la flecha se queda al final igual que en el resto de
+   filas, y el botón cae entre las dos. */
+@media (min-width: 48rem) {
+  .channel-row-copy .channel-hint {
+    margin-right: 5rem;
+  }
+}
+
+a.channel-row:hover,
+a.channel-row:focus-visible {
+  background: var(--surface-2);
+}
+
+/* Filo de acento que crece desde el centro al activar la fila. Es lo que
+   marca cuál está seleccionada sin mover nada de sitio. */
+.channel-row::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 2px;
+  background: var(--accent);
+  transform: scaleY(0);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .channel-row::before {
+    transition: transform var(--motion-base) var(--ease-out);
+  }
+}
+
+a.channel-row:hover::before,
+a.channel-row:focus-visible::before {
+  transform: scaleY(1);
+}
 
 .channel-tile {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 2.5rem;
+  height: 2.5rem;
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
   background: var(--surface-2);
@@ -935,48 +1010,92 @@ body {
     transform var(--motion-base) var(--ease-out);
 }
 
-.channel-card:hover .channel-tile,
-.channel-card:focus-visible .channel-tile {
+a.channel-row:hover .channel-tile,
+a.channel-row:focus-visible .channel-tile {
   color: var(--accent);
   border-color: var(--accent-line);
   background: var(--surface);
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .channel-card:hover .channel-tile,
-  .channel-card:focus-visible .channel-tile {
-    transform: translateY(-2px) rotate(-4deg);
+  a.channel-row:hover .channel-tile,
+  a.channel-row:focus-visible .channel-tile {
+    transform: rotate(-6deg);
   }
 }
 
-.channel-foot {
-  margin-top: auto;
-  padding-top: 1.5rem;
+.channel-label {
+  display: block;
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
 }
 
-.channel-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
+.channel-value {
+  display: block;
+  margin-top: 0.15rem;
   font-family: var(--font-mono), monospace;
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 15px;
+  overflow-wrap: anywhere;
+  color: var(--ink);
+  transition: color var(--motion-fast) var(--ease-out);
+}
+
+a.channel-row:hover .channel-value,
+a.channel-row:focus-visible .channel-value {
+  color: var(--accent);
+}
+
+/* La pista es contexto, no dato: por debajo de `md` compite con el valor
+   por el mismo ancho y se cae. */
+.channel-hint {
+  display: none;
+  font-size: 13px;
+  text-align: right;
+  color: var(--ink-soft);
+}
+
+@media (min-width: 48rem) {
+  .channel-hint {
+    display: block;
+  }
+}
+
+.channel-go {
+  font-family: var(--font-mono), monospace;
+  font-size: 15px;
   color: var(--ink-faint);
   transition: color var(--motion-fast) var(--ease-out);
 }
 
-.channel-card:hover .channel-cta,
-.channel-card:focus-visible .channel-cta {
+a.channel-row:hover .channel-go,
+a.channel-row:focus-visible .channel-go {
   color: var(--accent);
 }
 
-/* Botón de copiar el email. Va sobre la card, no dentro del enlace: por
-   encima en z, y con su propio foco. */
+@media (prefers-reduced-motion: no-preference) {
+  .channel-go {
+    transition:
+      color var(--motion-fast) var(--ease-out),
+      transform var(--motion-base) var(--ease-out);
+  }
+
+  a.channel-row:hover .channel-go,
+  a.channel-row:focus-visible .channel-go {
+    transform: translateX(3px);
+  }
+}
+
+/* Botón de copiar el email. Superpuesto a la fila y fuera de su enlace,
+   con su propio foco. */
 .copy-btn {
   position: absolute;
-  right: 1.5rem;
-  bottom: 1.4rem;
+  top: 50%;
+  right: 3.5rem;
   z-index: 2;
+  transform: translateY(-50%);
   border: 1px solid var(--line);
   border-radius: 999px;
   background: var(--surface-2);
@@ -989,6 +1108,14 @@ body {
     color var(--motion-fast) var(--ease-out),
     border-color var(--motion-fast) var(--ease-out),
     background-color var(--motion-fast) var(--ease-out);
+}
+
+/* Por debajo de `md` la fila no reserva hueco: el botón se llevaría por
+   delante el email. */
+@media (max-width: 47.99rem) {
+  .copy-btn {
+    display: none;
+  }
 }
 
 .copy-btn:hover {
@@ -1007,34 +1134,21 @@ body {
   border-color: var(--accent-line);
 }
 
-/* El botón de copiar tapa una esquina de la card y no está dentro de su
-   enlace, así que al ir hacia él el ratón sale del <a> y la card se
-   desactivaba justo cuando el usuario iba a pulsar. Estas reglas mantienen
-   la card encendida mientras el puntero esté en el botón. */
+/* Al ir hacia el botón el ratón sale del <a> y la fila se apagaba justo
+   cuando el usuario iba a pulsar. */
 @supports selector(:has(*)) {
-  .channel-slot:has(.copy-btn:hover) .channel-card {
-    border-color: var(--accent-line);
-    box-shadow: var(--shadow-lg);
+  .channel-item:has(.copy-btn:hover) .channel-row {
+    background: var(--surface-2);
   }
 
-  .channel-slot:has(.copy-btn:hover) .channel-tile {
+  .channel-item:has(.copy-btn:hover) .channel-row::before {
+    transform: scaleY(1);
+  }
+
+  .channel-item:has(.copy-btn:hover) .channel-tile {
     color: var(--accent);
     border-color: var(--accent-line);
     background: var(--surface);
-  }
-
-  .channel-slot:has(.copy-btn:hover) .channel-cta {
-    color: var(--accent);
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .channel-slot:has(.copy-btn:hover) .channel-card {
-      transform: translateY(-3px);
-    }
-
-    .channel-slot:has(.copy-btn:hover) .channel-tile {
-      transform: translateY(-2px) rotate(-4deg);
-    }
   }
 }
 

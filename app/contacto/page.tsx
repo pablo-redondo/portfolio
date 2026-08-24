@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import type { Metadata } from "next";
 import { Container } from "@/components/Container";
 import { SectionLabel } from "@/components/SectionLabel";
@@ -10,7 +11,8 @@ import { Terminal, type TerminalLine } from "@/components/Terminal";
 import { SITE } from "@/content/site";
 
 const TITLE = "Contacto";
-const DESCRIPTION = "Contacta con Pablo Redondo — email, GitHub, LinkedIn y CV.";
+const DESCRIPTION =
+  "Contacta con Pablo Redondo — email, GitHub, LinkedIn y CV.";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -24,13 +26,12 @@ type Channel = {
   value: string;
   href?: string;
   hint: string;
-  cta: string;
 };
 
 /**
- * Los mismos datos de la ficha de /sobre-mi, en el idioma de la web. Aquí no
- * son repetición gratuita: quien entra directo a contactar no debería tener
- * que irse a otra página para saber dónde estoy o en qué idiomas trabajo.
+ * La ficha de datos, contada como una sesión de shell. Va en el hero, al
+ * lado del titular: es lo que se pregunta en el primer mensaje, así que
+ * llega antes de que haga falta preguntarlo.
  */
 const SESION: TerminalLine[] = [
   { command: "whoami", output: "pablo-redondo · desarrollador full-stack" },
@@ -52,6 +53,24 @@ const SESION: TerminalLine[] = [
   },
 ];
 
+/**
+ * Puntos por donde puede partirse un valor largo en pantallas estrechas.
+ *
+ * Sin esto, `overflow-wrap: anywhere` corta por donde le toca —el email
+ * acababa partido en "…@gma / il.com"—. Marcando `@` y `/` como
+ * oportunidades de corte, el navegador parte por la costura natural y solo
+ * recurre a cortar a mitad de palabra si ni así cabe.
+ */
+function conCortes(value: string) {
+  const trozos = value.split(/(?<=[@/])/);
+  return trozos.map((trozo, i) => (
+    <Fragment key={i}>
+      {trozo}
+      {i < trozos.length - 1 && <wbr />}
+    </Fragment>
+  ));
+}
+
 export default function ContactoPage() {
   const channels: Channel[] = [
     {
@@ -60,7 +79,6 @@ export default function ContactoPage() {
       value: SITE.email,
       href: `mailto:${SITE.email}`,
       hint: "La vía más directa",
-      cta: "Escribir",
     },
     {
       icon: "github",
@@ -68,7 +86,6 @@ export default function ContactoPage() {
       value: SITE.github.replace("https://", ""),
       href: SITE.github,
       hint: "El código de todo lo que hay aquí",
-      cta: "Ver el perfil",
     },
     {
       icon: "linkedin",
@@ -79,7 +96,6 @@ export default function ContactoPage() {
         : "próximamente",
       href: SITE.linkedin,
       hint: "Para conectar",
-      cta: "Ir a LinkedIn",
     },
     {
       icon: "cv",
@@ -87,16 +103,18 @@ export default function ContactoPage() {
       value: SITE.cvUrl ? "descargar PDF" : "próximamente",
       href: SITE.cvUrl,
       hint: "Un folio, sin florituras",
-      cta: "Descargar",
     },
   ];
 
   return (
-    <>
-      <section className="hero-glow">
-        <HeroGrid />
-        <Container>
-          <div className="pt-16 pb-12 sm:pt-24 sm:pb-16">
+    <section className="hero-glow">
+      <HeroGrid />
+      <Container>
+        {/* Titular y terminal a la misma altura: `items-center` reparte el
+            aire sobrante arriba y abajo del bloque más corto en vez de
+            dejarlo todo debajo. */}
+        <div className="grid items-center gap-12 py-16 sm:py-24 lg:grid-cols-[minmax(0,1fr)_minmax(0,34rem)] lg:gap-16">
+          <div>
             <div data-enter="1">
               <SectionLabel>cat contacto.md</SectionLabel>
             </div>
@@ -108,93 +126,76 @@ export default function ContactoPage() {
             </h1>
             <p
               data-enter="3"
-              className="mt-5 max-w-[54ch] text-lg text-ink-soft"
+              className="mt-5 max-w-[46ch] text-lg text-ink-soft"
             >
               Busco mi primera posición como desarrollador full-stack. Sin
               formulario ni backend de por medio: un email directo funciona
               mejor.
             </p>
+          </div>
 
-            <Reveal stagger className="mt-12 grid gap-4 sm:grid-cols-2">
-              {channels.map((channel) => {
-                const body = (
-                  <>
-                    <div className="flex items-start justify-between gap-3">
-                      <span className="channel-tile">
-                        <ChannelIcon
-                          name={channel.icon}
-                          className="h-[18px] w-[18px]"
-                        />
-                      </span>
-                      <span className="font-mono text-[11px] tracking-wider text-ink-faint uppercase">
-                        {channel.label}
-                      </span>
-                    </div>
+          {/* Sin `Reveal`: está sobre el pliegue, así que se teclea al cargar.
+              Retenerla hasta entrar en pantalla la dejaría escrita antes de
+              que nadie la viese. */}
+          <div data-enter="4" className="min-w-0">
+            <Terminal lines={SESION} />
+          </div>
+        </div>
 
-                    <p className="mt-5 font-mono text-[15px] break-all text-ink transition-colors group-hover:text-accent">
-                      {channel.value}
-                    </p>
-                    <p className="mt-1.5 text-sm text-ink-soft">
-                      {channel.hint}
-                    </p>
+        {/* El relleno inferior va en el envoltorio, no en la lista: puesto
+            en ella quedaba dentro de su borde y abría un hueco muerto bajo
+            la última fila. */}
+        <div className="pb-16 sm:pb-24">
+          <Reveal stagger as="ul" className="channel-list">
+            {channels.map((channel) => {
+              const cuerpo = (
+                <>
+                  <span className="channel-tile">
+                    <ChannelIcon
+                      name={channel.icon}
+                      className="h-[18px] w-[18px]"
+                    />
+                  </span>
 
-                    <span className="channel-foot">
-                      <span className="channel-cta">
-                        {channel.cta}
-                        <span aria-hidden className="card-cta-arrow">
-                          →
-                        </span>
-                      </span>
+                  <span className="min-w-0">
+                    <span className="channel-label">{channel.label}</span>
+                    <span className="channel-value">
+                      {conCortes(channel.value)}
                     </span>
-                  </>
-                );
+                  </span>
 
-                return channel.href ? (
-                  <div key={channel.label} className="channel-slot relative">
+                  <span className="channel-hint">{channel.hint}</span>
+
+                  <span aria-hidden className="channel-go">
+                    →
+                  </span>
+                </>
+              );
+
+              const esEmail = channel.icon === "email";
+
+              return (
+                <li key={channel.label} className="channel-item">
+                  {channel.href ? (
                     <a
                       href={channel.href}
-                      className="card-lift card-scan surface-card channel-card group flex h-full flex-col p-6"
+                      className={`channel-row group ${esEmail ? "channel-row-copy" : ""}`}
                     >
-                      {body}
+                      {cuerpo}
                     </a>
-                    {/* Fuera del <a>: un botón dentro de un enlace no es
-                        marcado válido y el teclado se pierde entre los dos. */}
-                    {channel.icon === "email" && <CopyEmail value={SITE.email} />}
-                  </div>
-                ) : (
-                  <div key={channel.label} className="channel-slot relative">
-                    <div className="surface-card channel-card flex h-full flex-col p-6 opacity-60">
-                      {body}
-                    </div>
-                  </div>
-                );
-              })}
-            </Reveal>
-          </div>
-        </Container>
-      </section>
+                  ) : (
+                    <span className="channel-row opacity-60">{cuerpo}</span>
+                  )}
 
-      <section className="border-t border-line py-16 sm:py-20">
-        <Container>
-          <div className="grid gap-10 lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] lg:gap-16">
-            <Reveal>
-              <SectionLabel>whoami</SectionLabel>
-              <h2 className="font-mono text-2xl font-bold tracking-tight">
-                Lo básico
-              </h2>
-              <span className="heading-rule mt-4" aria-hidden />
-              <p className="mt-5 text-ink-soft">
-                Lo que se suele preguntar en el primer mensaje, resuelto antes
-                de escribirlo.
-              </p>
-            </Reveal>
-
-            <Reveal>
-              <Terminal lines={SESION} />
-            </Reveal>
-          </div>
-        </Container>
-      </section>
-    </>
+                  {/* Fuera del <a>: un botón dentro de un enlace no es marcado
+                    válido y el teclado se pierde entre los dos. */}
+                  {esEmail && channel.href && <CopyEmail value={SITE.email} />}
+                </li>
+              );
+            })}
+          </Reveal>
+        </div>
+      </Container>
+    </section>
   );
 }
