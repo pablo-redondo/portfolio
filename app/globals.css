@@ -913,114 +913,109 @@ body {
   }
 }
 
-/* --- Lista de canales de contacto --------------------------
-   Cuatro cards en rejilla eran cuatro cajas iguales repitiendo la misma
-   forma, y con la terminal ya en el hero la página se quedaba en un
-   muestrario de rectángulos. Una sola pieza con cuatro filas separadas por
-   hairlines contrasta con ella y ordena mejor: el valor de cada canal
-   ocupa el ancho que necesita en vez de partirse dentro de una card
-   estrecha. */
+/* --- Canales de contacto -----------------------------------
+   El email manda y las otras tres acompañan. Con cuatro tarjetas del mismo
+   tamaño el diseño contradecía al texto de al lado, que dice que el email
+   es la vía directa: ahora ocupa una tarjeta a ancho completo y el resto
+   van debajo en una fila de tres.
 
-.channel-list {
-  overflow: hidden;
+   El glifo va suelto y grande, sin baldosa que lo encierre: cuatro
+   cuadraditos con borde dentro de otras cuatro cajas con borde era lo que
+   hacía que todo pareciese el mismo rectángulo repetido. */
+
+.channel-main-slot {
+  position: relative;
+}
+
+.channel-main,
+.channel-tile {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
   border: 1px solid var(--line-strong);
   border-radius: var(--radius-lg);
   background: var(--surface);
   box-shadow: var(--shadow-sm);
+  padding: 1.75rem;
+  transition:
+    border-color var(--motion-fast) var(--ease-out),
+    box-shadow var(--motion-fast) var(--ease-out),
+    transform var(--motion-fast) var(--ease-out);
 }
 
-.channel-item {
-  position: relative;
-}
-
-.channel-item + .channel-item {
-  border-top: 1px solid var(--line);
-}
-
-.channel-row {
-  position: relative;
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 1rem;
-  padding: 1.125rem 1.25rem;
-  transition: background-color var(--motion-fast) var(--ease-out);
-}
-
-@media (min-width: 48rem) {
-  .channel-row {
-    grid-template-columns: auto minmax(0, 1fr) auto auto;
-    gap: 1.5rem;
-    padding: 1.25rem 1.5rem;
-  }
-}
-
-/* El botón de copiar va superpuesto y no en la rejilla, así que quien deja
-   sitio es la pista: la flecha se queda al final igual que en el resto de
-   filas, y el botón cae entre las dos. */
-@media (min-width: 48rem) {
-  .channel-row-copy .channel-hint {
-    margin-right: 5rem;
-  }
-}
-
-a.channel-row:hover,
-a.channel-row:focus-visible {
-  background: var(--surface-2);
-}
-
-/* Filo de acento que crece desde el centro al activar la fila. Es lo que
-   marca cuál está seleccionada sin mover nada de sitio. */
-.channel-row::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 2px;
-  background: var(--accent);
-  transform: scaleY(0);
+a.channel-main:hover,
+a.channel-main:focus-visible,
+a.channel-tile:hover,
+a.channel-tile:focus-visible {
+  border-color: var(--accent-line);
+  box-shadow: var(--shadow-lg);
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .channel-row::before {
-    transition: transform var(--motion-base) var(--ease-out);
+  a.channel-main:hover,
+  a.channel-main:focus-visible,
+  a.channel-tile:hover,
+  a.channel-tile:focus-visible {
+    transform: translateY(-3px);
   }
 }
 
-a.channel-row:hover::before,
-a.channel-row:focus-visible::before {
-  transform: scaleY(1);
+/* Un velo de acento que sube desde el pie al activar la tarjeta. Es lo que
+   les da carácter propio sin meterles otra caja dentro: la superficie
+   cambia entera en vez de encenderse solo un borde. */
+.channel-main::before,
+.channel-tile::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(
+    to top,
+    color-mix(in oklab, var(--accent) 12%, transparent),
+    transparent 62%
+  );
+  opacity: 0;
+  transition: opacity var(--motion-base) var(--ease-out);
 }
 
-.channel-tile {
-  display: inline-flex;
+a.channel-main:hover::before,
+a.channel-main:focus-visible::before,
+a.channel-tile:hover::before,
+a.channel-tile:focus-visible::before {
+  opacity: 1;
+}
+
+.channel-head {
+  display: flex;
   align-items: center;
-  justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-md);
-  background: var(--surface-2);
+  gap: 0.875rem;
+}
+
+.channel-glyph {
+  width: 1.75rem;
+  height: 1.75rem;
   color: var(--ink-faint);
   transition:
     color var(--motion-base) var(--ease-out),
-    border-color var(--motion-base) var(--ease-out),
-    background-color var(--motion-base) var(--ease-out),
     transform var(--motion-base) var(--ease-out);
 }
 
-a.channel-row:hover .channel-tile,
-a.channel-row:focus-visible .channel-tile {
+a.channel-main:hover .channel-glyph,
+a.channel-main:focus-visible .channel-glyph,
+a.channel-tile:hover .channel-glyph,
+a.channel-tile:focus-visible .channel-glyph {
   color: var(--accent);
-  border-color: var(--accent-line);
-  background: var(--surface);
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  a.channel-row:hover .channel-tile,
-  a.channel-row:focus-visible .channel-tile {
-    transform: rotate(-6deg);
+  a.channel-main:hover .channel-glyph,
+  a.channel-main:focus-visible .channel-glyph,
+  a.channel-tile:hover .channel-glyph,
+  a.channel-tile:focus-visible .channel-glyph {
+    transform: scale(1.12) rotate(-6deg);
   }
 }
 
@@ -1028,14 +1023,28 @@ a.channel-row:focus-visible .channel-tile {
   display: block;
   font-family: var(--font-mono), monospace;
   font-size: 10px;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink-faint);
 }
 
+/* La dirección es el dato que se viene a buscar: al tamaño del titular de
+   una sección, no al del cuerpo. */
+.channel-mail {
+  display: block;
+  margin-top: 1.25rem;
+  font-family: var(--font-mono), monospace;
+  font-size: clamp(1rem, 2.4vw, 1.5rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  overflow-wrap: anywhere;
+  color: var(--ink);
+  transition: color var(--motion-fast) var(--ease-out);
+}
+
 .channel-value {
   display: block;
-  margin-top: 0.15rem;
+  margin-top: 0.35rem;
   font-family: var(--font-mono), monospace;
   font-size: 15px;
   overflow-wrap: anywhere;
@@ -1043,63 +1052,83 @@ a.channel-row:focus-visible .channel-tile {
   transition: color var(--motion-fast) var(--ease-out);
 }
 
-a.channel-row:hover .channel-value,
-a.channel-row:focus-visible .channel-value {
+a.channel-main:hover .channel-mail,
+a.channel-main:focus-visible .channel-mail,
+a.channel-tile:hover .channel-value,
+a.channel-tile:focus-visible .channel-value {
   color: var(--accent);
 }
 
-/* La pista es contexto, no dato: por debajo de `md` compite con el valor
-   por el mismo ancho y se cae. */
+/* `margin-top: auto` iguala los pies de las tres tarjetas de abajo aunque
+   sus pistas midan distinto. */
+.channel-foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: auto;
+  padding-top: 1.75rem;
+}
+
 .channel-hint {
-  display: none;
   font-size: 13px;
-  text-align: right;
   color: var(--ink-soft);
 }
 
-@media (min-width: 48rem) {
-  .channel-hint {
-    display: block;
-  }
-}
-
 .channel-go {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
   font-family: var(--font-mono), monospace;
-  font-size: 15px;
+  font-size: 12px;
+  font-weight: 600;
   color: var(--ink-faint);
   transition: color var(--motion-fast) var(--ease-out);
 }
 
-a.channel-row:hover .channel-go,
-a.channel-row:focus-visible .channel-go {
+.channel-arrow {
+  font-family: var(--font-mono), monospace;
+  font-size: 14px;
+  color: var(--ink-faint);
+  transition: color var(--motion-fast) var(--ease-out);
+}
+
+a.channel-main:hover .channel-go,
+a.channel-main:focus-visible .channel-go,
+a.channel-main:hover .channel-arrow,
+a.channel-main:focus-visible .channel-arrow,
+a.channel-tile:hover .channel-arrow,
+a.channel-tile:focus-visible .channel-arrow {
   color: var(--accent);
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .channel-go {
+  .channel-arrow {
     transition:
       color var(--motion-fast) var(--ease-out),
       transform var(--motion-base) var(--ease-out);
   }
 
-  a.channel-row:hover .channel-go,
-  a.channel-row:focus-visible .channel-go {
+  a.channel-main:hover .channel-arrow,
+  a.channel-main:focus-visible .channel-arrow,
+  a.channel-tile:hover .channel-arrow,
+  a.channel-tile:focus-visible .channel-arrow {
     transform: translateX(3px);
   }
 }
 
-/* Botón de copiar el email. Superpuesto a la fila y fuera de su enlace,
-   con su propio foco. */
+/* Botón de copiar el email: en la esquina superior derecha de la tarjeta
+   grande, lejos de la zona donde cae el ratón al ir a "Escribir". */
 .copy-btn {
   position: absolute;
-  top: 50%;
-  right: 3.5rem;
+  top: 1.5rem;
+  right: 1.5rem;
   z-index: 2;
-  transform: translateY(-50%);
   border: 1px solid var(--line);
   border-radius: 999px;
   background: var(--surface-2);
-  padding: 0.3rem 0.7rem;
+  padding: 0.35rem 0.8rem;
   font-family: var(--font-mono), monospace;
   font-size: 11px;
   color: var(--ink-soft);
@@ -1108,14 +1137,6 @@ a.channel-row:focus-visible .channel-go {
     color var(--motion-fast) var(--ease-out),
     border-color var(--motion-fast) var(--ease-out),
     background-color var(--motion-fast) var(--ease-out);
-}
-
-/* Por debajo de `md` la fila no reserva hueco: el botón se llevaría por
-   delante el email. */
-@media (max-width: 47.99rem) {
-  .copy-btn {
-    display: none;
-  }
 }
 
 .copy-btn:hover {
@@ -1134,21 +1155,20 @@ a.channel-row:focus-visible .channel-go {
   border-color: var(--accent-line);
 }
 
-/* Al ir hacia el botón el ratón sale del <a> y la fila se apagaba justo
+/* Al ir hacia el botón el ratón sale del <a> y la tarjeta se apagaba justo
    cuando el usuario iba a pulsar. */
 @supports selector(:has(*)) {
-  .channel-item:has(.copy-btn:hover) .channel-row {
-    background: var(--surface-2);
-  }
-
-  .channel-item:has(.copy-btn:hover) .channel-row::before {
-    transform: scaleY(1);
-  }
-
-  .channel-item:has(.copy-btn:hover) .channel-tile {
-    color: var(--accent);
+  .channel-main-slot:has(.copy-btn:hover) .channel-main {
     border-color: var(--accent-line);
-    background: var(--surface);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .channel-main-slot:has(.copy-btn:hover) .channel-main::before {
+    opacity: 1;
+  }
+
+  .channel-main-slot:has(.copy-btn:hover) .channel-glyph {
+    color: var(--accent);
   }
 }
 
