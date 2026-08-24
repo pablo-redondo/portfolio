@@ -44,6 +44,11 @@ export interface ProjectRepo {
 export interface Project {
   slug: string;
   title: string;
+  /**
+   * Título para la card de la rejilla, cuando el completo es demasiado
+   * largo ahí. La página del proyecto sigue usando `title`.
+   */
+  cardTitle?: string;
   tagline: string;
   status: ProjectStatus;
   /** Solo true para el proyecto insignia (codequest-rpg). */

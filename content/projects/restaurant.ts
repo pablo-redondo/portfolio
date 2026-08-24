@@ -3,6 +3,7 @@ import type { Project } from "@/content/types";
 export const restaurant: Project = {
   slug: "restaurant",
   title: "Marqués — Sistema de Reservas",
+  cardTitle: "Sistema de Reservas",
   tagline:
     "Sistema de reservas full-stack para un restaurante: API REST (Node, Express, PostgreSQL) y frontend Next.js desplegados por separado y comunicándose en producción.",
   status: "live",

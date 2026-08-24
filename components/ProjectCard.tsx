@@ -42,7 +42,7 @@ export function ProjectCard({ project }: Props) {
           no descuadra nada y no hay por qué cortarlo con puntos
           suspensivos. */}
       <h2 className="mt-3.5 font-mono text-lg leading-snug font-bold tracking-tight text-balance text-ink transition-colors group-hover:text-accent">
-        {project.title}
+        {project.cardTitle ?? project.title}
       </h2>
 
       {/* Se dibuja de cero a ancho completo al pasar por la card. Sustituye
