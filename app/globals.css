@@ -913,218 +913,21 @@ body {
   }
 }
 
-/* --- Canales de contacto -----------------------------------
-   Cuatro tarjetas iguales en rejilla de dos por dos, estiradas al ancho
-   que haya.
-
-   El glifo va suelto y grande, sin baldosa que lo encierre: cuatro
-   cuadraditos con borde dentro de otras cuatro cajas con borde era lo que
-   hacía que todo pareciese el mismo rectángulo repetido. */
-
-.channel-tile {
-  position: relative;
-  isolation: isolate;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  border: 1px solid var(--line-strong);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-  box-shadow: var(--shadow-sm);
-  padding: 1.75rem;
-  transition:
-    border-color var(--motion-fast) var(--ease-out),
-    box-shadow var(--motion-fast) var(--ease-out),
-    transform var(--motion-fast) var(--ease-out);
-}
-
-a.channel-tile:hover,
-a.channel-tile:focus-visible {
-  border-color: var(--accent-line);
-  box-shadow: var(--shadow-lg);
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a.channel-tile:hover,
-  a.channel-tile:focus-visible {
-    transform: translateY(-3px);
-  }
-}
-
-/* Un velo de acento que sube desde el pie al activar la tarjeta. Es lo que
-   les da carácter propio sin meterles otra caja dentro: la superficie
-   cambia entera en vez de encenderse solo un borde. */
-.channel-tile::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  border-radius: inherit;
-  background: linear-gradient(
-    to top,
-    color-mix(in oklab, var(--accent) 12%, transparent),
-    transparent 62%
-  );
-  opacity: 0;
-  transition: opacity var(--motion-base) var(--ease-out);
-}
-
-a.channel-tile:hover::before,
-a.channel-tile:focus-visible::before {
-  opacity: 1;
-}
-
-.channel-glyph {
-  width: 1.75rem;
-  height: 1.75rem;
-  color: var(--ink-faint);
-  transition:
-    color var(--motion-base) var(--ease-out),
-    transform var(--motion-base) var(--ease-out);
-}
-
-a.channel-tile:hover .channel-glyph,
-a.channel-tile:focus-visible .channel-glyph {
-  color: var(--accent);
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a.channel-tile:hover .channel-glyph,
-  a.channel-tile:focus-visible .channel-glyph {
-    transform: scale(1.12) rotate(-6deg);
-  }
-}
-
-.channel-label {
-  display: block;
-  font-family: var(--font-mono), monospace;
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-}
-
-.channel-value {
-  display: block;
-  margin-top: 0.35rem;
-  font-family: var(--font-mono), monospace;
-  font-size: 17px;
-  overflow-wrap: anywhere;
-  color: var(--ink);
-  transition: color var(--motion-fast) var(--ease-out);
-}
-
-a.channel-tile:hover .channel-value,
-a.channel-tile:focus-visible .channel-value {
-  color: var(--accent);
-}
-
-/* `margin-top: auto` iguala los pies de las tres tarjetas de abajo aunque
-   sus pistas midan distinto. */
-.channel-foot {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-top: auto;
-  padding-top: 1.75rem;
-}
-
-.channel-hint {
-  font-size: 13px;
-  color: var(--ink-soft);
-}
-
-.channel-arrow {
-  font-family: var(--font-mono), monospace;
-  font-size: 14px;
-  color: var(--ink-faint);
-  transition: color var(--motion-fast) var(--ease-out);
-}
-
-a.channel-tile:hover .channel-arrow,
-a.channel-tile:focus-visible .channel-arrow {
-  color: var(--accent);
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .channel-arrow {
-    transition:
-      color var(--motion-fast) var(--ease-out),
-      transform var(--motion-base) var(--ease-out);
-  }
-
-  a.channel-tile:hover .channel-arrow,
-  a.channel-tile:focus-visible .channel-arrow {
-    transform: translateX(3px);
-  }
-}
-
-/* Botón de copiar el email: en la esquina superior derecha de la tarjeta
-   grande, lejos de la zona donde cae el ratón al ir a "Escribir". */
-.copy-btn {
-  position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
-  z-index: 2;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: var(--surface-2);
-  padding: 0.35rem 0.8rem;
-  font-family: var(--font-mono), monospace;
-  font-size: 11px;
-  color: var(--ink-soft);
-  cursor: pointer;
-  transition:
-    color var(--motion-fast) var(--ease-out),
-    border-color var(--motion-fast) var(--ease-out),
-    background-color var(--motion-fast) var(--ease-out);
-}
-
-.copy-btn:hover {
-  color: var(--ink);
-  border-color: var(--line-strong);
-  background: var(--surface);
-}
-
-.copy-btn[data-estado="copiado"] {
-  color: var(--teal);
-  border-color: var(--teal);
-}
-
-.copy-btn[data-estado="error"] {
-  color: var(--accent);
-  border-color: var(--accent-line);
-}
-
-/* Al ir hacia el botón el ratón sale del <a> y la tarjeta se apagaba justo
-   cuando el usuario iba a pulsar. */
-@supports selector(:has(*)) {
-  li:has(.copy-btn:hover) .channel-tile {
-    border-color: var(--accent-line);
-    box-shadow: var(--shadow-lg);
-  }
-
-  li:has(.copy-btn:hover) .channel-tile::before {
-    opacity: 1;
-  }
-
-  li:has(.copy-btn:hover) .channel-glyph {
-    color: var(--accent);
-  }
-}
-
-/* --- Bloque con forma de terminal --------------------------
-   La misma broma que las etiquetas de sección, a tamaño completo: los
-   datos que un reclutador pregunta primero, contados como una sesión de
-   shell en vez de como una tabla. */
+/* --- /contacto: la página es la terminal --------------------
+   Cuatro intentos de tarjetas (rejilla 2x2, lista con hairlines, una
+   destacada y tres pequeñas) fallaron por la misma razón: eran cajas
+   pegadas debajo de una terminal, y la terminal era lo único que tenía
+   carácter. Así que la terminal deja de ser un bloque dentro de la página
+   y pasa a ser la página entera. Los canales no son tarjetas: son la
+   salida del `ls` que hay justo encima, con cada línea enlazando a donde
+   toca. */
 
 .terminal {
   overflow: hidden;
   border: 1px solid var(--line-strong);
   border-radius: var(--radius-lg);
   background: var(--surface);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-lg);
 }
 
 .terminal-bar {
@@ -1159,22 +962,33 @@ a.channel-tile:focus-visible .channel-arrow {
 }
 
 .terminal-body {
-  padding: 1.5rem 1.25rem;
+  padding: 1.75rem 1.25rem 2rem;
   font-family: var(--font-mono), monospace;
   font-size: 13px;
   line-height: 1.6;
 }
 
+@media (min-width: 48rem) {
+  .terminal-body {
+    padding: 2.25rem 2rem 2.5rem;
+    font-size: 14px;
+  }
+}
+
 .terminal-block + .terminal-block {
-  margin-top: 1.1rem;
+  margin-top: 1.5rem;
 }
 
 .terminal-cmd {
   color: var(--ink-soft);
 }
 
+.terminal-prompt {
+  color: var(--accent);
+}
+
 .terminal-out {
-  margin-top: 0.2rem;
+  margin-top: 0.35rem;
   /* Alineada bajo el comando, no bajo el prompt: la sangría es la del
      "$ ", que en monoespaciada mide exactamente dos caracteres. */
   margin-left: 2ch;
@@ -1185,40 +999,256 @@ a.channel-tile:focus-visible .channel-arrow {
   color: var(--ink-faint);
 }
 
-/* Hueco reservado para la hora, que llega tras montar: sin él la línea
-   daría un salto al aparecer. */
-.local-time {
-  display: inline-block;
-  min-width: 4.2ch;
-  color: var(--teal);
+/* El titular vive dentro de la salida de `cat contacto.md`. Es la página,
+   así que va a tamaño de titular aunque el resto de la sesión sea de 14px:
+   la terminal es el marco, no una excusa para encoger el contenido. */
+.terminal-h1 {
+  font-family: var(--font-mono), monospace;
+  font-size: clamp(2rem, 6vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  color: var(--ink);
 }
 
-/* Punto latiendo junto a la hora: la señal de que está en vivo y no es un
-   valor escrito a mano. */
-.local-time-dot {
-  display: inline-block;
-  width: 0.35rem;
-  height: 0.35rem;
-  margin-left: 0.4rem;
+.terminal-parrafo {
+  margin-top: 1rem;
+  max-width: 58ch;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+
+/* --- Salida del `ls`: los canales --------------------------- */
+
+.ls {
+  margin-top: 0.25rem;
+}
+
+.ls-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 0.5rem 0.75rem;
+  /* El negativo saca el fondo del hover fuera de la sangría, para que la
+     fila resaltada llegue al borde del contenido y no parezca recortada. */
+  margin: 0 -0.75rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: var(--radius-md);
+  transition: background-color var(--motion-fast) var(--ease-out);
+}
+
+@media (min-width: 56rem) {
+  .ls-row {
+    grid-template-columns: auto 7rem minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 1.25rem;
+  }
+}
+
+a.ls-row:hover,
+a.ls-row:focus-visible {
+  background: var(--surface-2);
+}
+
+/* El filo de acento marca la línea activa igual que el cursor marca la
+   línea actual en un editor. */
+.ls-row::before {
+  content: "";
+  position: absolute;
+  top: 0.25rem;
+  bottom: 0.25rem;
+  left: 0;
+  width: 2px;
   border-radius: 999px;
-  background: var(--teal);
-  transform: translateY(-0.1em);
+  background: var(--accent);
+  transform: scaleY(0);
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .local-time-dot {
-    animation: pulso-vivo 2s var(--ease-out) infinite;
+  .ls-row::before {
+    transition: transform var(--motion-base) var(--ease-out);
   }
 }
 
-@keyframes pulso-vivo {
-  0%,
-  100% {
-    opacity: 1;
+a.ls-row:hover::before,
+a.ls-row:focus-visible::before {
+  transform: scaleY(1);
+}
+
+.ls-id {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+@media (min-width: 56rem) {
+  .ls-id {
+    display: contents;
   }
-  50% {
-    opacity: 0.25;
+}
+
+.ls-glyph {
+  width: 1.05rem;
+  height: 1.05rem;
+  color: var(--ink-faint);
+  transition:
+    color var(--motion-base) var(--ease-out),
+    transform var(--motion-base) var(--ease-out);
+}
+
+a.ls-row:hover .ls-glyph,
+a.ls-row:focus-visible .ls-glyph {
+  color: var(--accent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a.ls-row:hover .ls-glyph,
+  a.ls-row:focus-visible .ls-glyph {
+    transform: scale(1.15) rotate(-6deg);
   }
+}
+
+/* En `ls --color` los nombres van coloreados por tipo. Aquí el color hace
+   el mismo trabajo: distingue el nombre de la entrada de su valor. */
+.ls-name {
+  font-family: var(--font-mono), monospace;
+  color: var(--teal);
+}
+
+.ls-value {
+  min-width: 0;
+  font-family: var(--font-mono), monospace;
+  overflow-wrap: anywhere;
+  color: var(--ink);
+  transition: color var(--motion-fast) var(--ease-out);
+}
+
+a.ls-row:hover .ls-value,
+a.ls-row:focus-visible .ls-value {
+  color: var(--accent);
+}
+
+/* Contexto, no dato: por debajo de `lg` compite con el valor por el mismo
+   ancho y se cae. */
+.ls-note {
+  display: none;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 13px;
+  text-align: right;
+  color: var(--ink-soft);
+}
+
+@media (min-width: 56rem) {
+  .ls-note {
+    display: block;
+  }
+}
+
+.ls-arrow {
+  color: var(--ink-faint);
+  transition: color var(--motion-fast) var(--ease-out);
+}
+
+a.ls-row:hover .ls-arrow,
+a.ls-row:focus-visible .ls-arrow {
+  color: var(--accent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ls-arrow {
+    transition:
+      color var(--motion-fast) var(--ease-out),
+      transform var(--motion-base) var(--ease-out);
+  }
+
+  a.ls-row:hover .ls-arrow,
+  a.ls-row:focus-visible .ls-arrow {
+    transform: translateX(3px);
+  }
+}
+
+/* --- El prompt que acepta comandos -------------------------- */
+
+/* El prompt se monta en el cliente, así que su altura no está en el HTML
+   inicial y al aparecer empujaba el pie de la terminal. Reservarla evita
+   ese salto. Detrás de `scripting: enabled` porque sin JavaScript no hay
+   prompt que colocar y el hueco sobraría. */
+@media (scripting: enabled) {
+  .terminal-hueco {
+    min-height: 3.6rem;
+  }
+}
+
+/* Los bloques que va imprimiendo el prompt cuelgan de otro padre que los
+   de la sesión escrita, así que la regla de hermanos de arriba no los
+   alcanza y salían pegados al anterior. */
+.shell .terminal-block {
+  margin-top: 1.5rem;
+}
+
+/* El relleno y el margen negativo están siempre puestos, no solo al
+   enfocar: si aparecieran con el foco, la línea daría un salto justo al
+   pinchar en ella. */
+.shell-line {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5ch;
+  margin: 1.5rem -0.75rem 0;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-md);
+  background: transparent;
+  transition: background-color var(--motion-fast) var(--ease-out);
+}
+
+.shell-input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  color: var(--ink);
+  caret-color: var(--accent);
+  outline: none;
+}
+
+.shell-input::placeholder {
+  color: var(--ink-faint);
+  opacity: 0.7;
+}
+
+/* El foco se ve en el cursor y en el resalte de la línea, no en un anillo
+   alrededor de un campo que no tiene forma de campo. */
+.shell-line:focus-within {
+  background: var(--surface-2);
+}
+
+.shell-help {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.15rem 1.5rem;
+}
+
+/* Los <div> agrupan cada par para que el marcado siga siendo una lista de
+   definiciones válida; `display: contents` los saca de la rejilla para que
+   quien se coloque en ella sean el <dt> y el <dd>, no la caja de en medio
+   —que era lo que apilaba los pares en vez de alinearlos en dos columnas—. */
+.shell-help > div {
+  display: contents;
+}
+
+.shell-help dt {
+  color: var(--teal);
+}
+
+.shell-help dd {
+  color: var(--ink-soft);
+}
+
+.shell-error {
+  color: var(--accent);
 }
 
 /* El tecleo de la terminal usa duración y retardo propios de cada línea,
@@ -1230,7 +1260,10 @@ a.channel-tile:focus-visible .channel-arrow {
     animation-delay: var(--type-delay, 0ms);
   }
 
-  .terminal-out {
+  /* Solo las respuestas que "salen" al ejecutarse el comando. La del
+     primer bloque va marcada como ya impresa y no anima: contiene el <h1>,
+     y Chrome no cuenta como LCP un elemento que empieza invisible. */
+  .terminal-out-anim {
     animation: subir-corto 320ms var(--ease-out) var(--type-delay, 0ms) both;
   }
 }
@@ -1243,16 +1276,6 @@ a.channel-tile:focus-visible .channel-arrow {
   to {
     opacity: 1;
     transform: none;
-  }
-}
-
-/* Como en las etiquetas: dentro de un bloque con reveal la sesión espera a
-   entrar en pantalla. Sin JS el atributo se queda en "out", de ahí el
-   `scripting: enabled`. */
-@media (prefers-reduced-motion: no-preference) and (scripting: enabled) {
-  [data-reveal="out"] .terminal-out {
-    animation: none;
-    opacity: 0;
   }
 }
 
