@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Project } from "@/content/types";
 import { StatusBadge } from "@/components/StatusBadge";
+import { TechIcon } from "@/components/TechIcon";
 
 type Props = {
   project: Project;
@@ -43,7 +44,11 @@ export function ProjectCard({ project }: Props) {
           // midan distinto. El aire sobrante se va al hueco, no al final.
           <div className="mt-auto flex flex-wrap items-center gap-1.5 pt-5">
             {chips.map((tech) => (
-              <span key={tech.name} className="chip">
+              <span key={tech.name} className="chip gap-1.5">
+                {/* Sin punto de respaldo aquí: en un chip de 11px un punto
+                    suelto solo añade ruido, y su ausencia no descuadra nada
+                    porque los chips no van en columna. */}
+                <TechIcon name={tech.name} className="h-3 w-3 opacity-70" />
                 {tech.name}
               </span>
             ))}

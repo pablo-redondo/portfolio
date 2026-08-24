@@ -1,5 +1,6 @@
 import type { TechCategory, TechChoice } from "@/content/types";
 import { Reveal } from "@/components/Reveal";
+import { TechIcon } from "@/components/TechIcon";
 
 const CATEGORY_ORDER: TechCategory[] = ["frontend", "backend", "infra", "tooling"];
 
@@ -41,11 +42,12 @@ export function StackSummary({ stack }: { stack: TechChoice[] }) {
               {items.map((tech) => (
                 <li
                   key={tech.name}
-                  className="flex items-baseline gap-2.5 font-mono text-[13px] leading-snug text-ink"
+                  className="flex items-center gap-2.5 font-mono text-[13px] leading-snug text-ink"
                 >
-                  <span
-                    aria-hidden
-                    className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-accent/50"
+                  <TechIcon
+                    name={tech.name}
+                    fallbackDot
+                    className="h-3.5 w-3.5 text-ink-faint"
                   />
                   {tech.name}
                 </li>

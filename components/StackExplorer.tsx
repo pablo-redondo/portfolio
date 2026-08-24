@@ -1,5 +1,6 @@
 import type { TechCategory, TechChoice } from "@/content/types";
 import { Reveal } from "@/components/Reveal";
+import { TechIcon } from "@/components/TechIcon";
 
 const CATEGORY_ORDER: TechCategory[] = ["frontend", "backend", "infra", "tooling"];
 
@@ -62,9 +63,14 @@ export function StackExplorer({ stack }: { stack: TechChoice[] }) {
             data-capa={tech.category}
             className="card-scan tech-card group"
           >
-            <div className="flex items-baseline justify-between gap-3">
-              <h3 className="min-w-0 font-mono text-sm font-semibold text-ink">
-                {tech.name}
+            <div className="flex items-center justify-between gap-3">
+              <h3 className="flex min-w-0 items-center gap-2 font-mono text-sm font-semibold text-ink">
+                <TechIcon
+                  name={tech.name}
+                  fallbackDot
+                  className="h-4 w-4 text-ink-faint transition-colors group-hover:text-accent"
+                />
+                <span className="min-w-0">{tech.name}</span>
               </h3>
               <span className="shrink-0 font-mono text-[10px] tracking-wider text-ink-faint uppercase">
                 {CATEGORY_LABELS[tech.category]}
