@@ -1443,6 +1443,30 @@ body {
     [data-capa]:not([data-capa="tooling"]) {
     display: none;
   }
+
+  /* Las columnas se ajustan al número de tarjetas que deja ver cada filtro:
+     dos si es par, tres si es impar. La cuenta llega desde el componente en
+     una custom property, así que no hay números de contenido escritos aquí.
+
+     Solo a partir de `lg`: por debajo mandan las clases de utilidad, que ya
+     bajan a dos columnas y a una. */
+  @media (min-width: 64rem) {
+    .stack-scope:has(input[value="todo"]:checked) .stack-grid {
+      grid-template-columns: repeat(var(--cols-todo), minmax(0, 1fr));
+    }
+    .stack-scope:has(input[value="frontend"]:checked) .stack-grid {
+      grid-template-columns: repeat(var(--cols-frontend), minmax(0, 1fr));
+    }
+    .stack-scope:has(input[value="backend"]:checked) .stack-grid {
+      grid-template-columns: repeat(var(--cols-backend), minmax(0, 1fr));
+    }
+    .stack-scope:has(input[value="infra"]:checked) .stack-grid {
+      grid-template-columns: repeat(var(--cols-infra), minmax(0, 1fr));
+    }
+    .stack-scope:has(input[value="tooling"]:checked) .stack-grid {
+      grid-template-columns: repeat(var(--cols-tooling), minmax(0, 1fr));
+    }
+  }
 }
 
 /* Card de tecnología. Usa la superficie intermedia y un radio menor que

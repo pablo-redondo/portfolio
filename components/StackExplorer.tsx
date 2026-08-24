@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import type { TechCategory, TechChoice } from "@/content/types";
 import { Reveal } from "@/components/Reveal";
 import { TechIcon } from "@/components/TechIcon";
@@ -34,8 +35,19 @@ export function StackExplorer({ stack }: { stack: TechChoice[] }) {
     stack.filter((tech) => tech.category === category),
   );
 
+  // Misma regla que en las páginas de proyecto: dos columnas con un número
+  // par de tarjetas, tres con impar. Aquí el número cambia con el filtro, y
+  // el filtro es solo CSS, así que la cuenta de cada uno viaja como custom
+  // property y la hoja de estilos elige según cuál esté marcado. Se calculan
+  // del contenido en vez de escribirlas a mano en el CSS: si mañana cambia
+  // el stack, las columnas siguen cuadrando solas.
+  const columnas = (n: number) => (n % 2 === 1 ? 3 : 2);
+  const cuentas = Object.fromEntries(
+    filtros.map((f) => [`--cols-${f.value}`, columnas(f.count)]),
+  ) as CSSProperties;
+
   return (
-    <fieldset className="stack-scope min-w-0">
+    <fieldset className="stack-scope min-w-0" style={cuentas}>
       <legend className="sr-only">Filtrar el stack por capa</legend>
 
       <Reveal className="stack-filter mb-8 flex-wrap gap-2">
@@ -56,7 +68,7 @@ export function StackExplorer({ stack }: { stack: TechChoice[] }) {
         ))}
       </Reveal>
 
-      <Reveal stagger className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <Reveal stagger className="stack-grid grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {ordenadas.map((tech) => (
           <article
             key={tech.name}
