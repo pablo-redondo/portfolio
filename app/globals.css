@@ -1,35 +1,68 @@
 @import "tailwindcss";
 
 /* ============================================================
-   Paleta
-   Tres niveles de superficie (bg, surface, surface-2) para que
-   las cards tengan profundidad real en vez de flotar sobre un
-   único plano. Todos los pares texto/fondo verificados ≥4.5:1.
+   Paleta — Fase 1 del rediseño (solo tokens)
+   ------------------------------------------------------------
+   Sistema de un único tema oscuro, aprobado externamente. Ya no hay
+   variante clara ni `prefers-color-scheme`: este diseño no la contempla.
+
+   Los nombres de la izquierda (--bg-base, --border, --ink-body...) son
+   los del sistema de diseño y la fuente de verdad. Los de debajo, en el
+   bloque "alias heredados", son los nombres que ya consumen las clases de
+   Tailwind (`bg-surface`, `text-ink-soft`, `border-line`...) repartidas
+   por todos los componentes. Redirigirlos a los tokens nuevos, sin
+   renombrar nada en los componentes, es lo que hace que el color se
+   actualice en todo el sitio en esta fase — la tipografía y el espaciado
+   siguen con los de antes hasta la Fase 2, que es cuando cada componente
+   pase a usar los nombres nuevos directamente y estos alias se retiren.
    ============================================================ */
 
 :root {
-  --bg: #f6f7f9;
-  --surface: #ffffff;
-  --surface-2: #eef1f5;
-  --surface-3: #e4e9f0;
-  --ink: #0e141b;
-  --ink-soft: #47566a;
-  --ink-faint: #5e6c7f;
-  --line: #dee3ea;
-  --line-strong: #ccd4de;
-  --accent: #9a5309;
-  --accent-ink: #ffffff;
-  --accent-soft: rgba(154, 83, 9, 0.09);
-  --accent-line: rgba(154, 83, 9, 0.32);
-  --teal: #0b6e62;
-  --danger: #b42318;
-  --code-bg: #0e141b;
-  --code-ink: #e9eff6;
+  /* --- Superficies --- */
+  --bg-base: #070a0c;
+  --bg-panel: #0d1216;
+  --bg-raised: #131c21;
 
-  --shadow-sm: 0 1px 2px rgba(14, 20, 27, 0.05);
-  --shadow-md: 0 4px 16px -6px rgba(14, 20, 27, 0.14);
-  --shadow-lg: 0 16px 40px -18px rgba(14, 20, 27, 0.26);
-  --glow: rgba(154, 83, 9, 0.1);
+  /* --- Bordes --- */
+  --border: #1a242a;
+  --border-strong: #26343c;
+
+  /* --- Texto --- */
+  --ink: #e8f1f5; /* titulares */
+  --ink-body: #a6b9c2; /* párrafos */
+  --ink-meta: #7e939d; /* etiquetas y mono */
+
+  /* --- Acento --- */
+  --accent: #4cc9ff;
+  --accent-glow: rgba(76, 201, 255, 0.45);
+
+  /* --- Semánticos --- */
+  --ok: #00e5a0;
+  --warn: #ffb454;
+  --crit: #ff6b6b;
+  --meta: #ff7ad9;
+
+  /* --- Alias heredados (ver nota de arriba) --- */
+  --bg: var(--bg-base);
+  --surface: var(--bg-panel);
+  --surface-2: var(--bg-raised);
+  --surface-3: var(--bg-raised);
+  --ink-soft: var(--ink-body);
+  --ink-faint: var(--ink-meta);
+  --line: var(--border);
+  --line-strong: var(--border-strong);
+  --teal: var(--ok);
+  --danger: var(--crit);
+  --accent-ink: var(--bg-base);
+  --accent-soft: rgba(76, 201, 255, 0.12);
+  --accent-line: rgba(76, 201, 255, 0.35);
+  --glow: var(--accent-glow);
+  --code-bg: var(--bg-base);
+  --code-ink: var(--ink);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 18px -6px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 18px 44px -20px rgba(0, 0, 0, 0.8);
 
   --radius-lg: 16px;
   --radius-md: 12px;
@@ -39,58 +72,6 @@
   --motion-base: 220ms;
   --motion-slow: 420ms;
   --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #0b0f14;
-    --surface: #121821;
-    --surface-2: #1a2130;
-    --surface-3: #212a3a;
-    --ink: #e9eff6;
-    --ink-soft: #a7b6c7;
-    --ink-faint: #7a8a9c;
-    --line: #263041;
-    --line-strong: #334054;
-    --accent: #ffb44d;
-    --accent-ink: #1a1206;
-    --accent-soft: rgba(255, 180, 77, 0.12);
-    --accent-line: rgba(255, 180, 77, 0.38);
-    --teal: #45e0c0;
-    --danger: #ff8a80;
-    --code-bg: #070a0e;
-    --code-ink: #e9eff6;
-
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-    --shadow-md: 0 4px 18px -6px rgba(0, 0, 0, 0.6);
-    --shadow-lg: 0 18px 44px -20px rgba(0, 0, 0, 0.8);
-    --glow: rgba(255, 180, 77, 0.13);
-  }
-}
-
-:root[data-theme="dark"] {
-  --bg: #0b0f14;
-  --surface: #121821;
-  --surface-2: #1a2130;
-  --surface-3: #212a3a;
-  --ink: #e9eff6;
-  --ink-soft: #a7b6c7;
-  --ink-faint: #7a8a9c;
-  --line: #263041;
-  --line-strong: #334054;
-  --accent: #ffb44d;
-  --accent-ink: #1a1206;
-  --accent-soft: rgba(255, 180, 77, 0.12);
-  --accent-line: rgba(255, 180, 77, 0.38);
-  --teal: #45e0c0;
-  --danger: #ff8a80;
-  --code-bg: #070a0e;
-  --code-ink: #e9eff6;
-
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 4px 18px -6px rgba(0, 0, 0, 0.6);
-  --shadow-lg: 0 18px 44px -20px rgba(0, 0, 0, 0.8);
-  --glow: rgba(255, 180, 77, 0.13);
 }
 
 @theme inline {
@@ -110,6 +91,21 @@
   --color-danger: var(--danger);
   --color-code-bg: var(--code-bg);
 
+  /* Nombres nuevos del sistema de diseño, ya expuestos como utilidades de
+     Tailwind (`bg-bg-panel`, `text-ok`...) para que la Fase 2 pueda
+     empezar a usarlos sin tener que volver a tocar este bloque. */
+  --color-bg-base: var(--bg-base);
+  --color-bg-panel: var(--bg-panel);
+  --color-bg-raised: var(--bg-raised);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-ink-body: var(--ink-body);
+  --color-ink-meta: var(--ink-meta);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --color-crit: var(--crit);
+  --color-meta: var(--meta);
+
   --font-mono: var(--font-jetbrains-mono);
   --font-sans: var(--font-manrope);
 
@@ -117,7 +113,7 @@
 }
 
 html {
-  color-scheme: light dark;
+  color-scheme: dark;
 }
 
 body {
@@ -136,6 +132,91 @@ body {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
   border-radius: 4px;
+}
+
+/* ============================================================
+   Escala tipográfica — Fase 1 del rediseño (solo tokens)
+   ------------------------------------------------------------
+   Clases listas para reutilizar, tal como pide el sistema de diseño
+   aprobado. Ninguna se aplica todavía a ningún componente — eso es
+   trabajo de la Fase 2. Hasta entonces, los titulares y párrafos del
+   sitio siguen con las utilidades de Tailwind de siempre (`text-lg`,
+   `font-bold`...), así que el tamaño y el espaciado no cambian todavía,
+   aunque el color ya sí (viene del bloque de paleta de arriba).
+
+   Los rangos que el sistema escribe como "min-max" en vez de un
+   `clamp(...)` explícito (h2, h3, body, body-sm, mono-data, mono-meta) se
+   implementan aquí como clamp con un término intermedio en rem + vw, no
+   en vw puro: con un rango tan estrecho como el de h2 (30-32px), un
+   `clamp(30px, Nvw, 32px)` sin desplazamiento pasa de un extremo a otro
+   en un tramo de viewport casi inservible. El desplazamiento en rem
+   reparte el cambio en una franja razonable (~400px a ~1280px, el ancho
+   del contenedor del sitio) igual que si fuera un rango amplio.
+   ============================================================ */
+
+.text-display {
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 800;
+  font-size: clamp(38px, 4.9vw, 70px);
+  letter-spacing: -0.036em;
+  line-height: 1.02;
+}
+
+.text-h1 {
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 800;
+  font-size: clamp(38px, 4.1vw, 56px);
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+.text-h2 {
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 800;
+  font-size: clamp(30px, 1.82rem + 0.23vw, 32px);
+  letter-spacing: -0.022em;
+  line-height: 1.16;
+}
+
+.text-h3 {
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+  font-size: clamp(19px, 1.045rem + 0.57vw, 24px);
+  line-height: 1.2;
+}
+
+.text-body {
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 400;
+  font-size: clamp(17px, 1.034rem + 0.11vw, 18px);
+  line-height: 1.68;
+  max-width: 66ch;
+}
+
+.text-body-sm {
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 400;
+  font-size: clamp(14px, 0.847rem + 0.11vw, 15px);
+  line-height: 1.6;
+}
+
+.text-mono-cmd {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-weight: 400;
+  font-size: 13px;
+}
+
+.text-mono-data {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-weight: 500;
+  font-size: clamp(12px, 0.722rem + 0.11vw, 13px);
+}
+
+.text-mono-meta {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-weight: 400;
+  font-size: clamp(10px, 0.597rem + 0.11vw, 11px);
+  letter-spacing: 0.1em;
 }
 
 /* ============================================================

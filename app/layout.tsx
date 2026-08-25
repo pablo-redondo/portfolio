@@ -14,6 +14,10 @@ const jetbrainsMono = JetBrains_Mono({
 const manrope = Manrope({
   variable: "--font-manrope",
   subsets: ["latin"],
+  // Los cuatro pesos que pide el sistema de diseño — ninguno más. Con
+  // `font-synthesis-weight: none` en <body>, pedir un peso que no está en
+  // esta lista no se sintetiza: cae al más cercano que sí está cargado.
+  weight: ["400", "500", "600", "800"],
 });
 
 const DEFAULT_TITLE = "Pablo Redondo — Desarrollador full-stack";
