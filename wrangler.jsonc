@@ -1,7 +1,11 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"main": ".open-next/worker.js",
-	"name": "pablo-redondo-portfolio",
+	// Nombre real registrado en Cloudflare Workers Builds para este repo —
+	// confirmado por el propio CI en un aviso de deploy ("the CI system
+	// expected 'portfolio'"), no una suposición. Cualquier otro valor aquí
+	// da igual lo que ponga el `name` de package.json.
+	"name": "portfolio",
 	"compatibility_date": "2026-08-20",
 	"compatibility_flags": [
 		"nodejs_compat",
@@ -17,13 +21,10 @@
 	"services": [
 		{
 			// El binding de autorreferencia: el nombre del servicio tiene que
-			// coincidir con el `name` de arriba, que a su vez es el nombre real
-			// del Worker en Cloudflare — no el `name` de package.json, que es
-			// otra cosa. El build que falló los tenía desincronizados: el
-			// binding apuntaba a un Worker que no existía.
+			// coincidir con el `name` de arriba.
 			// ver https://opennext.js.org/cloudflare/caching
 			"binding": "WORKER_SELF_REFERENCE",
-			"service": "pablo-redondo-portfolio"
+			"service": "portfolio"
 		}
 	],
 	"images": {
