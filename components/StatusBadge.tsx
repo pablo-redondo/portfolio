@@ -1,7 +1,9 @@
 import type { ProjectStatus } from "@/content/types";
 
+// Mismo vocabulario que el monitor de despliegues (`operativo` / `sin
+// respuesta`): un servicio en pie se llama igual en las dos piezas.
 const LABELS: Record<ProjectStatus, string> = {
-  live: "live",
+  live: "operativo",
   "in-progress": "en curso",
   archived: "archivado",
 };

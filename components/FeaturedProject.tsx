@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Project } from "@/content/types";
 
 const STATUS_LABEL: Record<Project["status"], string> = {
-  live: "live",
+  live: "operativo",
   "in-progress": "en curso",
   archived: "archivado",
 };

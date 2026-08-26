@@ -17,6 +17,9 @@ export const metadata: Metadata = {
   openGraph: { title: `${TITLE} · Pablo Redondo`, description: DESCRIPTION },
 };
 
+/** Cards visibles sin hacer scroll: no llevan reveal para no retrasar el LCP. */
+const ABOVE_FOLD_CARDS = 3;
+
 type Props = {
   searchParams: Promise<{ tag?: string }>;
 };
@@ -29,6 +32,11 @@ export default async function ProyectosPage({ searchParams }: Props) {
     ? projects.filter((project) => project.tags.includes(activeTag))
     : projects;
 
+  // El filtro activo se imprime en la propia línea de comando, como en el
+  // sistema de diseño: el estado del filtro se lee como texto y no solo
+  // por el color de la pastilla.
+  const filtro = activeTag ?? "todo";
+
   return (
     <>
       <section className="hero-glow border-b border-line">
@@ -38,55 +46,68 @@ export default async function ProyectosPage({ searchParams }: Props) {
             <div data-enter="1">
               <SectionLabel>ls proyectos/</SectionLabel>
             </div>
-            <h1
-              data-enter="lcp"
-              className="mt-4 font-mono text-4xl font-bold tracking-tight sm:text-5xl"
-            >
+
+            <h1 data-enter="lcp" className="text-h1 mt-5 max-w-[20ch] text-balance text-ink">
               Proyectos
             </h1>
-            <p data-enter="3" className="mt-5 max-w-[60ch] text-lg text-ink-soft">
-              Siete proyectos con su caso de estudio: el problema real que
-              resuelven, las decisiones técnicas y lo que no salió bien.
-            </p>
 
-            <nav data-enter="4" className="mt-8 flex flex-wrap gap-2">
-              <Link href="/proyectos" data-active={!activeTag} className="filter-pill">
-                todos
-                <span className="ml-1.5 text-[10px] opacity-70">{projects.length}</span>
-              </Link>
-              {PROJECT_TAGS.map((t) => {
-                const count = projects.filter((p) => p.tags.includes(t)).length;
-                return (
-                  <Link
-                    key={t}
-                    href={`/proyectos?tag=${encodeURIComponent(t)}`}
-                    data-active={activeTag === t}
-                    className="filter-pill"
-                  >
-                    {t}
-                    <span className="ml-1.5 text-[10px] opacity-70">{count}</span>
-                  </Link>
-                );
-              })}
-            </nav>
+            <p data-enter="3" className="text-body mt-5 text-ink-soft">
+              Siete proyectos con su caso de estudio: el problema real que resuelven,
+              las decisiones técnicas y lo que no salió bien.
+            </p>
           </div>
         </Container>
       </section>
 
       <section className="py-16">
         <Container>
-          {/* Las siete con el mismo peso y el mismo tamaño. Sacar una a una
-              banda aparte a ancho completo dejaba a las otras descuadradas. */}
+          <Reveal>
+            <SectionLabel
+              action={
+                <span className="text-mono-meta text-ink-meta normal-case">
+                  {filtered.length} de {projects.length}
+                </span>
+              }
+            >
+              {`top --tag=${filtro}`}
+            </SectionLabel>
+          </Reveal>
+
+          {/* Enlaces, no botones: el filtro vive en la URL, así que funciona
+              con JavaScript desactivado, es compartible y el navegador puede
+              volver atrás. */}
+          <Reveal>
+            <nav className="mb-10 flex flex-wrap gap-2" aria-label="Filtrar por etiqueta">
+              <FiltroPill
+                href="/proyectos"
+                label="todo"
+                count={projects.length}
+                active={!activeTag}
+              />
+              {PROJECT_TAGS.map((t) => (
+                <FiltroPill
+                  key={t}
+                  href={`/proyectos?tag=${encodeURIComponent(t)}`}
+                  label={t}
+                  count={projects.filter((p) => p.tags.includes(t)).length}
+                  active={activeTag === t}
+                />
+              ))}
+            </nav>
+          </Reveal>
+
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {/* El insignia ocupa dos columnas; el resto, una. Las primeras
+                cards caen dentro del pliegue y una de ellas es el elemento
+                LCP: animarlas de entrada retrasa la métrica. */}
             {filtered.map((project, i) =>
-              // Las primeras cards caen dentro del pliegue y una de ellas es
-              // el elemento LCP: animarlas de entrada retrasa la métrica.
               i < ABOVE_FOLD_CARDS ? (
-                <ProjectCard key={project.slug} project={project} />
+                <ProjectCard key={project.slug} project={project} featured={project.featured} />
               ) : (
                 <Reveal
                   key={project.slug}
                   delay={((i - ABOVE_FOLD_CARDS) % 3) * 60}
+                  className={project.featured ? "sm:col-span-2" : undefined}
                 >
                   <ProjectCard project={project} />
                 </Reveal>
@@ -95,7 +116,7 @@ export default async function ProyectosPage({ searchParams }: Props) {
           </div>
 
           {filtered.length === 0 && (
-            <p className="py-12 text-center text-ink-soft">
+            <p className="text-body py-12 text-center text-ink-soft">
               Ningún proyecto con esa etiqueta todavía.
             </p>
           )}
@@ -105,5 +126,32 @@ export default async function ProyectosPage({ searchParams }: Props) {
   );
 }
 
-/** Cards visibles sin hacer scroll: no llevan reveal para no retrasar el LCP. */
-const ABOVE_FOLD_CARDS = 3;
+/**
+ * Pastilla del filtro. El estado activo va en cian, pero también lleva un
+ * marcador de texto (`✓`) y `aria-current`: en escala de grises, o con un
+ * lector de pantalla, se sigue sabiendo cuál está puesta.
+ */
+function FiltroPill({
+  href,
+  label,
+  count,
+  active,
+}: {
+  href: string;
+  label: string;
+  count: number;
+  active: boolean;
+}) {
+  return (
+    <Link
+      href={href}
+      data-active={active}
+      aria-current={active ? "true" : undefined}
+      className="filter-pill"
+    >
+      {active && <span aria-hidden>✓</span>}
+      {label}
+      <span className="text-[10px] opacity-70 tabular-nums">{count}</span>
+    </Link>
+  );
+}

@@ -1644,14 +1644,20 @@ a.ls-row:focus-visible .ls-arrow {
 
 /* --- Filtros ------------------------------------------------ */
 
+/* La forma que le da el sistema de diseño: rectángulo de radio corto, no
+   píldora, sobre la superficie elevada del chip de tecnología. */
 .filter-pill {
-  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 6px;
   border: 1px solid var(--line);
   background: var(--surface-2);
   color: var(--ink-soft);
-  padding: 0.375rem 0.875rem;
+  padding: 7px 13px;
   font-family: var(--font-mono), monospace;
   font-size: 12px;
+  line-height: 1;
   white-space: nowrap;
   transition:
     border-color var(--motion-fast) var(--ease-out),
