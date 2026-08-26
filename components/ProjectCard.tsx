@@ -102,7 +102,7 @@ export function ProjectCard({ project, featured = false }: Props) {
               href={project.demoUrl}
               target="_blank"
               rel="noreferrer"
-              className="btn btn-secondary"
+              className="btn btn-sm btn-secondary"
             >
               Demo
             </a>
@@ -113,7 +113,7 @@ export function ProjectCard({ project, featured = false }: Props) {
               href={repo.url}
               target="_blank"
               rel="noreferrer"
-              className="btn btn-secondary"
+              className="btn btn-sm btn-secondary"
             >
               {repo.label}
             </a>

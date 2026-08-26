@@ -78,6 +78,14 @@ export const codequestRpg: Project = {
     result:
       "11 retos de código cubriendo las 6 zonas y los 6 conceptos definidos (variables, condicionales, bucles, arrays, funciones, recursión), con CI en verde (typecheck, lint, Vitest, e2e de Playwright) en cada push. Deliberadamente 100% client-side, sin backend ni cuentas: el progreso vive en localStorage del navegador, con las limitaciones que eso implica y que el propio README documenta sin disimularlas — por ejemplo, que los testCase.hidden no son seguridad real, solo un desincentivo pedagógico.",
   },
+  // Los dos números salen tal cual de decisions[2] ("Code-splitting de
+  // CodeMirror"): aquí solo se extraen para poder pintarlos como dato.
+  metric: {
+    label: "bundle inicial",
+    before: { value: "734 kB", note: "antes" },
+    after: { value: "216 kB", note: "después" },
+    note: "−70 % de JS en la carga inicial · code-splitting de CodeMirror",
+  },
   timeline: [
     {
       order: 1,

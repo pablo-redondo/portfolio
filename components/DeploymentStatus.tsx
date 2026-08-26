@@ -101,55 +101,76 @@ function nombreCorto(title: string) {
   return title.split(" — ")[0];
 }
 
+/** El host del endpoint, que es lo que identifica al despliegue. */
+function host(url: string) {
+  try {
+    return new URL(url).host;
+  } catch {
+    return url;
+  }
+}
+
+/**
+ * Monitor a ancho completo: una fila por servicio con su endpoint, la
+ * latencia real de la comprobación y el estado.
+ *
+ * No hay columna de uptime ni gráfica de latencia: el check no guarda
+ * histórico, así que serían dos columnas inventadas. Se quedan las que
+ * salen de un dato que existe de verdad.
+ */
 export function DeploymentStatusPanel() {
   const { state, services } = useStatus();
 
   return (
-    <div className="surface-card overflow-hidden">
-      <div className="flex items-center justify-between gap-3 border-b border-line bg-surface-2 px-4 py-2.5">
-        <span className="text-mono-cmd text-ink-meta">
-          <span className="text-accent">$</span> status --all
-        </span>
-        <span className="text-mono-meta text-ink-meta uppercase">
-          {state === "loading" ? "comprobando" : state === "error" ? "no disponible" : "en vivo"}
-        </span>
+    <div className="status-table">
+      <div className="status-head">
+        <div className="status-grid !p-0">
+          <span className="text-mono-meta text-ink-meta uppercase">servicio</span>
+          <span className="status-endpoint text-mono-meta text-ink-meta uppercase">
+            endpoint
+          </span>
+          <span className="status-rtt text-mono-meta text-right text-ink-meta uppercase">
+            rtt
+          </span>
+          <span className="text-mono-meta text-right text-ink-meta uppercase">estado</span>
+        </div>
       </div>
 
-      <ul className="divide-y divide-line">
-        {state === "ready" && services.length > 0
-          ? services.map((service) => (
-              <li
-                key={service.slug}
-                className="flex min-w-0 items-center justify-between gap-4 px-4 py-3"
+      {state === "ready" && services.length > 0
+        ? services.map((service) => (
+            <div key={service.slug} className="status-row status-grid">
+              <span className="min-w-0 truncate font-semibold text-ink">
+                {nombreCorto(service.title)}
+              </span>
+              <span className="status-endpoint text-mono-data min-w-0 truncate text-ink-meta">
+                {host(service.url)}
+              </span>
+              <span className="status-rtt text-mono-data text-right text-ink tabular-nums">
+                {service.latencyMs !== null ? `${service.latencyMs} ms` : "—"}
+              </span>
+              <span
+                className={`flex items-center justify-end gap-2 font-mono text-[11px] ${TONES[service.state]}`}
               >
-                <span className="text-mono-cmd min-w-0 truncate text-ink">
-                  {nombreCorto(service.title)}
-                </span>
-                <span
-                  className={`flex shrink-0 items-center gap-1.5 font-mono text-[11px] ${TONES[service.state]}`}
-                >
-                  {service.latencyMs !== null && (
-                    <span className="text-mono-data text-ink-meta tabular-nums">
-                      {service.latencyMs} ms
-                    </span>
-                  )}
-                  <Dot tone={TONES[service.state]} />
-                  {LABELS[service.state]}
-                </span>
-              </li>
-            ))
-          : // Filas fantasma: reservan el alto exacto, así el panel no
-            // provoca ningún salto de layout al llegar los datos.
-            Array.from({ length: 6 }).map((_, i) => (
-              <li key={i} className="flex min-w-0 items-center justify-between gap-4 px-4 py-3">
-                <span className="h-4 w-32 rounded bg-surface-2" />
-                <span className="h-4 w-20 rounded bg-surface-2" />
-              </li>
-            ))}
-      </ul>
+                <Dot tone={TONES[service.state]} />
+                {LABELS[service.state]}
+              </span>
+            </div>
+          ))
+        : // Filas fantasma: reservan el alto exacto, así la tabla no
+          // provoca ningún salto de layout al llegar los datos.
+          Array.from({ length: 7 }).map((_, i) => (
+            <div key={i} className="status-row status-grid">
+              <span className="h-4 w-40 rounded bg-surface-2" />
+              <span className="status-endpoint h-4 w-32 rounded bg-surface-2" />
+              <span className="status-rtt h-4 w-12 justify-self-end rounded bg-surface-2" />
+              <span className="h-4 w-20 justify-self-end rounded bg-surface-2" />
+            </div>
+          ))}
 
-      <p className="text-mono-meta border-t border-line px-4 py-2.5 text-ink-faint">
-        Comprobación HTTP real desde el servidor, cacheada 5 min
+      <p className="text-mono-meta px-5 py-3.5 text-ink-meta">
+        {state === "error"
+          ? "La comprobación no está disponible ahora mismo."
+          : "Check HTTP real desde el servidor, cacheado 5 min"}
       </p>
     </div>
   );

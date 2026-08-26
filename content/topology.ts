@@ -1,6 +1,12 @@
 import type { Project } from "@/content/types";
 
-export type TopologyNode = { slug: string; label: string };
+export type TopologyNode = {
+  slug: string;
+  label: string;
+  tagline: string;
+  /** Número de tecnologías declaradas en su stack. */
+  techCount: number;
+};
 export type TopologyEdge = { a: string; b: string; techs: string[] };
 
 /**
@@ -44,6 +50,8 @@ export function buildTopology(projects: Project[]): {
   const nodes = projects.map((project) => ({
     slug: project.slug,
     label: project.cardTitle ?? project.title,
+    tagline: project.tagline,
+    techCount: project.stack.length,
   }));
 
   const tagsByProject = new Map(projects.map((project) => [project.slug, tagsFor(project)]));

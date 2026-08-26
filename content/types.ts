@@ -36,6 +36,19 @@ export interface ProjectImage {
   alt: string;
 }
 
+/**
+ * Un antes/después medido del proyecto, para destacarlo como dato suelto
+ * fuera del cuerpo del caso de estudio. No es contenido nuevo: los dos
+ * números salen del propio `caseStudy` y solo se sacan aquí para poder
+ * pintarlos como dato y no como párrafo.
+ */
+export interface ProjectMetric {
+  label: string;
+  before: { value: string; note: string };
+  after: { value: string; note: string };
+  note: string;
+}
+
 export interface ProjectRepo {
   label: string;
   url: string;
@@ -66,4 +79,6 @@ export interface Project {
   caseStudy: CaseStudy;
   /** Solo presente en codequest-rpg. */
   timeline?: TimelinePhase[];
+  /** Antes/después medido, si el proyecto tiene uno que destacar. */
+  metric?: ProjectMetric;
 }
