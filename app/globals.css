@@ -672,6 +672,34 @@ body {
   background: #0f171c;
 }
 
+/* --- Traza de carrera («traceroute») -------------------------
+   Reutiliza .status-table/.status-head/.status-row: es la misma idea de
+   tabla-monitor, solo que cada fila es un <details> en vez de una fila
+   fija. */
+.trace-grid {
+  display: grid;
+  grid-template-columns: 1.75rem minmax(0, 1fr) 5rem;
+  gap: 10px;
+  align-items: baseline;
+  padding: 15px 20px;
+}
+
+.trace-host,
+.trace-window {
+  display: none;
+}
+
+@media (min-width: 40rem) {
+  .trace-grid {
+    grid-template-columns: 1.75rem minmax(0, 1fr) minmax(0, 9rem) minmax(0, 8rem) 5rem;
+  }
+
+  .trace-host,
+  .trace-window {
+    display: block;
+  }
+}
+
 /* --- Grafo de topología -------------------------------------- */
 
 .topo-panel {
@@ -728,6 +756,141 @@ body {
   border-color: var(--accent);
   color: var(--ink);
   box-shadow: 0 0 0 4px var(--accent-glow);
+}
+
+/* --- Diff de código -------------------------------------------
+   Antes en rojo con "−", después en verde con "+". El color no es la
+   única señal: el signo va delante de cada línea. */
+.code-diff {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-inset);
+  overflow: hidden;
+  font-family: var(--font-mono), monospace;
+  font-size: 12.5px;
+  line-height: 1.7;
+}
+
+.code-diff-file {
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-panel);
+  padding: 8px 14px;
+  color: var(--ink-meta);
+  font-size: 11px;
+}
+
+.code-diff-before,
+.code-diff-after {
+  padding: 12px 14px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.code-diff-before {
+  background: color-mix(in srgb, var(--crit) 8%, transparent);
+  color: var(--ink-body);
+  border-bottom: 1px solid var(--border);
+}
+
+.code-diff-after {
+  background: color-mix(in srgb, var(--ok) 8%, transparent);
+  color: var(--ink);
+}
+
+.code-diff-before .code-diff-mark {
+  color: var(--crit);
+}
+
+.code-diff-after .code-diff-mark {
+  color: var(--ok);
+}
+
+/* --- Caja de auditoría (salvar / tirar) ------------------------- */
+.audit-box {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--border-strong);
+  background: var(--bg-panel);
+  padding: 1.25rem 1.375rem;
+}
+
+.audit-box[data-kind="keep"] {
+  border-left-color: var(--ok);
+}
+
+.audit-box[data-kind="cut"] {
+  border-left-color: var(--crit);
+}
+
+/* --- Navegación por "hops" del caso de estudio -------------------
+   Enlaces de ancla normales — funcionan sin una línea de JavaScript — con
+   el activo marcado por :target. Como :target lo lleva la sección de
+   destino y no el propio enlace, :has() los conecta: seis reglas fijas,
+   una por id de hop, válidas para cualquier proyecto. */
+.hop-link {
+  padding: 0.65rem 0.2rem;
+  color: var(--ink-meta);
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition:
+    color var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out);
+}
+
+.hop-link:hover {
+  color: var(--ink);
+}
+
+body:has(#contexto:target) .hop-link[data-hop="contexto"],
+body:has(#decisiones:target) .hop-link[data-hop="decisiones"],
+body:has(#reto:target) .hop-link[data-hop="reto"],
+body:has(#fases:target) .hop-link[data-hop="fases"],
+body:has(#resultado:target) .hop-link[data-hop="resultado"],
+body:has(#stack:target) .hop-link[data-hop="stack"] {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* Sin :target — recién llegado a la página — el primer hop se lee como
+   punto de partida. */
+.hop-link[data-hop="contexto"] {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+body:has(#decisiones:target) .hop-link[data-hop="contexto"],
+body:has(#reto:target) .hop-link[data-hop="contexto"],
+body:has(#fases:target) .hop-link[data-hop="contexto"],
+body:has(#resultado:target) .hop-link[data-hop="contexto"],
+body:has(#stack:target) .hop-link[data-hop="contexto"] {
+  color: var(--ink-meta);
+  border-color: transparent;
+}
+
+/* Los :target necesitan hueco por encima de la cabecera sticky, o el
+   salto de ancla deja el titular de la sección tapado detrás de ella. */
+.hop-section {
+  scroll-margin-top: 5.5rem;
+}
+
+/* --- Fases como pestañas horizontales (case study) -------------- */
+.phase-tab {
+  border-bottom: 2px solid transparent;
+  color: var(--ink-meta);
+  padding: 0.75rem 0.25rem;
+  text-align: left;
+  transition:
+    color var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out);
+}
+
+.phase-tab:hover {
+  color: var(--ink);
+}
+
+.phase-tab[aria-selected="true"] {
+  color: var(--accent);
+  border-color: var(--accent);
 }
 
 /* Bloque de código o dato destacado: para un fragmento de output, un

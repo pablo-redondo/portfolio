@@ -4,7 +4,10 @@ import Link from "next/link";
 import { Container } from "@/components/Container";
 import { StatusBadge } from "@/components/StatusBadge";
 import { StackTable } from "@/components/StackTable";
-import { Timeline } from "@/components/Timeline";
+import { PhaseTabs } from "@/components/PhaseTabs";
+import { AuditBox } from "@/components/AuditBox";
+import { CodeDiff } from "@/components/CodeDiff";
+import { CodeBlock } from "@/components/CodeBlock";
 import { Reveal } from "@/components/Reveal";
 import { LiveDemo } from "@/components/LiveDemo";
 import { DeploymentBadge } from "@/components/DeploymentStatus";
@@ -38,34 +41,32 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-/**
- * El primer bloque de contenido tras la cabecera entra dentro del pliegue y
- * suele ser el elemento LCP de la página. <Reveal> lo arrancaría en
- * opacity 0, y Chrome no contabiliza lo que está invisible: la métrica se
- * retrasaría hasta que hidrate y dispare el observer. Ahí va sin animar.
- */
-function MaybeReveal({
-  animate,
+function HopSection({
+  id,
+  n,
+  eyebrow,
+  title,
   children,
 }: {
-  animate: boolean;
+  id: string;
+  n: number;
+  eyebrow: string;
+  title: string;
   children: React.ReactNode;
 }) {
-  // Un <div> y no un fragmento: sin envoltorio, el encabezado y el párrafo
-  // dejan de ser una sola celda y pasan a ocupar dos de la rejilla de dos
-  // columnas, que es como se partieron Contexto y Reto técnico.
-  return animate ? <Reveal>{children}</Reveal> : <div>{children}</div>;
-}
-
-function SectionHeading({ eyebrow, title }: { eyebrow: string; title: string }) {
   return (
-    <div className="mb-6">
-      <p className="mb-2 font-mono text-[11px] tracking-wide text-accent uppercase">
-        {eyebrow}
-      </p>
-      <h2 className="font-mono text-2xl font-bold tracking-tight">{title}</h2>
-      <span className="heading-rule mt-3.5" aria-hidden />
-    </div>
+    <section id={id} className="hop-section border-b border-line py-16">
+      <Container>
+        <Reveal>
+          <p className="text-mono-meta mb-2 text-ink-meta uppercase">
+            hop {String(n).padStart(2, "0")} · {eyebrow}
+          </p>
+          <h2 className="font-mono text-2xl font-bold tracking-tight">{title}</h2>
+          <span className="heading-rule mt-3.5 mb-8" aria-hidden />
+          {children}
+        </Reveal>
+      </Container>
+    </section>
   );
 }
 
@@ -75,20 +76,23 @@ export default async function ProjectPage({ params }: Props) {
   if (!project) notFound();
 
   const { caseStudy } = project;
-
-  // La línea de evolución abre la página cuando existe; si no, lo hace
-  // Contexto. La primera es la que no puede arrancar invisible.
   const hayTimeline = Boolean(project.timeline && project.timeline.length > 0);
+  const hayDecisiones = caseStudy.decisions.length > 0;
+  const hayStack = project.stack.length > 0;
 
-  // La salida al índice se pinta dentro de la última sección que exista, no
-  // en una sección propia. Antes colgaba del bloque de Stack y Carrera
-  // Vóley, que no tiene stack, se quedaba sin salida ninguna; así no
-  // depende de qué secciones traiga cada proyecto.
-  const ultimaSeccion = project.demoUrl
-    ? "demo"
-    : project.stack.length > 0
-      ? "stack"
-      : "resultado";
+  // Los hops disponibles varían por proyecto: no todos tienen fases
+  // documentadas o decisiones con código de por medio, así que la
+  // navegación se calcula, no se da por hecha fija en seis pasos.
+  const hops: { id: string; label: string }[] = [
+    { id: "contexto", label: "contexto" },
+    ...(hayDecisiones ? [{ id: "decisiones", label: "decisiones" }] : []),
+    { id: "reto", label: "reto técnico" },
+    ...(hayTimeline ? [{ id: "fases", label: "fases" }] : []),
+    { id: "resultado", label: "resultado" },
+    ...(hayStack ? [{ id: "stack", label: "stack" }] : []),
+  ];
+
+  let hopN = 0;
 
   return (
     <>
@@ -97,22 +101,21 @@ export default async function ProjectPage({ params }: Props) {
         <HeroGrid />
         <Container>
           <div className="py-16 sm:py-20">
-            {/* El h1 es el LCP de esta página: su entrada mueve solo el
-                transform, nunca la opacidad. */}
-            <div
-              data-enter="lcp"
-              className="flex flex-wrap items-center gap-x-4 gap-y-3"
-            >
+            <p data-enter="1" className="text-mono-cmd text-ink-meta">
+              <Link href="/proyectos" className="hover:text-accent">
+                cd ../proyectos
+              </Link>{" "}
+              <span className="text-ink">{project.slug}</span>
+            </p>
+
+            <div data-enter="lcp" className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-3">
               <h1 className="font-mono text-4xl font-bold tracking-tight sm:text-5xl">
                 {project.title}
               </h1>
               <StatusBadge status={project.status} />
             </div>
 
-            <p
-              data-enter="3"
-              className="mt-5 max-w-[65ch] text-lg leading-relaxed text-ink-soft"
-            >
+            <p data-enter="3" className="mt-5 max-w-[65ch] text-lg leading-relaxed text-ink-soft">
               {project.tagline}
             </p>
 
@@ -125,158 +128,182 @@ export default async function ProjectPage({ params }: Props) {
             </div>
 
             <div data-enter="4" className="mt-8 flex flex-wrap gap-3">
-              {project.repos.map((repo) => (
-                <a key={repo.url} href={repo.url} className="btn btn-secondary">
-                  {repo.label}
-                </a>
-              ))}
               {project.demoUrl && (
                 <a href={project.demoUrl} className="btn btn-primary">
                   Abrir demo
                 </a>
               )}
+              {project.repos.map((repo) => (
+                <a key={repo.url} href={repo.url} className="btn btn-secondary">
+                  {repo.label}
+                </a>
+              ))}
             </div>
+
+            {/* Cifras reales del propio caso de estudio: fases y el dato
+                suelto que ya cuenta el resultado, si los hay. El badge de
+                despliegue no depende de que existan: se muestra siempre
+                que haya demo que comprobar. */}
+            {(hayTimeline || caseStudy.stat || project.metric || project.demoUrl) && (
+              <div
+                data-enter="4"
+                className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-2 border-t border-line pt-5"
+              >
+                {hayTimeline && (
+                  <MetaStat label="fases" value={String(project.timeline!.length)} />
+                )}
+                {caseStudy.stat && (
+                  <MetaStat label={caseStudy.stat.label} value={caseStudy.stat.value} />
+                )}
+                {project.metric && (
+                  <MetaStat label={project.metric.label} value={project.metric.note} />
+                )}
+                {project.demoUrl && <DeploymentBadge slug={project.slug} />}
+              </div>
+            )}
           </div>
         </Container>
       </section>
 
-      {/* --- Línea de evolución --- */}
-      {project.timeline && project.timeline.length > 0 && (
-        <section className="border-b border-line py-16">
-          <Container>
-            <SectionHeading eyebrow="cómo llegó hasta aquí" title="Línea de evolución" />
-            <p className="mb-8 max-w-[65ch] text-ink-soft">
-              Seis fases reconstruyendo el proyecto sin dejarlo roto entre
-              pasos. Cada una se despliega con su detalle y su rango de
-              commits.
-            </p>
-            <Timeline phases={project.timeline} />
-          </Container>
-        </section>
-      )}
-
-      {/* --- Contexto y reto ---
-           Encabezado en su propia columna y texto al lado, no uno encima de
-           otro. Apilados, el párrafo se quedaba en la mitad izquierda con el
-           ancho de lectura y dejaba media pantalla vacía a la derecha; a dos
-           columnas de contenido, en cambio, el largo de cada texto lo marca
-           el proyecto y la diferencia llega a más del doble (en Marqués, 328
-           caracteres contra 710), así que una columna quedaba coja.
-
-           Con el encabezado a la izquierda las dos filas ocupan el ancho
-           entero y el largo del texto deja de importar: cada bloque es una
-           fila completa. --- */}
-      <section className="border-b border-line py-16">
+      {/* --- Navegación por hops ---
+          Anclas normales: saltan sin JavaScript, y el hop activo se marca
+          con :target en CSS, no con estado de React. */}
+      <nav
+        aria-label="Secciones del caso de estudio"
+        className="sticky top-16 z-30 border-b border-line bg-bg/90 backdrop-blur-md"
+      >
         <Container>
-          <div className="flex flex-col gap-14">
-            {[
-              {
-                eyebrow: "por qué existe",
-                title: "Contexto",
-                body: caseStudy.problem,
-              },
-              {
-                eyebrow: "lo más difícil",
-                title: "Reto técnico",
-                body: caseStudy.challenge,
-              },
-            ].map((bloque) => (
-              <MaybeReveal key={bloque.title} animate={hayTimeline}>
-                <div className="grid gap-x-12 gap-y-5 lg:grid-cols-[minmax(0,17rem)_minmax(0,1fr)]">
-                  <div>
-                    <p className="mb-2 font-mono text-[11px] tracking-wide text-accent uppercase">
-                      {bloque.eyebrow}
-                    </p>
-                    <h2 className="font-mono text-2xl font-bold tracking-tight">
-                      {bloque.title}
-                    </h2>
-                    <span className="heading-rule mt-3.5" aria-hidden />
-                  </div>
-                  <p className="max-w-[70ch] leading-relaxed text-ink-soft">
-                    {bloque.body}
-                  </p>
-                </div>
-              </MaybeReveal>
+          <div className="flex gap-6 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {hops.map((hop, i) => (
+              <a key={hop.id} href={`#${hop.id}`} data-hop={hop.id} className="hop-link">
+                <span className="text-mono-meta mr-1.5 text-ink-meta normal-case">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                {hop.label}
+              </a>
             ))}
           </div>
         </Container>
-      </section>
+      </nav>
+
+      {/* --- Contexto --- */}
+      <HopSection id="contexto" n={(hopN += 1)} eyebrow="por qué existe" title="Contexto">
+        <p className="max-w-[70ch] leading-relaxed text-ink-soft">{caseStudy.problem}</p>
+        {caseStudy.audit && (
+          <div className="mt-7">
+            <AuditBox audit={caseStudy.audit} />
+          </div>
+        )}
+      </HopSection>
 
       {/* --- Decisiones --- */}
-      {caseStudy.decisions.length > 0 && (
-        <section className="border-b border-line py-16">
-          <Container>
-            <Reveal>
-              <SectionHeading eyebrow="el porqué, no solo el qué" title="Decisiones técnicas" />
-            </Reveal>
-            <Reveal stagger className="grid gap-4 lg:grid-cols-3">
-              {caseStudy.decisions.map((decision, i) => (
-                <div
-                  key={decision.title}
-                  className="card-scan surface-card group h-full p-6"
-                >
-                  <span className="font-mono text-[11px] text-accent">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <h3 className="mt-2 font-mono text-base font-semibold text-ink">
+      {hayDecisiones && (
+        <HopSection
+          id="decisiones"
+          n={(hopN += 1)}
+          eyebrow="el porqué, no solo el qué"
+          title="Decisiones técnicas"
+        >
+          <div className="flex flex-col gap-3">
+            {caseStudy.decisions.map((decision, i) => (
+              <details key={decision.title} className="rail-node group" open={i === 0}>
+                <summary className="phase-summary">
+                  <span className="rail-dot">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="min-w-0 flex-1 self-center font-mono text-sm font-semibold text-ink">
                     {decision.title}
-                  </h3>
-                  <p className="mt-3 text-sm leading-relaxed text-ink-soft">
+                  </span>
+                  <span className="phase-toggle" aria-hidden />
+                </summary>
+                <div className="detail-in phase-detail">
+                  <p className="max-w-[70ch] text-sm leading-relaxed text-ink-soft">
                     {decision.detail}
                   </p>
+                  {decision.code && (
+                    <div className="mt-4">
+                      <CodeDiff change={decision.code} />
+                    </div>
+                  )}
                 </div>
-              ))}
-            </Reveal>
-          </Container>
-        </section>
+              </details>
+            ))}
+          </div>
+        </HopSection>
+      )}
+
+      {/* --- Reto técnico --- */}
+      <HopSection id="reto" n={(hopN += 1)} eyebrow="lo más difícil" title="Reto técnico">
+        {caseStudy.challengeCode && (
+          <div className="mb-7 grid gap-3 sm:grid-cols-2">
+            <div className="rounded-lg border border-crit/30 bg-crit/5 p-4">
+              <p className="text-mono-meta text-crit uppercase">eval() en el hilo principal</p>
+              <p className="text-body-sm mt-2 text-ink-soft">
+                Mismo scope que el resto de la app: un bucle infinito bloquea la UI sin
+                retorno.
+              </p>
+            </div>
+            <div className="rounded-lg border border-ok/30 bg-ok/5 p-4">
+              <p className="text-mono-meta text-ok uppercase">worker aislado + terminate()</p>
+              <p className="text-body-sm mt-2 text-ink-soft">
+                Hilo real y aislado; el principal puede matarlo desde fuera si se
+                cuelga.
+              </p>
+            </div>
+          </div>
+        )}
+        <p className="max-w-[70ch] leading-relaxed text-ink-soft">{caseStudy.challenge}</p>
+        {caseStudy.challengeCode && (
+          <div className="mt-6">
+            <CodeBlock file={caseStudy.challengeCode.file} code={caseStudy.challengeCode.code} />
+          </div>
+        )}
+      </HopSection>
+
+      {/* --- Fases --- */}
+      {hayTimeline && (
+        <HopSection
+          id="fases"
+          n={(hopN += 1)}
+          eyebrow="cómo llegó hasta aquí"
+          title="Fases de desarrollo"
+        >
+          <PhaseTabs phases={project.timeline!} />
+        </HopSection>
       )}
 
       {/* --- Resultado --- */}
-      <section className="border-b border-line py-16">
-        <Container>
-          <Reveal>
-            <SectionHeading eyebrow="dónde está hoy" title="Resultado" />
-            <div className="card-scan surface-featured group p-7 sm:p-9">
-              <p className="max-w-[70ch] leading-relaxed text-ink-soft">
-                {caseStudy.result}
+      <HopSection id="resultado" n={(hopN += 1)} eyebrow="dónde está hoy" title="Resultado">
+        {project.metric && (
+          <div className="mb-7 grid max-w-md grid-cols-2 gap-3">
+            <div className="rounded-lg border border-line p-4">
+              <p className="text-xl font-medium text-crit">{project.metric.before.value}</p>
+              <p className="text-mono-meta mt-1 text-ink-meta uppercase">
+                {project.metric.before.note}
               </p>
             </div>
-
-            {ultimaSeccion === "resultado" && (
-              <Link href="/proyectos" className="btn btn-secondary mt-10">
-                Ver el resto de proyectos
-              </Link>
-            )}
-          </Reveal>
-        </Container>
-      </section>
+            <div className="rounded-lg border border-line p-4">
+              <p className="text-xl font-medium text-ok">{project.metric.after.value}</p>
+              <p className="text-mono-meta mt-1 text-ink-meta uppercase">
+                {project.metric.after.note}
+              </p>
+            </div>
+          </div>
+        )}
+        <div className="card-scan surface-featured group p-7 sm:p-9">
+          <p className="max-w-[70ch] leading-relaxed text-ink-soft">{caseStudy.result}</p>
+        </div>
+      </HopSection>
 
       {/* --- Stack --- */}
-      {project.stack.length > 0 && (
-        <section className="border-b border-line py-16">
-          <Container>
-            <Reveal>
-              <SectionHeading eyebrow="con qué está construido" title="Stack" />
-            </Reveal>
-            <StackTable stack={project.stack} />
-
-            {ultimaSeccion === "stack" && (
-              <Reveal>
-                <Link href="/proyectos" className="btn btn-secondary mt-10">
-                  Ver el resto de proyectos
-                </Link>
-              </Reveal>
-            )}
-          </Container>
-        </section>
+      {hayStack && (
+        <HopSection id="stack" n={(hopN += 1)} eyebrow="con qué está construido" title="Stack">
+          <StackTable stack={project.stack} />
+        </HopSection>
       )}
 
       {/* --- Demo en vivo ---
-           Al final a propósito: la página es un caso de estudio y la demo
-           es el premio, no la introducción. Arriba interrumpía el hilo
-           problema → reto → decisiones → resultado, y empujaba todo ese
-           contenido por debajo de un iframe de 500px. Quien solo quiera
-           probarlo tiene el botón "Abrir demo" en la cabecera. --- */}
+           Fuera de la navegación por hops a propósito: es el premio, no
+           un paso más del caso de estudio. Quien solo quiera probarlo
+           tiene el botón "Abrir demo" en la cabecera. --- */}
       {project.demoUrl && (
         <section className="border-b border-line py-16">
           <Container>
@@ -286,12 +313,9 @@ export default async function ProjectPage({ params }: Props) {
                   <p className="mb-2 font-mono text-[11px] tracking-wide text-accent uppercase">
                     pruébalo tú
                   </p>
-                  <h2 className="font-mono text-2xl font-bold tracking-tight">
-                    Demo en vivo
-                  </h2>
+                  <h2 className="font-mono text-2xl font-bold tracking-tight">Demo en vivo</h2>
                   <span className="heading-rule mt-3.5" aria-hidden />
                 </div>
-                <DeploymentBadge slug={project.slug} />
               </div>
               <LiveDemo
                 slug={project.slug}
@@ -301,17 +325,26 @@ export default async function ProjectPage({ params }: Props) {
                 hasPoster={hasScreenshot(project.slug)}
               />
             </Reveal>
-
-            {ultimaSeccion === "demo" && (
-              <Reveal>
-                <Link href="/proyectos" className="btn btn-secondary mt-10">
-                  Ver el resto de proyectos
-                </Link>
-              </Reveal>
-            )}
           </Container>
         </section>
       )}
+
+      <section className="py-16">
+        <Container>
+          <Link href="/proyectos" className="btn btn-secondary">
+            Ver el resto de proyectos
+          </Link>
+        </Container>
+      </section>
     </>
+  );
+}
+
+function MetaStat({ label, value }: { label: string; value: string }) {
+  return (
+    <span className="flex items-baseline gap-2.5">
+      <span className="text-mono-meta text-ink-meta uppercase">{label}</span>
+      <span className="text-mono-data text-ink">{value}</span>
+    </span>
   );
 }

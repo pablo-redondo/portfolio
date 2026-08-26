@@ -72,3 +72,22 @@ export function buildTopology(projects: Project[]): {
 
   return { nodes, edges: [...edgeMap.values()] };
 }
+
+export type TechRankItem = { name: string; count: number };
+
+/**
+ * Cuántos proyectos usan cada tecnología reconocible, de más a menos. Usa
+ * las mismas palabras clave que el grafo: es la lista de lo que de verdad
+ * se repite entre proyectos, no todo el stack de cada uno por separado.
+ */
+export function buildTechRanking(projects: Project[], limit = 6): TechRankItem[] {
+  const tagsByProject = projects.map((project) => tagsFor(project));
+
+  return KEYWORDS.map((name) => ({
+    name,
+    count: tagsByProject.filter((tags) => tags.has(name)).length,
+  }))
+    .filter((item) => item.count > 0)
+    .sort((a, b) => b.count - a.count)
+    .slice(0, limit);
+}

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Container } from "@/components/Container";
+import { RttBadge } from "@/components/RttBadge";
 
 const NAV_ITEMS = [
   { href: "/", label: "inicio" },
@@ -52,6 +53,7 @@ export function Header() {
               );
             })}
           </nav>
+          <RttBadge />
         </div>
       </Container>
     </header>

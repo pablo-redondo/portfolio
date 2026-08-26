@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Container } from "@/components/Container";
 import { SectionLabel } from "@/components/SectionLabel";
 import { StackExplorer } from "@/components/StackExplorer";
-import { CareerRail, type Job } from "@/components/CareerRail";
+import { CareerTraceroute, type TraceHop } from "@/components/CareerTraceroute";
 import { Reveal } from "@/components/Reveal";
 import { HeroGrid } from "@/components/HeroGrid";
 import { aboutStack } from "@/content/stack";
@@ -50,13 +50,15 @@ const RASGOS = [
 
 // Los cuatro puestos anteriores al desarrollo, tal como constan en el CV.
 // Nada de resumen genérico: fecha, empresa y lo único que de verdad importa
-// de cada uno.
-const EXPERIENCIA: Job[] = [
+// de cada uno. start/end en YYYY-MM: es lo que deja calcular la duración de
+// verdad en vez de escribirla a mano y que se desactualice.
+const EXPERIENCIA: TraceHop[] = [
   {
     role: "Técnico de redes y soporte",
     company: "EDNON",
     dates: "mar. 2024 → actualidad",
-    year: "24",
+    start: "2024-03",
+    end: null,
     detail:
       "Compaginado con la búsqueda de mi primera posición como desarrollador. Gestión, soporte y monitorización de una red corporativa 24×7 — datos, voz, WiFi y seguridad — con resolución de incidencias de primer nivel, tickets, informes periódicos y copias de seguridad.",
   },
@@ -64,7 +66,8 @@ const EXPERIENCIA: Job[] = [
     role: "Desarrollador de aplicaciones web",
     company: "Indra · prácticas",
     dates: "oct. → dic. 2023",
-    year: "23",
+    start: "2023-10",
+    end: "2023-12",
     detail:
       "Backend sobre arquitectura de microservicios: endpoints REST, mantenimiento de la interfaz en React y refactorización de servicios existentes dentro del flujo de revisión del equipo.",
   },
@@ -72,14 +75,18 @@ const EXPERIENCIA: Job[] = [
     role: "Técnico de redes y soporte",
     company: "EDNON",
     dates: "ago. 2022 → sept. 2023",
-    year: "22",
+    start: "2022-08",
+    end: "2023-09",
     detail: "Mismas funciones que el puesto actual.",
   },
   {
     role: "Técnico y administrador de sistemas",
     company: "Doezos Consultoría IT",
     dates: "2019 → 2020",
-    year: "19",
+    // Solo se conoce el año, no el mes: mejor sin tiempo calculado que uno
+    // de precisión inventada.
+    start: null,
+    end: null,
     detail:
       "Desarrollo y mantenimiento de webs de clientes en PrestaShop y WordPress, con el hosting, el dominio y el servidor detrás gestionados también por mí.",
   },
@@ -206,14 +213,14 @@ export default function SobreMiPage() {
 
       <section className="border-b border-line py-20">
         <Container>
-          <SectionHead label="git log --author=pablo" title="Por dónde he pasado">
+          <SectionHead label="traceroute carrera" title="Por dónde he pasado">
             <p className="mt-6 max-w-[62ch] text-ink-soft">
               Cuatro puestos antes de dedicarme al desarrollo. Cada uno se
               despliega con lo que de verdad aporta.
             </p>
           </SectionHead>
 
-          <CareerRail jobs={EXPERIENCIA} />
+          <CareerTraceroute hops={EXPERIENCIA} />
         </Container>
       </section>
 

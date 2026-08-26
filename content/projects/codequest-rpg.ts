@@ -56,11 +56,25 @@ export const codequestRpg: Project = {
   caseStudy: {
     problem:
       "El proyecto empezó como una prueba de concepto abandonada a medias: una capa de trivia de opción múltiple con temática de RPG, sin persistencia, sin tipado y sin tests. Se retomó con una auditoría técnica honesta y se reconstruyó en fases incrementales, sin dejar el juego roto entre pasos.",
+    audit: {
+      keep: ["La ambientación", "El mapa de zonas"],
+      cut: [
+        "La mecánica de trivia de opción múltiple",
+        "El estado disperso entre componentes",
+        "Los archivos sin tipar ni testear",
+      ],
+    },
     decisions: [
       {
         title: "key={challenge.id} en vez de useEffect para resetear el editor",
         detail:
           "La primera versión usaba un useEffect que llamaba a setCode/setStatus al detectar un challenge.id distinto; eslint-plugin-react-hooks lo marcó como antipatrón (un setState síncrono dentro de un efecto provoca renders en cascada). Remontar el subárbol con <ChallengeRunner key={challenge.id} /> hace que React destruya y recree la instancia en cada reto, con estado limpio sin sincronización manual.",
+        code: {
+          file: "src/screens/ChallengeScreen.tsx",
+          before:
+            "useEffect(() => {\n  setCode(challenge.starterCode);\n  setStatus('idle');\n  setOutput(null);\n}, [challenge.id]);",
+          after: "<ChallengeRunner key={challenge.id} challenge={challenge} />",
+        },
       },
       {
         title: "TypeScript progresivo, no una reescritura completa",
@@ -71,12 +85,23 @@ export const codequestRpg: Project = {
         title: "Code-splitting de CodeMirror",
         detail:
           "CodeMirror es, con diferencia, la dependencia más pesada del proyecto. Cargar ChallengeScreen con React.lazy() + Suspense evita que TitleScreen y WorldMap paguen ese coste: el bundle inicial pasó de 734 kB a 216 kB (241,96 kB a 68,77 kB gzip), casi un 70% menos de JS en la carga inicial.",
+        code: {
+          file: "src/App.tsx",
+          before: "import ChallengeScreen from './screens/ChallengeScreen';",
+          after:
+            "const ChallengeScreen = lazy(() => import('./screens/ChallengeScreen'));\n// ...\n<Suspense fallback={<Loading />}>\n  <ChallengeScreen />\n</Suspense>",
+        },
       },
     ],
     challenge:
       "eval() o new Function() en el hilo principal comparte el mismo scope de ejecución que el resto de la app: un bucle infinito bloquea la UI de forma irrecuperable. Un Web Worker es un hilo real y aislado, sin memoria compartida ni acceso al DOM — y, el motivo decisivo, si el jugador escribe un bucle infinito, el hilo principal puede matarlo desde fuera. El propio worker no puede resolver su timeout si está colgado en un bucle síncrono, así que el reloj y el worker.terminate() viven deliberadamente en lib/codeRunner.ts (hilo principal), no dentro del worker.",
+    challengeCode: {
+      file: "src/lib/codeRunner.ts",
+      code: "const worker = new Worker(url, { type: 'module' });\n\n// El reloj vive fuera del worker: si el código del jugador cuelga\n// el hilo síncrono, el worker no puede resolver su propio timeout.\nconst timer = setTimeout(() => {\n  worker.terminate();\n  reject(new Error('timeout'));\n}, LIMIT_MS);\n\nworker.onmessage = (e) => {\n  clearTimeout(timer);\n  resolve(e.data);\n};",
+    },
     result:
       "11 retos de código cubriendo las 6 zonas y los 6 conceptos definidos (variables, condicionales, bucles, arrays, funciones, recursión), con CI en verde (typecheck, lint, Vitest, e2e de Playwright) en cada push. Deliberadamente 100% client-side, sin backend ni cuentas: el progreso vive en localStorage del navegador, con las limitaciones que eso implica y que el propio README documenta sin disimularlas — por ejemplo, que los testCase.hidden no son seguridad real, solo un desincentivo pedagógico.",
+    stat: { label: "retos de código", value: "11" },
   },
   // Los dos números salen tal cual de decisions[2] ("Code-splitting de
   // CodeMirror"): aquí solo se extraen para poder pintarlos como dato.

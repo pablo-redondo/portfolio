@@ -5,8 +5,9 @@ import { SectionLabel } from "@/components/SectionLabel";
 import { ProjectCard } from "@/components/ProjectCard";
 import { FeaturedProject } from "@/components/FeaturedProject";
 import { StackSummary } from "@/components/StackSummary";
-import { Timeline } from "@/components/Timeline";
 import { TopologyGraph } from "@/components/TopologyGraph";
+import { RequestTrace } from "@/components/RequestTrace";
+import { HeroStats } from "@/components/HeroStats";
 import { Reveal } from "@/components/Reveal";
 import { DeploymentStatusPanel } from "@/components/DeploymentStatus";
 import { HeroGrid } from "@/components/HeroGrid";
@@ -29,24 +30,6 @@ export const metadata: Metadata = {
 const featured = projects.find((project) => project.featured) ?? projects[0];
 const rest = projects.filter((project) => project.slug !== featured.slug);
 const topology = buildTopology(projects);
-
-/**
- * Cifras del panel del hero. Todas se cuentan aquí desde content/, así que
- * no pueden quedarse desfasadas al añadir un proyecto ni afirman nada que
- * no esté en los datos.
- */
-const RESUMEN: { k: string; v: string }[] = [
-  { k: "proyectos", v: String(projects.length) },
-  {
-    k: "en producción",
-    v: String(projects.filter((p) => p.status === "live").length),
-  },
-  {
-    k: "tecnologías",
-    v: String(new Set(projects.flatMap((p) => p.stack.map((t) => t.name))).size),
-  },
-  { k: "fases documentadas", v: String(featured.timeline?.length ?? 0) },
-];
 
 export default function HomePage() {
   return (
@@ -93,41 +76,18 @@ export default function HomePage() {
                 </div>
               </div>
 
-              {/* Ventana de terminal con las cifras del propio contenido.
-                  Da peso al lado derecho sin repetir el monitor de estado,
-                  que tiene su propia sección a ancho completo debajo. */}
-              <div data-enter="4" className="win min-w-0">
-                <div className="win-bar">
-                  <div className="win-dots" aria-hidden>
-                    <span className="win-dot" />
-                    <span className="win-dot" />
-                    <span className="win-dot" />
-                  </div>
-                  <span className="win-title">perfil — pablo-redondo.dev</span>
-                  <span />
-                </div>
-
-                <div className="p-5">
-                  <p className="text-mono-cmd text-ink-meta">
-                    <span className="text-accent">$</span> cat resumen.json
-                  </p>
-
-                  <dl className="mt-5 flex flex-col gap-4">
-                    {RESUMEN.map((fact) => (
-                      <div key={fact.k} className="flex items-baseline justify-between gap-4">
-                        <dt className="text-mono-meta text-ink-meta uppercase">{fact.k}</dt>
-                        <dd className="font-mono text-[15px] font-medium text-ink tabular-nums">
-                          {fact.v}
-                        </dd>
-                      </div>
-                    ))}
-                  </dl>
-
-                  <p className="text-mono-data mt-5 border-t border-[var(--bg-raised)] pt-4 leading-relaxed text-ink-meta">
-                    contados desde content/, no escritos a mano
-                  </p>
-                </div>
+              {/* La traza real de la petición que acaba de traer esta
+                  página — Navigation Timing del navegador, no una cifra de
+                  muestra. Da peso al lado derecho sin repetir el monitor de
+                  estado, que tiene su propia sección a ancho completo
+                  debajo. */}
+              <div data-enter="4" className="min-w-0">
+                <RequestTrace />
               </div>
+            </div>
+
+            <div data-enter="4" className="mt-9">
+              <HeroStats />
             </div>
           </div>
 
@@ -190,17 +150,6 @@ export default function HomePage() {
           <Reveal className="mt-6">
             <FeaturedProject project={featured} />
           </Reveal>
-
-          {featured.timeline && (
-            <div className="mt-12">
-              <Reveal>
-                <p className="text-mono-meta mb-5 text-ink-meta uppercase">
-                  cómo llegó hasta aquí · {featured.timeline.length} fases
-                </p>
-              </Reveal>
-              <Timeline phases={featured.timeline} />
-            </div>
-          )}
         </Container>
       </section>
 

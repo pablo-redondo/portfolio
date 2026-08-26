@@ -1,9 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import type { ServiceStatus } from "@/app/api/status/route";
-
-type State = "loading" | "ready" | "error";
+import { useDeploymentStatus as useStatus } from "@/hooks/useDeploymentStatus";
 
 const LABELS: Record<ServiceStatus["state"], string> = {
   up: "operativo",
@@ -16,37 +14,6 @@ const TONES: Record<ServiceStatus["state"], string> = {
   down: "text-crit",
   unknown: "text-ink-faint",
 };
-
-function useStatus() {
-  const [state, setState] = useState<State>("loading");
-  const [services, setServices] = useState<ServiceStatus[]>([]);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    fetch("/api/status")
-      .then((res) => {
-        if (!res.ok) throw new Error(String(res.status));
-        return res.json();
-      })
-      .then((data: { services: ServiceStatus[] }) => {
-        if (cancelled) return;
-        setServices(data.services);
-        setState("ready");
-      })
-      .catch(() => {
-        // La comprobación es información extra, no contenido: si falla,
-        // la página no debe enseñar un error.
-        if (!cancelled) setState("error");
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  return { state, services };
-}
 
 function Dot({ tone, pulse }: { tone: string; pulse?: boolean }) {
   return (

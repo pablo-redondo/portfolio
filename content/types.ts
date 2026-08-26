@@ -19,16 +19,40 @@ export interface TimelinePhase {
   commitRange?: string;
 }
 
+export interface CaseStudyCodeChange {
+  file?: string;
+  before: string;
+  after: string;
+}
+
 export interface CaseStudyDecision {
   title: string;
   detail: string;
+  /** Solo cuando la propia `detail` ya describe un cambio a nivel de código. */
+  code?: CaseStudyCodeChange;
+}
+
+/**
+ * Qué se salvó y qué se tiró al retomar un proyecto abandonado a medias.
+ * No es contenido nuevo: reformatea en lista lo que `problem` ya cuenta en
+ * prosa, para poder mostrarlo como el propio audit que fue.
+ */
+export interface CaseStudyAudit {
+  keep: string[];
+  cut: string[];
 }
 
 export interface CaseStudy {
   problem: string;
+  /** Presente solo si el proyecto se retomó de un estado previo real. */
+  audit?: CaseStudyAudit;
   decisions: CaseStudyDecision[];
   challenge: string;
+  /** Fragmento real que ilustra la solución que describe `challenge`. */
+  challengeCode?: { file: string; code: string };
   result: string;
+  /** Una cifra suelta que `result` ya menciona en prosa (p. ej. «11 retos»). */
+  stat?: { label: string; value: string };
 }
 
 export interface ProjectImage {
