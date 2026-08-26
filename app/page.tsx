@@ -4,6 +4,8 @@ import { Container } from "@/components/Container";
 import { SectionLabel } from "@/components/SectionLabel";
 import { ProjectCard } from "@/components/ProjectCard";
 import { StackSummary } from "@/components/StackSummary";
+import { Timeline } from "@/components/Timeline";
+import { TopologyGraph } from "@/components/TopologyGraph";
 import { Reveal } from "@/components/Reveal";
 import { DeploymentStatusPanel } from "@/components/DeploymentStatus";
 import { HeroGrid } from "@/components/HeroGrid";
@@ -11,6 +13,11 @@ import { projects } from "@/content/projects";
 import { aboutStack } from "@/content/stack";
 import { SITE } from "@/content/site";
 import { HOME_HERO } from "@/content/home";
+import { buildTopology } from "@/content/topology";
+
+const featuredProject = projects.find((project) => project.featured) ?? projects[0];
+const restProjects = projects.filter((project) => project.slug !== featuredProject.slug);
+const topology = buildTopology(projects);
 
 const TITLE = "Pablo Redondo — Desarrollador full-stack";
 const DESCRIPTION =
@@ -93,7 +100,55 @@ export default function HomePage() {
         </Container>
       </section>
 
-      {/* Los siete en la misma rejilla y con el mismo peso: sacar uno a una
+      {/* Topología: los mismos siete proyectos, pero como red — qué
+          tecnología comparte cada uno con los demás, calculado de verdad
+          desde content/projects/*.ts, no dibujado a mano. */}
+      <section className="border-b border-line py-20">
+        <Container>
+          <Reveal>
+            <SectionLabel>cat topologia.json</SectionLabel>
+            <h2 className="mt-3 font-mono text-2xl font-bold tracking-tight sm:text-3xl">
+              Topología del stack
+            </h2>
+            <span className="heading-rule mt-4 mb-5" aria-hidden />
+            <p className="mb-8 max-w-[62ch] text-ink-soft">
+              Cada nodo es un proyecto real; cada arista, una tecnología que
+              comparten de verdad.
+            </p>
+          </Reveal>
+
+          <TopologyGraph nodes={topology.nodes} edges={topology.edges} />
+        </Container>
+      </section>
+
+      {/* Proyecto insignia con un adelanto de sus fases: el resto vive en
+          la rejilla de abajo, este se queda con su propia sección porque
+          es el único con una reconstrucción documentada paso a paso. */}
+      <section className="border-b border-line py-20">
+        <Container>
+          <Reveal>
+            <SectionLabel>cat destacado.md</SectionLabel>
+            <h2 className="mt-3 font-mono text-2xl font-bold tracking-tight sm:text-3xl">
+              Proyecto destacado
+            </h2>
+            <span className="heading-rule mt-4 mb-5" aria-hidden />
+          </Reveal>
+
+          <Reveal stagger className="grid gap-8 lg:grid-cols-2 lg:items-start">
+            <ProjectCard project={featuredProject} />
+            {featuredProject.timeline && (
+              <div>
+                <p className="text-mono-meta text-ink-faint mb-4 uppercase">
+                  Línea de tiempo · {featuredProject.timeline.length} fases
+                </p>
+                <Timeline phases={featuredProject.timeline} />
+              </div>
+            )}
+          </Reveal>
+        </Container>
+      </section>
+
+      {/* El resto, en la misma rejilla y con el mismo peso: sacar uno a una
           banda aparte partía la sección en dos y dejaba a los otros
           descuadrados. */}
       <section className="border-b border-line py-20">
@@ -105,7 +160,7 @@ export default function HomePage() {
             </h2>
             <span className="heading-rule mt-4 mb-5" aria-hidden />
             <p className="mb-8 max-w-[62ch] text-ink-soft">
-              Los siete, cada uno con su caso de estudio: qué problema
+              El resto, cada uno con su caso de estudio: qué problema
               resuelven, qué decidí y por qué.
             </p>
           </Reveal>
@@ -117,7 +172,7 @@ export default function HomePage() {
             stagger
             className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
           >
-            {projects.map((project) => (
+            {restProjects.map((project) => (
               <ProjectCard key={project.slug} project={project} />
             ))}
           </Reveal>

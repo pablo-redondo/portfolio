@@ -553,6 +553,23 @@ body {
   background: transparent;
 }
 
+/* --- Grafo de topología: nodos de proyecto -------------------
+   Mismo criterio de foco que el resto del sistema: borde + halo, nunca
+   un cambio de tamaño, ni en :hover ni en :focus-visible. */
+.topology-node {
+  transition:
+    border-color var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out),
+    box-shadow var(--motion-fast) var(--ease-out);
+}
+
+.topology-node:hover,
+.topology-node:focus-visible {
+  border-color: var(--accent);
+  background: var(--surface);
+  box-shadow: 0 0 0 4px var(--accent-glow);
+}
+
 /* Bloque de código o dato destacado: para un fragmento de output, un
    valor numérico grande (antes/después de un bundle, un tiempo de
    respuesta...) o cualquier dato que deba leerse como salida de terminal,
