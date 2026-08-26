@@ -7,8 +7,8 @@ const LABELS: Record<ProjectStatus, string> = {
 };
 
 const TONES: Record<ProjectStatus, string> = {
-  live: "text-teal",
-  "in-progress": "text-accent",
+  live: "text-ok",
+  "in-progress": "text-warn",
   archived: "text-ink-faint",
 };
 

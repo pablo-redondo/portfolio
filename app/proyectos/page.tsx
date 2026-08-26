@@ -45,7 +45,7 @@ export default async function ProyectosPage({ searchParams }: Props) {
               Proyectos
             </h1>
             <p data-enter="3" className="mt-5 max-w-[60ch] text-lg text-ink-soft">
-              Seis proyectos con su caso de estudio: el problema real que
+              Siete proyectos con su caso de estudio: el problema real que
               resuelven, las decisiones técnicas y lo que no salió bien.
             </p>
 
@@ -75,9 +75,8 @@ export default async function ProyectosPage({ searchParams }: Props) {
 
       <section className="py-16">
         <Container>
-          {/* Las seis con el mismo peso y el mismo tamaño. Sacar una a una
-              banda aparte a ancho completo dejaba a las otras cinco
-              descuadradas. */}
+          {/* Las siete con el mismo peso y el mismo tamaño. Sacar una a una
+              banda aparte a ancho completo dejaba a las otras descuadradas. */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {filtered.map((project, i) =>
               // Las primeras cards caen dentro del pliegue y una de ellas es

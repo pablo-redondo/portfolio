@@ -83,13 +83,16 @@ export function StackExplorer({ stack }: { stack: TechChoice[] }) {
 
       <Reveal stagger className="stack-grid grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {ordenadas.map((tech, i) => (
-          <article
+          <details
             key={tech.name}
             data-capa={tech.category}
             style={indices[i]}
             className="card-scan tech-card group"
           >
-            <div className="flex items-center justify-between gap-3">
+            {/* Mismo marcador "+"/"−" que las fases de un caso de estudio y
+                el raíl de carrera: el "porqué" de cada tecnología queda
+                plegado hasta que se pincha en la ficha. */}
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 [&::-webkit-details-marker]:hidden">
               <h3 className="flex min-w-0 items-center gap-2 font-mono text-sm font-semibold text-ink">
                 <TechIcon
                   name={tech.name}
@@ -98,15 +101,18 @@ export function StackExplorer({ stack }: { stack: TechChoice[] }) {
                 />
                 <span className="min-w-0">{tech.name}</span>
               </h3>
-              <span className="shrink-0 font-mono text-[10px] tracking-wider text-ink-faint uppercase">
-                {CATEGORY_LABELS[tech.category]}
+              <span className="flex shrink-0 items-center gap-2">
+                <span className="font-mono text-[10px] tracking-wider text-ink-faint uppercase">
+                  {CATEGORY_LABELS[tech.category]}
+                </span>
+                <span className="phase-toggle" aria-hidden />
               </span>
-            </div>
+            </summary>
 
-            <p className="mt-2.5 text-sm leading-relaxed text-ink-soft">
-              {tech.why}
-            </p>
-          </article>
+            <div className="detail-in mt-2.5 border-t border-line pt-2.5">
+              <p className="text-sm leading-relaxed text-ink-soft">{tech.why}</p>
+            </div>
+          </details>
         ))}
       </Reveal>
     </fieldset>

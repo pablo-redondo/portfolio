@@ -93,8 +93,8 @@ export default function HomePage() {
         </Container>
       </section>
 
-      {/* Los seis en la misma rejilla y con el mismo peso: sacar uno a una
-          banda aparte partía la sección en dos y dejaba a los otros cinco
+      {/* Los siete en la misma rejilla y con el mismo peso: sacar uno a una
+          banda aparte partía la sección en dos y dejaba a los otros
           descuadrados. */}
       <section className="border-b border-line py-20">
         <Container>
@@ -105,7 +105,7 @@ export default function HomePage() {
             </h2>
             <span className="heading-rule mt-4 mb-5" aria-hidden />
             <p className="mb-8 max-w-[62ch] text-ink-soft">
-              Los seis, cada uno con su caso de estudio: qué problema
+              Los siete, cada uno con su caso de estudio: qué problema
               resuelven, qué decidí y por qué.
             </p>
           </Reveal>

@@ -5,6 +5,7 @@ import { miPlan } from "@/content/projects/mi-plan";
 import { laSala } from "@/content/projects/la-sala";
 import { netpulse } from "@/content/projects/netpulse";
 import { carreraVolei } from "@/content/projects/carrera-volei";
+import { pabloRedondoDev } from "@/content/projects/pablo-redondo-dev";
 
 export const projects: Project[] = [
   codequestRpg,
@@ -13,4 +14,5 @@ export const projects: Project[] = [
   laSala,
   netpulse,
   carreraVolei,
+  pabloRedondoDev,
 ];

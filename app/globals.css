@@ -53,7 +53,10 @@
   --line-strong: var(--border-strong);
   --teal: var(--ok);
   --danger: var(--crit);
-  --accent-ink: var(--bg-base);
+  /* Valor exacto del sistema de diseño (Fase 2), no el --bg-base genérico
+     de la Fase 1: el texto sobre el botón primario cian necesita este tono
+     concreto para el contraste, no cualquier fondo oscuro. */
+  --accent-ink: #04161d;
   --accent-soft: rgba(76, 201, 255, 0.12);
   --accent-line: rgba(76, 201, 255, 0.35);
   --glow: var(--accent-glow);
@@ -550,6 +553,19 @@ body {
   background: transparent;
 }
 
+/* Bloque de código o dato destacado: para un fragmento de output, un
+   valor numérico grande (antes/después de un bundle, un tiempo de
+   respuesta...) o cualquier dato que deba leerse como salida de terminal,
+   no como prosa. */
+.data-block {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-raised);
+  padding: 0.875rem 1rem;
+  font-family: var(--font-mono), monospace;
+  color: var(--ink);
+}
+
 /* Recorte de líneas para que las cards de una fila queden parejas
    en vez de dejar huecos de aire de distinto tamaño. */
 .clamp-2 {
@@ -898,20 +914,6 @@ body {
     var(--line) 18%,
     var(--line) 100%
   );
-  transform: scaleX(1);
-  transform-origin: left center;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .card-rule {
-    transform: scaleX(0.14);
-    transition: transform var(--motion-slow) var(--ease-out);
-  }
-
-  .project-card:hover .card-rule,
-  .project-card:focus-visible .card-rule {
-    transform: scaleX(1);
-  }
 }
 
 /* Tira de logos del stack. Monocroma y del color más tenue del texto: es
@@ -981,17 +983,6 @@ body {
 .project-card:hover .card-cta,
 .project-card:focus-visible .card-cta {
   color: var(--accent);
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .card-cta-arrow {
-    transition: transform var(--motion-base) var(--ease-out);
-  }
-
-  .project-card:hover .card-cta-arrow,
-  .project-card:focus-visible .card-cta-arrow {
-    transform: translateX(3px);
-  }
 }
 
 /* --- /contacto: la página es la terminal --------------------
@@ -1366,21 +1357,15 @@ a.ls-row:focus-visible .ls-arrow {
   transition:
     border-color var(--motion-fast) var(--ease-out),
     background-color var(--motion-fast) var(--ease-out),
-    box-shadow var(--motion-fast) var(--ease-out),
-    transform var(--motion-fast) var(--ease-out);
+    box-shadow var(--motion-fast) var(--ease-out);
 }
 
+/* Halo cian, sin desplazamiento ni escala: el sistema de diseño de la Fase
+   2 pide que ningún hover cambie el tamaño o la posición de la card. */
 .card-lift:hover,
 .card-lift:focus-visible {
-  border-color: var(--accent-line);
-  box-shadow: var(--shadow-lg);
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .card-lift:hover,
-  .card-lift:focus-visible {
-    transform: translateY(-3px);
-  }
+  border-color: var(--accent);
+  box-shadow: 0 0 32px -4px var(--accent-glow);
 }
 
 /* --- Botones y enlaces --------------------------------------
@@ -1409,8 +1394,7 @@ a.ls-row:focus-visible .ls-arrow {
   box-shadow: var(--shadow-sm);
   transition:
     filter var(--motion-fast) var(--ease-out),
-    box-shadow var(--motion-fast) var(--ease-out),
-    transform 90ms var(--ease-out);
+    box-shadow var(--motion-fast) var(--ease-out);
 }
 
 .btn-primary:hover {
@@ -1425,8 +1409,7 @@ a.ls-row:focus-visible .ls-arrow {
   transition:
     border-color var(--motion-fast) var(--ease-out),
     color var(--motion-fast) var(--ease-out),
-    background-color var(--motion-fast) var(--ease-out),
-    transform 90ms var(--ease-out);
+    background-color var(--motion-fast) var(--ease-out);
 }
 
 .btn-secondary:hover,
@@ -1458,38 +1441,21 @@ a.ls-row:focus-visible .ls-arrow {
   text-decoration-color: currentColor;
 }
 
-/* --- Pulsación de los botones ------------------------------- */
+/* --- Foco de los botones -------------------------------------
+   El anillo global (:focus-visible en app/globals.css) ya pone el borde;
+   aquí se añade el halo que pide el sistema de diseño — siempre con
+   box-shadow, nunca con un cambio de tamaño. */
 
-@media (prefers-reduced-motion: no-preference) {
-  .btn-primary:active,
-  .btn-secondary:active {
-    transform: translateY(1px);
-  }
+.btn:focus-visible {
+  box-shadow: 0 0 0 4px var(--accent-glow);
 }
 
 /* --- Nav ---------------------------------------------------- */
 
 .nav-link {
-  position: relative;
-  transition: color var(--motion-fast) var(--ease-out);
-}
-
-.nav-link::after {
-  content: "";
-  position: absolute;
-  left: 0.5rem;
-  right: 0.5rem;
-  bottom: 0.25rem;
-  height: 1px;
-  background: currentColor;
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform var(--motion-fast) var(--ease-out);
-}
-
-.nav-link:hover::after,
-.nav-link:focus-visible::after {
-  transform: scaleX(1);
+  transition:
+    color var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out);
 }
 
 /* --- Filtros ------------------------------------------------ */
@@ -1497,7 +1463,7 @@ a.ls-row:focus-visible .ls-arrow {
 .filter-pill {
   border-radius: 999px;
   border: 1px solid var(--line);
-  background: var(--surface);
+  background: var(--surface-2);
   color: var(--ink-soft);
   padding: 0.375rem 0.875rem;
   font-family: var(--font-mono), monospace;
@@ -1640,7 +1606,11 @@ a.ls-row:focus-visible .ls-arrow {
   border-color: var(--accent-line);
 }
 
-.rail-node[open] .phase-toggle {
+/* `details[open] > summary` y no `.rail-node[open]`: así el mismo
+   marcador "+"/"−" sirve para cualquier <details> que lo use, no solo
+   para las fases del raíl — por ejemplo, las fichas de tecnología de
+   /sobre-mi. */
+details[open] > summary .phase-toggle {
   color: var(--accent-ink);
   background: var(--accent);
   border-color: var(--accent);
@@ -1665,7 +1635,7 @@ a.ls-row:focus-visible .ls-arrow {
   transform: translateY(-50%) rotate(90deg);
 }
 
-.rail-node[open] .phase-toggle::after {
+details[open] > summary .phase-toggle::after {
   transform: translateY(-50%) rotate(0deg);
 }
 
@@ -1809,43 +1779,6 @@ a.ls-row:focus-visible .ls-arrow {
   color: var(--ink);
 }
 
-/* --- Barrido de luz sobre el botón principal ----------------
-   Se dispara una vez por hover, no en bucle: un brillo que no para
-   distrae de lo que hay alrededor. */
-
-.btn-primary {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-}
-
-.btn-primary::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: linear-gradient(
-    115deg,
-    transparent 35%,
-    rgba(255, 255, 255, 0.26) 50%,
-    transparent 65%
-  );
-  transform: translateX(-130%);
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .btn-primary:hover::after,
-  .btn-primary:focus-visible::after {
-    animation: sheen 720ms var(--ease-out);
-  }
-}
-
-@keyframes sheen {
-  to {
-    transform: translateX(130%);
-  }
-}
-
 /* --- Cabecera: se despega al hacer scroll ------------------
    Animación guiada por scroll, sin listener ni estado en React.
    Solo el primer tramo de recorrido: pasados 80px ya está en su
@@ -1899,44 +1832,6 @@ a.ls-row:focus-visible .ls-arrow {
   }
 }
 
-/* --- Punto del raíl: late al abrirse la fase ---------------- */
-
-@media (prefers-reduced-motion: no-preference) {
-  .rail-node[open] > summary .rail-dot {
-    animation: dot-pop var(--motion-base) var(--ease-out);
-  }
-}
-
-@keyframes dot-pop {
-  50% {
-    transform: scale(1.14);
-  }
-  to {
-    transform: scale(1);
-  }
-}
-
-/* --- Filtros: la pastilla activa se marca al entrar --------- */
-
-@media (prefers-reduced-motion: no-preference) {
-  .filter-pill[data-active="true"],
-  .filter-pill:has(input:checked) {
-    animation: pill-in var(--motion-base) var(--ease-out);
-  }
-
-  .filter-pill:active {
-    transform: translateY(1px);
-  }
-}
-
-@keyframes pill-in {
-  from {
-    transform: scale(0.94);
-  }
-  to {
-    transform: scale(1);
-  }
-}
 
 /* --- Numeral de las tarjetas de método ---------------------
    Un número grande y muy tenue de fondo, que se tiñe de acento al pasar
@@ -2048,19 +1943,13 @@ a.ls-row:focus-visible .ls-arrow {
   padding: 1.125rem;
   transition:
     border-color var(--motion-fast) var(--ease-out),
-    background-color var(--motion-fast) var(--ease-out),
-    transform var(--motion-fast) var(--ease-out);
+    background-color var(--motion-fast) var(--ease-out);
 }
 
-.tech-card:hover {
-  border-color: var(--accent-line);
+.tech-card:hover,
+.tech-card[open] {
+  border-color: var(--accent);
   background: var(--surface);
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .tech-card:hover {
-    transform: translateY(-2px);
-  }
 }
 
 /* --- Entrada de las cards del stack ------------------------

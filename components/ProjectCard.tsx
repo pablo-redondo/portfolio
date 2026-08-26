@@ -6,11 +6,13 @@ import { techIcon } from "@/content/tech-icons";
 
 type Props = {
   project: Project;
+  /** Variante a doble ancho para el proyecto insignia de una rejilla. */
+  featured?: boolean;
 };
 
 const MAX_LOGOS = 5;
 
-export function ProjectCard({ project }: Props) {
+export function ProjectCard({ project, featured = false }: Props) {
   // El stack va como tira de logos, no como chips de texto.
   //
   // Con chips, tres nombres largos ("Next.js 14 (App Router) + React 18")
@@ -24,59 +26,100 @@ export function ProjectCard({ project }: Props) {
   const logos = project.stack.filter((tech) => techIcon(tech.name));
   const visibles = logos.slice(0, MAX_LOGOS);
   const extra = project.stack.length - visibles.length;
+  const hasActions = Boolean(project.demoUrl) || project.repos.length > 0;
 
   return (
-    <Link
-      href={`/proyectos/${project.slug}`}
-      className="card-lift card-scan surface-card project-card group flex h-full flex-col p-6"
+    // La card ya no es un único <Link>: los enlaces de demo/repo son
+    // anclas propias y anidar un <a> dentro de otro no es válido HTML. El
+    // enlace al caso de estudio se estira sobre toda la card con
+    // `absolute inset-0`, y el resto del contenido lleva `pointer-events-none`
+    // para no robarle el hover ni el click — salvo la fila de acciones, que
+    // sí necesita recibir los suyos y va por delante en z-index.
+    <div
+      className={`card-lift card-scan surface-card project-card group relative flex h-full flex-col p-6 ${
+        featured ? "sm:col-span-2" : ""
+      }`}
     >
-      <div className="flex items-center justify-between gap-3">
-        <span className="min-w-0 truncate font-mono text-[11px] text-ink-faint">
-          {project.slug}
-        </span>
-        <StatusBadge status={project.status} />
-      </div>
+      <Link
+        href={`/proyectos/${project.slug}`}
+        className="absolute inset-0 z-0 rounded-[inherit]"
+      >
+        <span className="sr-only">Ver caso de estudio: {project.title}</span>
+      </Link>
 
-      {/* Sin recorte de líneas ni en el título ni en la entradilla: la
-          rejilla iguala la altura de la fila, así que un texto más largo
-          no descuadra nada y no hay por qué cortarlo con puntos
-          suspensivos. */}
-      <h2 className="mt-3.5 font-mono text-lg leading-snug font-bold tracking-tight text-balance text-ink transition-colors group-hover:text-accent">
-        {project.cardTitle ?? project.title}
-      </h2>
-
-      {/* Se dibuja de cero a ancho completo al pasar por la card. Sustituye
-          al separador fijo que antes partía la card en dos: marca la misma
-          división, pero solo cuando la card está activa. */}
-      <span className="card-rule mt-4" aria-hidden />
-
-      <p className="mt-4 text-sm leading-relaxed text-ink-soft">
-        {project.tagline}
-      </p>
-
-      {/* `mt-auto`: el pie cae al fondo de la card, así que los pies de una
-          fila quedan alineados aunque las entradillas midan distinto. */}
-      <div className="mt-auto flex items-end justify-between gap-4 pt-6">
-        {visibles.length > 0 ? (
-          <span className="logo-strip" aria-hidden>
-            {visibles.map((tech) => (
-              <TechIcon key={tech.name} name={tech.name} className="h-4 w-4" />
-            ))}
-            {extra > 0 && <span className="logo-count">+{extra}</span>}
+      <div className="pointer-events-none flex flex-1 flex-col">
+        <div className="flex items-center justify-between gap-3">
+          <span className="min-w-0 truncate font-mono text-[11px] text-ink-faint">
+            {project.slug}
           </span>
-        ) : (
-          // Carrera Vóley no lleva stack: es HTML, CSS y JavaScript a pelo.
-          // El hueco vacío se lee como un olvido; decirlo lo convierte en
-          // lo que es, una característica del proyecto.
-          <span className="logo-count">sin dependencias</span>
-        )}
+          <StatusBadge status={project.status} />
+        </div>
 
-        {/* Solo la flecha: la card entera es el enlace y el título ya le da
-            nombre, así que el rótulo repetía seis veces lo mismo. */}
-        <span aria-hidden className="card-cta card-cta-arrow">
-          →
-        </span>
+        {/* Sin recorte de líneas ni en el título ni en la entradilla: la
+            rejilla iguala la altura de la fila, así que un texto más largo
+            no descuadra nada y no hay por qué cortarlo con puntos
+            suspensivos. */}
+        <h2 className="mt-3.5 font-mono text-lg leading-snug font-bold tracking-tight text-balance text-ink transition-colors group-hover:text-accent">
+          {project.cardTitle ?? project.title}
+        </h2>
+
+        <span className="card-rule mt-4" aria-hidden />
+
+        <p className="mt-4 text-sm leading-relaxed text-ink-soft">
+          {project.tagline}
+        </p>
+
+        {/* `mt-auto`: el pie cae al fondo de la card, así que los pies de una
+            fila quedan alineados aunque las entradillas midan distinto. */}
+        <div className="mt-auto flex items-end justify-between gap-4 pt-6">
+          {visibles.length > 0 ? (
+            <span className="logo-strip" aria-hidden>
+              {visibles.map((tech) => (
+                <TechIcon key={tech.name} name={tech.name} className="h-4 w-4" />
+              ))}
+              {extra > 0 && <span className="logo-count">+{extra}</span>}
+            </span>
+          ) : (
+            // Carrera Vóley no lleva stack: es HTML, CSS y JavaScript a pelo.
+            // El hueco vacío se lee como un olvido; decirlo lo convierte en
+            // lo que es, una característica del proyecto.
+            <span className="logo-count">sin dependencias</span>
+          )}
+
+            {/* Solo la flecha: el título ya da nombre al enlace principal, así
+              que un rótulo repetido en cada card de la rejilla solo añadía
+              texto. */}
+          <span aria-hidden className="card-cta card-cta-arrow">
+            →
+          </span>
+        </div>
       </div>
+
+      {hasActions && (
+        <div className="relative z-10 mt-5 flex flex-wrap gap-2 border-t border-line pt-5">
+          {project.demoUrl && (
+            <a
+              href={project.demoUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="btn btn-secondary"
+            >
+              Demo
+            </a>
+          )}
+          {project.repos.map((repo) => (
+            <a
+              key={repo.url}
+              href={repo.url}
+              target="_blank"
+              rel="noreferrer"
+              className="btn btn-secondary"
+            >
+              {repo.label}
+            </a>
+          ))}
+        </div>
+      )}
 
       {/* La tira de logos es decorativa: los nombres del stack no se pierden
           para quien navega con lector de pantalla. */}
@@ -85,6 +128,6 @@ export function ProjectCard({ project }: Props) {
           Stack: {project.stack.map((tech) => tech.name).join(", ")}.
         </span>
       )}
-    </Link>
+    </div>
   );
 }

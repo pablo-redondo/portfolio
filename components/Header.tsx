@@ -40,8 +40,10 @@ export function Header() {
                   key={item.href}
                   href={item.href}
                   aria-current={isActive ? "page" : undefined}
-                  className={`nav-link rounded-md px-2 py-1.5 font-mono text-xs sm:px-2.5 ${
-                    isActive ? "text-accent" : "text-ink-soft hover:text-ink"
+                  className={`nav-link text-mono-cmd rounded-md px-2.5 py-1.5 ${
+                    isActive
+                      ? "text-accent"
+                      : "text-ink-meta hover:bg-bg-panel hover:text-ink"
                   }`}
                 >
                   <span className="hidden sm:inline">~/</span>

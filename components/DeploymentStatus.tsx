@@ -12,8 +12,8 @@ const LABELS: Record<ServiceStatus["state"], string> = {
 };
 
 const TONES: Record<ServiceStatus["state"], string> = {
-  up: "text-teal",
-  down: "text-danger",
+  up: "text-ok",
+  down: "text-crit",
   unknown: "text-ink-faint",
 };
 
@@ -107,10 +107,10 @@ export function DeploymentStatusPanel() {
   return (
     <div className="surface-card overflow-hidden">
       <div className="flex items-center justify-between gap-3 border-b border-line bg-surface-2 px-4 py-2.5">
-        <span className="font-mono text-[11px] text-ink-faint">
+        <span className="text-mono-cmd text-ink-meta">
           <span className="text-accent">$</span> status --all
         </span>
-        <span className="font-mono text-[10px] tracking-wide text-ink-faint uppercase">
+        <span className="text-mono-meta text-ink-meta uppercase">
           {state === "loading" ? "comprobando" : state === "error" ? "no disponible" : "en vivo"}
         </span>
       </div>
@@ -122,14 +122,14 @@ export function DeploymentStatusPanel() {
                 key={service.slug}
                 className="flex min-w-0 items-center justify-between gap-4 px-4 py-3"
               >
-                <span className="min-w-0 truncate font-mono text-[13px] text-ink">
+                <span className="text-mono-cmd min-w-0 truncate text-ink">
                   {nombreCorto(service.title)}
                 </span>
                 <span
                   className={`flex shrink-0 items-center gap-1.5 font-mono text-[11px] ${TONES[service.state]}`}
                 >
                   {service.latencyMs !== null && (
-                    <span className="text-ink-faint tabular-nums">
+                    <span className="text-mono-data text-ink-meta tabular-nums">
                       {service.latencyMs} ms
                     </span>
                   )}
@@ -148,7 +148,7 @@ export function DeploymentStatusPanel() {
             ))}
       </ul>
 
-      <p className="border-t border-line px-4 py-2.5 font-mono text-[10px] text-ink-faint">
+      <p className="text-mono-meta border-t border-line px-4 py-2.5 text-ink-faint">
         Comprobación HTTP real desde el servidor, cacheada 5 min
       </p>
     </div>

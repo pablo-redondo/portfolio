@@ -2,7 +2,7 @@
  * Captura cada despliegue real y guarda el PNG en public/screenshots/.
  *
  * Se ejecuta en CI (.github/workflows/screenshots.yml), nunca en el build:
- * el build no puede depender de que seis sitios ajenos estén levantados.
+ * el build no puede depender de que los despliegues estén levantados.
  *
  * Las URLs salen de content/projects, que es la única fuente de verdad; por
  * eso el script es TypeScript y se ejecuta con tsx, en vez de mantener una

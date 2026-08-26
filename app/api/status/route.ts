@@ -8,7 +8,7 @@ import { projects } from "@/content/projects";
  * no hay forma de saber si el servicio está arriba ni cuánto tardó.
  *
  * Se cachea en memoria del proceso para no lanzar una ronda de peticiones
- * contra seis despliegues ajenos cada vez que alguien abre la página. Es el
+ * contra los despliegues ajenos cada vez que alguien abre la página. Es el
  * mismo criterio que aplica NetPulse con su intervalo de cinco minutos:
  * ante servicios que no son míos, mejor pasarse de discreto.
  */
