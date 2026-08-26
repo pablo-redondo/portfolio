@@ -66,17 +66,32 @@ export function TopologyGraph({ nodes, edges, defaultSlug }: Props) {
               if (!p1 || !p2) return null;
               const on = selectedSlug === edge.a || selectedSlug === edge.b;
               return (
-                <line
-                  key={`${edge.a}-${edge.b}`}
-                  x1={p1.x}
-                  y1={p1.y}
-                  x2={p2.x}
-                  y2={p2.y}
-                  stroke={on ? "var(--accent)" : "var(--border-strong)"}
-                  strokeWidth={on ? 0.45 : 0.2}
-                  strokeOpacity={on ? 0.9 : 0.55}
-                  vectorEffect="non-scaling-stroke"
-                />
+                <g key={`${edge.a}-${edge.b}`}>
+                  <line
+                    x1={p1.x}
+                    y1={p1.y}
+                    x2={p2.x}
+                    y2={p2.y}
+                    stroke={on ? "var(--accent)" : "var(--border-strong)"}
+                    strokeWidth={on ? 0.45 : 0.2}
+                    strokeOpacity={on ? 0.9 : 0.55}
+                    vectorEffect="non-scaling-stroke"
+                  />
+                  {/* La corriente de datos entre dos proyectos: solo se ve
+                      en la arista activa, no como adorno permanente. */}
+                  {on && (
+                    <line
+                      className="edge-flow"
+                      x1={p1.x}
+                      y1={p1.y}
+                      x2={p2.x}
+                      y2={p2.y}
+                      stroke="var(--ink)"
+                      strokeWidth={0.6}
+                      vectorEffect="non-scaling-stroke"
+                    />
+                  )}
+                </g>
               );
             })}
           </svg>

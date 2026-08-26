@@ -15,13 +15,13 @@ const TONES: Record<ServiceStatus["state"], string> = {
   unknown: "text-ink-faint",
 };
 
-function Dot({ tone, pulse }: { tone: string; pulse?: boolean }) {
+function Dot({ tone, pulse, ring }: { tone: string; pulse?: boolean; ring?: boolean }) {
   return (
     <span
       aria-hidden
       className={`inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-current ${tone} ${
         pulse ? "animate-pulse" : ""
-      }`}
+      } ${ring ? "pulse-dot" : ""}`}
     />
   );
 }
@@ -48,7 +48,7 @@ export function DeploymentBadge({ slug }: { slug: string }) {
     <span
       className={`inline-flex items-center gap-1.5 font-mono text-[11px] ${TONES[service.state]}`}
     >
-      <Dot tone={TONES[service.state]} />
+      <Dot tone={TONES[service.state]} ring={service.state === "up"} />
       {LABELS[service.state]}
       {service.latencyMs !== null && (
         <span className="text-ink-faint tabular-nums">· {service.latencyMs} ms</span>
@@ -118,7 +118,7 @@ export function DeploymentStatusPanel() {
               <span
                 className={`flex items-center justify-end gap-2 font-mono text-[11px] ${TONES[service.state]}`}
               >
-                <Dot tone={TONES[service.state]} />
+                <Dot tone={TONES[service.state]} ring={service.state === "up"} />
                 {LABELS[service.state]}
               </span>
             </div>

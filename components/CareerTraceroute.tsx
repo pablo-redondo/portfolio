@@ -67,7 +67,10 @@ export function CareerTraceroute({ hops }: { hops: TraceHop[] }) {
               <span className="min-w-0">
                 <span className="block truncate font-semibold text-ink">{hop.role}</span>
                 {hop.start && !hop.end && (
-                  <span className="text-mono-meta text-ok normal-case">actual</span>
+                  <span className="text-mono-meta inline-flex items-center gap-1.5 text-ok normal-case">
+                    <span aria-hidden className="pulse-dot h-1.5 w-1.5 rounded-full bg-current" />
+                    actual
+                  </span>
                 )}
               </span>
               <span className="trace-host text-mono-data min-w-0 truncate text-accent">

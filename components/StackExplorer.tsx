@@ -20,7 +20,14 @@ const CATEGORY_LABELS: Record<TechCategory, string> = {
  * sigue funcionando con el JavaScript desactivado, igual que el resto de la
  * web, y no cuesta ni un byte de bundle.
  */
-export function StackExplorer({ stack }: { stack: TechChoice[] }) {
+type Props = {
+  stack: TechChoice[];
+  /** Nº de proyectos reales que usan cada tecnología, por nombre. */
+  usage?: Map<string, number>;
+  totalProyectos?: number;
+};
+
+export function StackExplorer({ stack, usage, totalProyectos }: Props) {
   const filtros = [
     { value: "todo", label: "todo", count: stack.length },
     ...CATEGORY_ORDER.map((category) => ({
@@ -108,6 +115,12 @@ export function StackExplorer({ stack }: { stack: TechChoice[] }) {
                 <span className="phase-toggle" aria-hidden />
               </span>
             </summary>
+
+            {usage && totalProyectos && (
+              <p className="text-mono-meta -mt-1 mb-2.5 text-ink-faint">
+                {usage.get(tech.name) ?? 0} / {totalProyectos} proyectos
+              </p>
+            )}
 
             <div className="detail-in mt-2.5 border-t border-line pt-2.5">
               <p className="text-sm leading-relaxed text-ink-soft">{tech.why}</p>

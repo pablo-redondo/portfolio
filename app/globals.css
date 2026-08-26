@@ -672,6 +672,31 @@ body {
   background: #0f171c;
 }
 
+/* --- Tabla de sockets (contacto) ------------------------------- */
+.sockets-grid {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr) 4.5rem;
+  gap: 10px;
+  align-items: center;
+  padding: 15px 20px;
+}
+
+.sockets-socket,
+.sockets-dato {
+  display: none;
+}
+
+@media (min-width: 40rem) {
+  .sockets-grid {
+    grid-template-columns: 4.5rem 6rem minmax(0, 1fr) 6rem 5rem;
+  }
+
+  .sockets-socket,
+  .sockets-dato {
+    display: block;
+  }
+}
+
 /* --- Traza de carrera («traceroute») -------------------------
    Reutiliza .status-table/.status-head/.status-row: es la misma idea de
    tabla-monitor, solo que cada fila es un <details> en vez de una fila
@@ -697,6 +722,87 @@ body {
   .trace-host,
   .trace-window {
     display: block;
+  }
+}
+
+/* --- Punto con anillo de pulso --------------------------------
+   Un punto de estado "en vivo" con un anillo que se expande detrás y se
+   desvanece. currentColor: hereda el tono de quien lo usa (ok, crit,
+   accent...), así que una sola regla sirve para cualquier estado —
+   header, tablas de status, traceroute. */
+.pulse-dot {
+  position: relative;
+  display: inline-block;
+  isolation: isolate;
+}
+
+.pulse-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pulse-dot::after {
+    animation: pulse-ring 2s ease-out infinite;
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  75% {
+    transform: scale(3.2);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* --- Barras de dato: entran en vez de aparecer de golpe -------
+   Solo una vez, al montar — no en bucle. Mismo criterio que el resto
+   del sitio: el movimiento marca que el dato acaba de llegar, no es un
+   adorno permanente. */
+.bar-grow {
+  transform-origin: left center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .bar-grow {
+    animation: bar-grow 700ms var(--ease-out) both;
+  }
+}
+
+@keyframes bar-grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* --- Punto que recorre una arista activa del grafo ------------- */
+.edge-flow {
+  stroke-dasharray: 3 7;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .edge-flow {
+    animation: edge-flow 900ms linear infinite;
+  }
+}
+
+@keyframes edge-flow {
+  to {
+    stroke-dashoffset: -10;
   }
 }
 

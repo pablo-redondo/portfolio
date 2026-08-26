@@ -8,6 +8,13 @@ import { Reveal } from "@/components/Reveal";
 import { HeroGrid } from "@/components/HeroGrid";
 import { aboutStack } from "@/content/stack";
 import { SITE } from "@/content/site";
+import { projects } from "@/content/projects";
+import { buildStackUsage } from "@/content/stack-usage";
+
+const stackUsage = buildStackUsage(
+  aboutStack.map((t) => t.name),
+  projects,
+);
 
 const TITLE = "Sobre mí";
 const DESCRIPTION =
@@ -161,24 +168,31 @@ export default function SobreMiPage() {
               data-enter="4"
               className="min-w-0 lg:w-full lg:max-w-md lg:justify-self-end"
             >
-              <div className="surface-card overflow-hidden">
-                <div className="border-b border-line bg-surface-2 px-4 py-2.5">
-                  <span className="font-mono text-[11px] text-ink-faint">
-                    <span className="text-accent">$</span> cat perfil.json
-                  </span>
+              <div className="win">
+                <div className="win-bar">
+                  <div className="win-dots" aria-hidden>
+                    <span className="win-dot" />
+                    <span className="win-dot" />
+                    <span className="win-dot" />
+                  </div>
+                  <span className="win-title">pablo@dev — zsh</span>
+                  <span />
                 </div>
-                <dl className="divide-y divide-line">
-                  {FICHA.map((fact) => (
-                    <div key={fact.label} className="fact-row">
-                      <dt className="font-mono text-[11px] tracking-wide text-ink-faint uppercase">
-                        {fact.label}
-                      </dt>
-                      <dd className="font-mono text-[13px] text-ink">
-                        {fact.value}
-                      </dd>
-                    </div>
-                  ))}
-                </dl>
+                <div className="p-5">
+                  <p className="text-mono-cmd text-ink-meta">
+                    <span className="text-accent">$</span> uname -a
+                  </p>
+                  <dl className="mt-5 flex flex-col gap-4">
+                    {FICHA.map((fact) => (
+                      <div key={fact.label} className="flex items-baseline justify-between gap-4">
+                        <dt className="text-mono-meta text-ink-meta uppercase">
+                          {fact.label}
+                        </dt>
+                        <dd className="text-mono-data text-right text-ink">{fact.value}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </div>
               </div>
             </div>
           </div>
@@ -208,6 +222,22 @@ export default function SobreMiPage() {
               </div>
             ))}
           </Reveal>
+
+          {/* Prueba del tercer rasgo: no es solo la anécdota de Indra, es
+              algo que se puede ir a comprobar en un proyecto propio. */}
+          <Reveal className="surface-panel mt-6 p-5">
+            <p className="text-mono-meta text-ink-meta uppercase">--codigo-ajeno</p>
+            <p className="mt-2.5 max-w-[65ch] text-sm leading-relaxed text-ink-soft">
+              En Sistema de Reservas, la API y el frontend son dos repositorios
+              separados que se despliegan por separado (Fly.io / Vercel) y
+              solo se hablan por una variable de entorno — el mismo criterio
+              de tratar un servicio ajeno como una caja negra con un contrato,
+              no como código propio a medio camino.
+            </p>
+            <Link href="/proyectos/restaurant" className="btn btn-secondary mt-4">
+              Ver Sistema de Reservas
+            </Link>
+          </Reveal>
         </Container>
       </section>
 
@@ -234,7 +264,7 @@ export default function SobreMiPage() {
             </p>
           </SectionHead>
 
-          <StackExplorer stack={aboutStack} />
+          <StackExplorer stack={aboutStack} usage={stackUsage} totalProyectos={projects.length} />
         </Container>
       </section>
     </>

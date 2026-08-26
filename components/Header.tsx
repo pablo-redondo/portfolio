@@ -28,7 +28,7 @@ export function Header() {
           >
             <span
               aria-hidden
-              className="inline-block h-2 w-2 rounded-full bg-accent"
+              className="pulse-dot inline-block h-2 w-2 rounded-full bg-ok text-ok"
             />
             pablo-redondo.dev
           </Link>

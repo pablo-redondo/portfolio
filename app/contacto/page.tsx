@@ -1,16 +1,17 @@
-import { Fragment } from "react";
+import { statSync } from "node:fs";
+import { join } from "node:path";
 import type { Metadata } from "next";
 import { Container } from "@/components/Container";
+import { SectionLabel } from "@/components/SectionLabel";
 import { HeroGrid } from "@/components/HeroGrid";
-import { ChannelIcon, type ChannelIconName } from "@/components/ChannelIcon";
+import { WhoisCard } from "@/components/WhoisCard";
+import { SocketsTable, type Socket } from "@/components/SocketsTable";
 import { ContactShell } from "@/components/ContactShell";
-import { LocalTime } from "@/components/LocalTime";
-import { Terminal, type TerminalLine } from "@/components/Terminal";
+import { Terminal } from "@/components/Terminal";
 import { SITE } from "@/content/site";
 
 const TITLE = "Contacto";
-const DESCRIPTION =
-  "Contacta con Pablo Redondo — email, GitHub, LinkedIn y CV.";
+const DESCRIPTION = "Contacta con Pablo Redondo — email, GitHub, LinkedIn y CV.";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -18,154 +19,129 @@ export const metadata: Metadata = {
   openGraph: { title: `${TITLE} · Pablo Redondo`, description: DESCRIPTION },
 };
 
-/**
- * Puntos por donde puede partirse un valor largo en pantallas estrechas.
- *
- * Sin esto, `overflow-wrap: anywhere` corta por donde le toca —el email
- * acababa partido en "…@gma / il.com"—. Marcando `@` y `/` como
- * oportunidades de corte, el navegador parte por la costura natural y solo
- * recurre a cortar a mitad de palabra si ni así cabe.
- */
-function conCortes(value: string) {
-  const trozos = value.split(/(?<=[@/])/);
-  return trozos.map((trozo, i) => (
-    <Fragment key={i}>
-      {trozo}
-      {i < trozos.length - 1 && <wbr />}
-    </Fragment>
-  ));
-}
-
-type Canal = {
-  icon: ChannelIconName;
-  /** Como aparecería en un `ls`: el nombre de la "entrada". */
-  nombre: string;
-  valor: string;
-  href?: string;
-  nota: string;
-};
-
-/**
- * Los canales, como salida de un `ls`. No son tarjetas ni pastillas: son
- * las líneas que imprime el comando de encima, cada una con su enlace.
- */
-function Listado({ canales }: { canales: Canal[] }) {
-  return (
-    <ul className="ls">
-      {canales.map((canal) => {
-        const cuerpo = (
-          <>
-            <ChannelIcon name={canal.icon} className="ls-glyph" />
-            {/* Nombre y valor van juntos en un envoltorio para poder
-                apilarlos en pantalla estrecha; a partir de `56rem` el
-                envoltorio se desvanece con `display: contents` y los dos
-                vuelven a ser columnas de la rejilla. */}
-            <span className="ls-id">
-              <span className="ls-name">{canal.nombre}</span>
-              <span className="ls-value">{conCortes(canal.valor)}</span>
-            </span>
-            <span className="ls-note">{canal.nota}</span>
-            <span aria-hidden className="ls-arrow">
-              →
-            </span>
-          </>
-        );
-
-        return (
-          <li key={canal.nombre}>
-            {canal.href ? (
-              <a href={canal.href} className="ls-row">
-                {cuerpo}
-              </a>
-            ) : (
-              <span className="ls-row opacity-60">{cuerpo}</span>
-            )}
-          </li>
-        );
-      })}
-    </ul>
-  );
+/** Tamaño real del PDF, no una cifra de muestra. */
+function tamanoCV(): string | null {
+  if (!SITE.cvUrl) return null;
+  try {
+    const bytes = statSync(join(process.cwd(), "public", SITE.cvUrl)).size;
+    return `${Math.round(bytes / 1024)} kB`;
+  } catch {
+    return null;
+  }
 }
 
 export default function ContactoPage() {
-  const canales: Canal[] = [
-    {
-      icon: "email",
-      nombre: "email",
-      valor: SITE.email,
-      href: `mailto:${SITE.email}`,
-      nota: "la vía directa",
-    },
-    {
-      icon: "github",
-      nombre: "github",
-      valor: SITE.github.replace(/^https:\/\/github\.com\//, ""),
-      href: SITE.github,
-      nota: "el código de todo esto",
-    },
-    {
-      icon: "linkedin",
-      nombre: "linkedin",
-      valor: SITE.linkedin
-        ? SITE.linkedin
-            .replace(/^https:\/\/www\.linkedin\.com\/in\//, "")
-            .replace(/\/$/, "")
-        : "próximamente",
-      href: SITE.linkedin,
-      nota: "para conectar",
-    },
-    {
-      icon: "cv",
-      nombre: "cv",
-      valor: SITE.cvUrl ? SITE.cvUrl.replace(/^\//, "") : "próximamente",
-      href: SITE.cvUrl,
-      nota: "un folio, sin florituras",
-    },
-  ];
+  const cvKb = tamanoCV();
 
-  // El primer bloque va `instant`: contiene el <h1>, y una animación que
-  // arranca en opacidad cero deja fuera al elemento del LCP. Además cuadra
-  // con la ficción — se llega a una sesión que ya tiene algo impreso.
-  const sesion: TerminalLine[] = [
+  const sockets: Socket[] = [
     {
-      command: "cat contacto.md",
-      instant: true,
-      output: (
-        <>
-          <h1 className="terminal-h1">Hablemos</h1>
-          <p className="terminal-parrafo">
-            Busco mi primera posición como desarrollador full-stack. Sin
-            formulario ni backend de por medio: un email directo funciona
-            mejor.
-          </p>
-        </>
-      ),
+      nombre: "email",
+      socket: "tcp/587",
+      destino: SITE.email,
+      href: `mailto:${SITE.email}`,
+      dato: "smtp",
+      accion: "escribir",
     },
     {
-      command: "ls -l canales/",
-      output: <Listado canales={canales} />,
+      nombre: "github",
+      socket: "tcp/443",
+      destino: SITE.github.replace(/^https:\/\//, ""),
+      href: SITE.github,
+      dato: "https",
+      accion: "abrir",
     },
-    { command: "whoami", output: "pablo-redondo · desarrollador full-stack" },
-    {
-      command: "pwd",
-      output: (
-        <>
-          Galicia, España{" "}
-          <span className="terminal-muted">
-            — son las <LocalTime /> aquí
-          </span>
-        </>
-      ),
-    },
-    { command: "cat idiomas.txt", output: "español · gallego · inglés" },
+    ...(SITE.linkedin
+      ? [
+          {
+            nombre: "linkedin",
+            socket: "tcp/443",
+            destino: SITE.linkedin.replace(/^https:\/\/(www\.)?/, "").replace(/\/$/, ""),
+            href: SITE.linkedin,
+            dato: "https",
+            accion: "abrir",
+          } satisfies Socket,
+        ]
+      : []),
+    ...(SITE.cvUrl
+      ? [
+          {
+            nombre: "cv",
+            socket: "tcp/443",
+            destino: SITE.cvUrl.replace(/^\//, ""),
+            href: SITE.cvUrl,
+            dato: cvKb ?? "pdf",
+            accion: "descargar",
+          } satisfies Socket,
+        ]
+      : []),
   ];
 
   return (
-    <section className="hero-glow">
-      <HeroGrid />
-      <Container>
-        <div className="py-12 sm:py-16">
-          <Terminal title="pablo@galicia — ~/contacto" lines={sesion}>
+    <>
+      <section className="hero-glow border-b border-line">
+        <HeroGrid />
+        <Container>
+          <div className="grid items-center gap-12 py-16 sm:py-20 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
+            <div className="min-w-0">
+              <div data-enter="1">
+                <SectionLabel>whois pablo</SectionLabel>
+              </div>
+
+              <h1 data-enter="lcp" className="text-h1 mt-5 max-w-[18ch] text-balance text-ink">
+                Hablemos
+              </h1>
+
+              <p data-enter="3" className="text-body mt-6 max-w-[58ch] text-ink-soft">
+                Busco mi primera posición como desarrollador full-stack. Sin
+                formulario ni backend de por medio: un email directo funciona
+                mejor.
+              </p>
+
+              <div data-enter="4" className="mt-8 flex flex-wrap gap-3">
+                <a href={`mailto:${SITE.email}`} className="btn btn-primary">
+                  Escribir un email
+                </a>
+                {SITE.cvUrl && (
+                  <a href={SITE.cvUrl} className="btn btn-secondary">
+                    Descargar CV
+                  </a>
+                )}
+              </div>
+            </div>
+
+            <div data-enter="4" className="min-w-0 lg:w-full lg:max-w-md lg:justify-self-end">
+              <WhoisCard />
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      <section className="border-b border-line py-20">
+        <Container>
+          <SectionLabel>ss -ltn</SectionLabel>
+          <h2 className="text-h2 mt-3 text-ink">Canales a la escucha</h2>
+          <span className="heading-rule mt-4 mb-8" aria-hidden />
+
+          <SocketsTable sockets={sockets} />
+        </Container>
+      </section>
+
+      <section className="py-16">
+        <Container>
+          <SectionLabel>escribe help</SectionLabel>
+          <h2 className="text-h2 mt-3 text-ink">¿Prefieres teclear?</h2>
+          <span className="heading-rule mt-4 mb-8" aria-hidden />
+
+          <Terminal
+            title="pablo@galicia — ~/contacto"
+            lines={[
+              {
+                command: "help",
+                instant: true,
+                output: "escribe un comando — o usa los canales de arriba, que funcionan igual sin JavaScript.",
+              },
+            ]}
+          >
             <ContactShell
               email={SITE.email}
               github={SITE.github}
@@ -173,8 +149,8 @@ export default function ContactoPage() {
               cv={SITE.cvUrl}
             />
           </Terminal>
-        </div>
-      </Container>
-    </section>
+        </Container>
+      </section>
+    </>
   );
 }

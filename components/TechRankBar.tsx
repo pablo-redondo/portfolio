@@ -25,13 +25,16 @@ export function TechRankBar({ items }: { items: TechRankItem[] }) {
         </p>
 
         <div className="mt-5 flex flex-col gap-3.5">
-          {items.map((item) => (
+          {items.map((item, i) => (
             <div key={item.name} className="grid grid-cols-[minmax(0,7.5rem)_1fr_1.5rem] items-center gap-3">
               <span className="text-mono-data min-w-0 truncate text-ink-soft">{item.name}</span>
               <span className="h-1.5 overflow-hidden rounded-full bg-surface-2">
                 <span
-                  className="block h-full rounded-full bg-accent"
-                  style={{ width: `${Math.max(6, (item.count / max) * 100)}%` }}
+                  className="bar-grow block h-full rounded-full bg-accent"
+                  style={{
+                    width: `${Math.max(6, (item.count / max) * 100)}%`,
+                    animationDelay: `${i * 60}ms`,
+                  }}
                 />
               </span>
               <span className="text-mono-data text-right text-ink tabular-nums">

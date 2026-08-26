@@ -61,7 +61,7 @@ export function RequestTrace() {
                   </div>
                   <div className="h-1 overflow-hidden rounded-full bg-surface-2">
                     <div
-                      className="h-full rounded-full bg-accent transition-[width] duration-300"
+                      className="h-full rounded-full bg-accent transition-[width] duration-700 ease-out"
                       style={{ width: `${pct}%` }}
                     />
                   </div>
