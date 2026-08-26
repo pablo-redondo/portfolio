@@ -12,13 +12,12 @@ const config = {
 		// ver https://opennext.js.org/cloudflare/caching
 		// incrementalCache: r2IncrementalCache,
 	}),
-	// Sin esto, `opennextjs-cloudflare build` construye el Next.js interno
-	// con `npm run build` por defecto — y `npm run build` ES
-	// `opennextjs-cloudflare build`, porque es el comando que corre
-	// Cloudflare como paso de build. Eso se llama a sí mismo sin fin: cada
-	// invocación lanza otra copia entera de sí misma, sin tope. Apuntando al
-	// script que hace un `next build` normal se rompe el bucle.
-	buildCommand: "npm run build:next",
+	// Explícito y no por defecto: `npm run build` es ahora un `next build`
+	// normal (desde que Vercel también construye este repo, y su build
+	// estándar espera eso, no la salida de OpenNext), así que este override
+	// ya no evita una recursión — pero lo dejamos apuntado a mano para no
+	// depender de qué signifique "build" en package.json en el futuro.
+	buildCommand: "npm run build",
 };
 
 export default config;
