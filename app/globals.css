@@ -979,6 +979,43 @@ body:has(#stack:target) .hop-link[data-hop="contexto"] {
   scroll-margin-top: 5.5rem;
 }
 
+/* Mejora progresiva sobre el :has() de arriba: <HopScrollSpy> decide el
+   activo según el scroll real, no solo el hash de la URL, y gana con
+   !important porque conviven en el mismo elemento una vez montado JS. */
+.hop-link.hop-link-js-active {
+  color: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+
+.hop-link.hop-link-js-inactive {
+  color: var(--ink-meta) !important;
+  border-color: transparent !important;
+}
+
+/* Barra de progreso del caso de estudio: cuánto de los seis tramos llevas
+   leído, bajo la propia nav de hops. */
+.hop-progress {
+  height: 2px;
+  background: var(--border);
+  overflow: hidden;
+}
+
+.hop-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hop-progress-fill {
+    transition: width var(--motion-fast) var(--ease-out);
+  }
+
+  html:has(.hop-progress) {
+    scroll-behavior: smooth;
+  }
+}
+
 /* --- Fases como pestañas horizontales (case study) -------------- */
 .phase-tab {
   border-bottom: 2px solid transparent;

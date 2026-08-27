@@ -13,6 +13,7 @@ import { Reveal } from "@/components/Reveal";
 import { LiveDemo } from "@/components/LiveDemo";
 import { DeploymentBadge } from "@/components/DeploymentStatus";
 import { HeroGrid } from "@/components/HeroGrid";
+import { HopScrollSpy } from "@/components/HopScrollSpy";
 import { projects } from "@/content/projects";
 import { hasScreenshot } from "@/lib/screenshots";
 
@@ -185,6 +186,7 @@ export default async function ProjectPage({ params }: Props) {
             ))}
           </div>
         </Container>
+        <HopScrollSpy hopIds={hops.map((hop) => hop.id)} />
       </nav>
 
       {/* --- Contexto --- */}
