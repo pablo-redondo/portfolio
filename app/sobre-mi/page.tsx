@@ -121,9 +121,7 @@ function SectionHead({
   return (
     <Reveal className="mb-10">
       <SectionLabel>{label}</SectionLabel>
-      <h2 className="mt-3 font-mono text-2xl font-bold tracking-tight sm:text-3xl">
-        {title}
-      </h2>
+      <h2 className="text-h2 mt-3 text-ink">{title}</h2>
       <span className="heading-rule mt-4" aria-hidden />
       {children}
     </Reveal>
@@ -146,7 +144,7 @@ export default function SobreMiPage() {
               </div>
               <h1
                 data-enter="lcp"
-                className="mt-4 max-w-[22ch] font-mono text-4xl leading-tight font-bold tracking-tight text-balance sm:text-5xl"
+                className="text-h1 mt-4 max-w-[22ch] text-balance text-ink"
               >
                 Antes de escribir la solución, quiero entender qué se rompe de verdad
               </h1>
@@ -224,7 +222,7 @@ export default function SobreMiPage() {
                   {String(i + 1).padStart(2, "0")}
                 </span>
 
-                <h3 className="max-w-[24ch] font-mono text-base font-semibold text-balance text-ink">
+                <h3 className="text-h3 max-w-[24ch] text-balance text-ink">
                   {item.title}
                 </h3>
                 <p className="mt-3 text-sm leading-relaxed text-ink-soft">
