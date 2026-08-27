@@ -16,7 +16,12 @@ type Props = {
 export function SectionLabel({ children, action }: Props) {
   return (
     <div className="mb-3">
-      <div className="flex items-center gap-3">
+      <div className="relative flex items-center gap-3">
+        <span
+          data-hop
+          aria-hidden
+          className="absolute left-[-34px] top-1/2 z-[3] h-6 w-6 -translate-y-1/2 cursor-pointer rounded-full"
+        />
         <p className="text-mono-cmd text-ink-meta">
           <span className="text-accent">$</span> {children}
         </p>

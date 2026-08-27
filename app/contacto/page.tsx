@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Container } from "@/components/Container";
 import { SectionLabel } from "@/components/SectionLabel";
 import { HeroGrid } from "@/components/HeroGrid";
+import { SectionSpine } from "@/components/SectionSpine";
 import { WhoisCard } from "@/components/WhoisCard";
 import { SocketsTable, type Socket } from "@/components/SocketsTable";
 import { ContactShell } from "@/components/ContactShell";
@@ -77,7 +78,8 @@ export default function ContactoPage() {
   ];
 
   return (
-    <>
+    <div className="relative">
+      <SectionSpine />
       <section className="hero-glow border-b border-line">
         <HeroGrid />
         <Container>
@@ -151,6 +153,6 @@ export default function ContactoPage() {
           </Terminal>
         </Container>
       </section>
-    </>
+    </div>
   );
 }

@@ -11,6 +11,7 @@ import { HeroStats } from "@/components/HeroStats";
 import { Reveal } from "@/components/Reveal";
 import { DeploymentStatusPanel } from "@/components/DeploymentStatus";
 import { HeroGrid } from "@/components/HeroGrid";
+import { SectionSpine } from "@/components/SectionSpine";
 import { projects } from "@/content/projects";
 import { aboutStack } from "@/content/stack";
 import { SITE } from "@/content/site";
@@ -33,7 +34,8 @@ const topology = buildTopology(projects);
 
 export default function HomePage() {
   return (
-    <>
+    <div className="relative">
+      <SectionSpine />
       {/* El hero no lleva reveal (depende de hidratación y de que el
           observer dispare). Entra con `data-enter`: una secuencia CSS
           escalonada que arranca con el primer pintado. El h1 es el
@@ -208,6 +210,6 @@ export default function HomePage() {
           <StackSummary stack={aboutStack} />
         </Container>
       </section>
-    </>
+    </div>
   );
 }

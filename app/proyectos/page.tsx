@@ -6,6 +6,7 @@ import { ProjectCard } from "@/components/ProjectCard";
 import { TechRankBar } from "@/components/TechRankBar";
 import { Reveal } from "@/components/Reveal";
 import { HeroGrid } from "@/components/HeroGrid";
+import { SectionSpine } from "@/components/SectionSpine";
 import { projects } from "@/content/projects";
 import { PROJECT_TAGS } from "@/content/types";
 import { buildTechRanking } from "@/content/topology";
@@ -42,7 +43,8 @@ export default async function ProyectosPage({ searchParams }: Props) {
   const filtro = activeTag ?? "todo";
 
   return (
-    <>
+    <div className="relative">
+      <SectionSpine />
       <section className="hero-glow border-b border-line">
         <HeroGrid />
         <Container>
@@ -132,7 +134,7 @@ export default async function ProyectosPage({ searchParams }: Props) {
           )}
         </Container>
       </section>
-    </>
+    </div>
   );
 }
 

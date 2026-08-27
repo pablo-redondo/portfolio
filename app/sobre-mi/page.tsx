@@ -6,6 +6,7 @@ import { StackExplorer } from "@/components/StackExplorer";
 import { CareerTraceroute, type TraceHop } from "@/components/CareerTraceroute";
 import { Reveal } from "@/components/Reveal";
 import { HeroGrid } from "@/components/HeroGrid";
+import { SectionSpine } from "@/components/SectionSpine";
 import { aboutStack } from "@/content/stack";
 import { SITE } from "@/content/site";
 import { projects } from "@/content/projects";
@@ -122,7 +123,8 @@ function SectionHead({
 
 export default function SobreMiPage() {
   return (
-    <>
+    <div className="relative">
+      <SectionSpine />
       {/* Hero a dos columnas, como el de la home: el texto no se queda solo
           ocupando media pantalla con el otro lado vacío. */}
       <section className="hero-glow border-b border-line">
@@ -267,6 +269,6 @@ export default function SobreMiPage() {
           <StackExplorer stack={aboutStack} usage={stackUsage} totalProyectos={projects.length} />
         </Container>
       </section>
-    </>
+    </div>
   );
 }
