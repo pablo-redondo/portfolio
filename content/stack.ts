@@ -50,6 +50,9 @@ export const aboutStack: TechChoice[] = [
     name: "Docker",
     category: "infra",
     why: "Build multi-stage con runtime final solo con el compilado y las dependencias de producción — imagen más pequeña, sin el toolchain de compilación.",
+    // No aparece en el stack declarado de ningún proyecto porque no es
+    // parte de lo que se ejecuta: vive en el build.
+    note: "solo en el build",
   },
   {
     name: "Fly.io / Render",

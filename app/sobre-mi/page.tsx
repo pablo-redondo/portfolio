@@ -5,7 +5,8 @@ import { SectionLabel } from "@/components/SectionLabel";
 import { StackExplorer } from "@/components/StackExplorer";
 import { CareerTraceroute, type TraceHop } from "@/components/CareerTraceroute";
 import { Reveal } from "@/components/Reveal";
-import { HeroGrid } from "@/components/HeroGrid";
+import { HeroRoutes } from "@/components/HeroRoutes";
+import { MethodPipeline, type MethodStage } from "@/components/MethodPipeline";
 import { SectionSpine } from "@/components/SectionSpine";
 import { aboutStack } from "@/content/stack";
 import { SITE } from "@/content/site";
@@ -41,18 +42,25 @@ const FICHA: { label: string; value: string }[] = [
 // Cada tarjeta es un rasgo con una prueba real detrás, no una virtud
 // declarada. La prueba es el dato que hace que la frase no sea intercambiable
 // con la de cualquier otro portfolio.
-const RASGOS = [
+//
+// Van en el orden en que ocurren durante una incidencia — leer, diagnosticar,
+// cambiar — porque el sistema de diseño los pinta como una tubería y no como
+// tres virtudes sueltas. `cue` es lo que entra o sale de cada etapa.
+const RASGOS: MethodStage[] = [
   {
-    title: "Por fases, sin dejarlo roto entre pasos",
-    body: "CodeQuest RPG era una prueba de concepto abandonada a medias. Lo reconstruí en fases: la migración a TypeScript fue archivo por archivo, comprobando build y juego jugable en cada paso, en vez de una reescritura de golpe que se rompe a mitad sin que te enteres.",
+    title: "Cómodo en código que no es mío",
+    body: "En las prácticas en Indra no partía de cero: eran endpoints REST sobre microservicios ya en producción, con su propio flujo de revisión. Entender una convención ajena antes de tocarla es un hábito, no una excepción.",
+    cue: "entrada: código que no es mío",
   },
   {
     title: "Diagnóstico antes que reinicio",
     body: "Dando soporte a una red corporativa en 24×7 aprendes a no conformarte con 'no responde': hay que mirar dónde se rompe de verdad. Es el mismo criterio detrás de NetPulse: checks reales por TCP, DNS y TLS, no un ping que solo dice sí o no.",
+    cue: "salida: causa identificada",
   },
   {
-    title: "Cómodo en código que no es mío",
-    body: "En las prácticas en Indra no partía de cero: eran endpoints REST sobre microservicios ya en producción, con su propio flujo de revisión. Entender una convención ajena antes de tocarla es un hábito, no una excepción.",
+    title: "Por fases, sin dejarlo roto entre pasos",
+    body: "CodeQuest RPG era una prueba de concepto abandonada a medias. Lo reconstruí en fases: la migración a TypeScript fue archivo por archivo, comprobando build y juego jugable en cada paso, en vez de una reescritura de golpe que se rompe a mitad sin que te enteres.",
+    cue: "salida: nada roto entre pasos",
   },
 ];
 
@@ -109,20 +117,30 @@ const EXPERIENCIA: TraceHop[] = [
   },
 ];
 
+/**
+ * Cabecera de sección del sistema de diseño: comando con su cifra a la
+ * derecha, titular y entradilla. Sin regla bajo el h2 — en el mockup la
+ * separación la hace el margen, no un trazo.
+ */
 function SectionHead({
   label,
+  count,
   title,
   children,
 }: {
   label: string;
+  count: string;
   title: string;
   children?: React.ReactNode;
 }) {
   return (
-    <Reveal className="mb-10">
-      <SectionLabel>{label}</SectionLabel>
-      <h2 className="text-h2 mt-3 text-ink">{title}</h2>
-      <span className="heading-rule mt-4" aria-hidden />
+    <Reveal>
+      <SectionLabel
+        action={<span className="font-mono text-[11px] text-ink-meta">{count}</span>}
+      >
+        {label}
+      </SectionLabel>
+      <h2 className="text-h2 mb-2.5 text-ink">{title}</h2>
       {children}
     </Reveal>
   );
@@ -132,26 +150,26 @@ export default function SobreMiPage() {
   return (
     <div className="relative">
       <SectionSpine />
-      {/* Hero a dos columnas, como el de la home: el texto no se queda solo
-          ocupando media pantalla con el otro lado vacío. */}
-      <section className="hero-glow border-b border-line">
-        <HeroGrid />
-        <Container>
-          <div className="grid items-center gap-12 py-16 sm:py-20 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
+      <section className="relative pt-[74px] pb-16">
+        <Container rail>
+          <HeroRoutes />
+
+          <div data-enter="1">
+            <SectionLabel>cat sobre-mi.md</SectionLabel>
+          </div>
+
+          <div className="relative grid items-start gap-12 lg:grid-cols-[minmax(0,1fr)_356px]">
             <div className="min-w-0">
-              <div data-enter="1">
-                <SectionLabel>cat sobre-mi.md</SectionLabel>
-              </div>
               <h1
                 data-enter="lcp"
-                className="text-h1 mt-4 max-w-[22ch] text-balance text-ink"
+                className="text-h1 mb-5 max-w-[22ch] text-balance text-ink"
               >
                 Antes de escribir la solución, quiero entender qué se rompe de verdad
               </h1>
 
               <p
                 data-enter="3"
-                className="mt-7 max-w-[58ch] text-lg leading-relaxed text-ink-soft"
+                className="text-body mb-8 max-w-[58ch] text-ink-soft"
               >
                 Soy desarrollador full-stack, titulado en Desarrollo de
                 Aplicaciones Web. Pero antes de tocar el primer componente ya
@@ -161,7 +179,7 @@ export default function SobreMiPage() {
                 adjetivos sueltos.
               </p>
 
-              <div data-enter="4" className="mt-9 flex flex-wrap gap-3">
+              <div data-enter="4" className="flex flex-wrap gap-3">
                 {SITE.cvUrl && (
                   <a href={SITE.cvUrl} className="btn btn-primary">
                     Descargar CV
@@ -173,10 +191,7 @@ export default function SobreMiPage() {
               </div>
             </div>
 
-            <div
-              data-enter="4"
-              className="min-w-0 lg:w-full lg:max-w-md lg:justify-self-end"
-            >
+            <div data-enter="4" className="min-w-0">
               <div className="win">
                 <div className="win-bar">
                   <div className="win-dots" aria-hidden>
@@ -187,65 +202,98 @@ export default function SobreMiPage() {
                   <span className="win-title">pablo@dev — zsh</span>
                   <span />
                 </div>
-                <div className="p-5">
-                  <p className="text-mono-cmd text-ink-meta">
+                <div className="px-5 pt-4 pb-2">
+                  <p className="font-mono text-xs text-ink-meta">
                     <span className="text-accent">$</span> uname -a
                   </p>
-                  <dl className="mt-5 flex flex-col gap-4">
-                    {FICHA.map((fact) => (
-                      <div key={fact.label} className="flex items-baseline justify-between gap-4">
-                        <dt className="text-mono-meta text-ink-meta uppercase">
-                          {fact.label}
-                        </dt>
-                        <dd className="text-mono-data text-right text-ink">{fact.value}</dd>
-                      </div>
-                    ))}
-                  </dl>
                 </div>
+                {/* Cada dato en su propia fila con separador, como una
+                    salida tabulada de terminal y no una lista suelta. */}
+                <dl className="pb-1.5">
+                  {FICHA.map((fact) => (
+                    <div
+                      key={fact.label}
+                      className="flex items-baseline justify-between gap-4 border-t border-[var(--bg-raised)] px-5 py-3"
+                    >
+                      <dt className="font-mono text-xs text-ink-meta">{fact.label}</dt>
+                      <dd className="text-mono-data text-right text-ink">{fact.value}</dd>
+                    </div>
+                  ))}
+                </dl>
               </div>
             </div>
           </div>
         </Container>
       </section>
 
-      <section className="border-b border-line py-20">
-        <Container>
-          <SectionHead label="cat metodo.txt" title="Cómo trabajo" />
+      {/* El recorrido va antes que el método: primero por dónde se pasó,
+          luego qué se aprendió ahí. Es el orden del sistema de diseño. */}
+      <section className="pt-[92px]">
+        <Container rail>
+          <SectionHead
+            label="traceroute carrera"
+            count={`${EXPERIENCIA.length} saltos`}
+            title="Por dónde he pasado"
+          >
+            <p className="text-body mb-[30px] max-w-[62ch] text-ink-soft">
+              Cuatro puestos antes de dedicarme al desarrollo. Cada uno se
+              despliega con lo que de verdad aporta.
+            </p>
+          </SectionHead>
 
-          <Reveal stagger className="grid gap-4 lg:grid-cols-3">
-            {RASGOS.map((item, i) => (
-              <div
-                key={item.title}
-                className="card-lift card-scan surface-card group relative h-full overflow-hidden p-6"
-              >
-                <span className="trait-index" aria-hidden>
-                  {String(i + 1).padStart(2, "0")}
-                </span>
+          <CareerTraceroute hops={EXPERIENCIA} />
+        </Container>
+      </section>
 
-                <h3 className="text-h3 max-w-[24ch] text-balance text-ink">
-                  {item.title}
-                </h3>
-                <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-                  {item.body}
-                </p>
-              </div>
-            ))}
+      <section className="pt-[92px]">
+        <Container rail>
+          <SectionHead
+            label="runbook --incidente"
+            count={`${RASGOS.length} etapas`}
+            title="Cómo trabajo"
+          >
+            <p className="text-body mb-[30px] max-w-[62ch] text-ink-soft">
+              Lo mismo que hacía con una incidencia a las tres de la mañana,
+              aplicado a escribir código. Tres etapas en orden, cada una con un
+              proyecto que la demuestra.
+            </p>
+          </SectionHead>
+
+          <Reveal>
+            <MethodPipeline stages={RASGOS} />
           </Reveal>
 
-          {/* Prueba del tercer rasgo: no es solo la anécdota de Indra, es
+          {/* Prueba de la primera etapa: no es solo la anécdota de Indra, es
               algo que se puede ir a comprobar en un proyecto propio. */}
-          <Reveal className="surface-panel mt-6 p-5">
-            <p className="text-mono-meta text-ink-meta uppercase">--codigo-ajeno</p>
-            <p className="mt-2.5 max-w-[65ch] text-sm leading-relaxed text-ink-soft">
-              En Sistema de Reservas, la API y el frontend son dos repositorios
-              separados que se despliegan por separado (Fly.io / Vercel) y
-              solo se hablan por una variable de entorno — el mismo criterio
-              de tratar un servicio ajeno como una caja negra con un contrato,
-              no como código propio a medio camino.
-            </p>
-            <Link href="/proyectos/restaurant" className="btn btn-secondary mt-4">
-              Ver Sistema de Reservas
-            </Link>
+          <Reveal className="surface-panel mt-4 overflow-hidden !p-0">
+            <div className="flex flex-wrap items-center gap-2.5 border-b border-line px-6 py-3.5">
+              <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-accent" />
+              <span className="font-mono text-xs text-ink">--codigo-ajeno</span>
+              <span className="ml-auto font-mono text-[11px] text-ink-meta">
+                partiendo de un repo existente
+              </span>
+            </div>
+
+            <div className="grid gap-9 px-6 py-[26px] lg:grid-cols-[minmax(0,1fr)_306px]">
+              <p className="max-w-[70ch] text-[17px] leading-relaxed text-ink-soft">
+                En Sistema de Reservas, la API y el frontend son dos repositorios
+                separados que se despliegan por separado (Fly.io / Vercel) y
+                solo se hablan por una variable de entorno — el mismo criterio
+                de tratar un servicio ajeno como una caja negra con un contrato,
+                no como código propio a medio camino.
+              </p>
+
+              <div className="lg:border-l lg:border-line lg:pl-6">
+                <p className="text-mono-meta mb-3 text-ink-meta uppercase">evidencia</p>
+                <p className="mb-4 text-sm leading-relaxed text-ink">
+                  API y frontend separados, cada uno con su contrato y su
+                  despliegue.
+                </p>
+                <Link href="/proyectos/restaurant" className="btn btn-sm btn-primary">
+                  Ver Sistema de Reservas
+                </Link>
+              </div>
+            </div>
           </Reveal>
 
           <Reveal className="surface-panel mt-6 p-6">
@@ -270,26 +318,17 @@ export default function SobreMiPage() {
         </Container>
       </section>
 
-      <section className="border-b border-line py-20">
-        <Container>
-          <SectionHead label="traceroute carrera" title="Por dónde he pasado">
-            <p className="mt-6 max-w-[62ch] text-ink-soft">
-              Cuatro puestos antes de dedicarme al desarrollo. Cada uno se
-              despliega con lo que de verdad aporta.
-            </p>
-          </SectionHead>
-
-          <CareerTraceroute hops={EXPERIENCIA} />
-        </Container>
-      </section>
-
-      <section className="py-20">
-        <Container>
-          <SectionHead label="lsof -i stack" title="Stack">
-            <p className="mt-6 max-w-[62ch] text-ink-soft">
+      <section className="pt-[92px] pb-[130px]">
+        <Container rail>
+          <SectionHead
+            label="lsof -i stack"
+            count={`${aboutStack.length} elecciones`}
+            title="Stack, con el motivo de cada elección"
+          >
+            <p className="text-body mb-[30px] max-w-[62ch] text-ink-soft">
               No es una lista de logos: cada tecnología está aquí por un motivo
-              concreto, el mismo que aparece en los casos de estudio. Filtra
-              por capa si buscas una en concreto.
+              concreto, el mismo que aparece en los casos de estudio. Los siete
+              puntos de cada ficha marcan en qué proyectos está viva.
             </p>
           </SectionHead>
 

@@ -329,6 +329,119 @@ body {
 
 /* Resplandor difuso tras el hero: rompe el plano sin ser un patrón
    de fondo ni partículas. */
+/* --- Ficha de tecnología del stack -----------------------------
+   Logo (o monograma), nombre, cuántos proyectos la usan y un punto por
+   proyecto. El logo va desaturado hasta el hover: en una rejilla de
+   quince, quince marcas a todo color compiten entre ellas. */
+.tech-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-panel);
+  padding: 18px 16px 16px;
+  transition:
+    border-color 240ms var(--ease-out),
+    background-color 240ms var(--ease-out);
+}
+
+.tech-card:hover {
+  border-color: var(--border-strong);
+}
+
+.tech-card-logo {
+  display: flex;
+  width: 38px;
+  height: 38px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  background: var(--bg-raised);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--ink-meta);
+  transition: color 240ms var(--ease-out);
+}
+
+.tech-card:hover .tech-card-logo {
+  color: var(--ink);
+}
+
+/* --- Método como tubería de tres etapas (catálogo #15) ---------
+   Tres tarjetas con un conector punteado entre ellas. Los conectores
+   solo existen a partir de `lg`: apiladas en vertical, una línea de
+   puntos entre columnas contiguas no significaría nada. */
+.method-pipeline {
+  display: grid;
+  gap: 16px;
+}
+
+@media (min-width: 64rem) {
+  .method-pipeline {
+    grid-template-columns: minmax(0, 1fr) 26px minmax(0, 1fr) 26px minmax(0, 1fr);
+    align-items: stretch;
+    gap: 0;
+  }
+}
+
+.method-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-panel);
+  padding: 24px 24px 22px;
+  transition:
+    border-color 280ms var(--ease-out),
+    background-color 280ms var(--ease-out);
+}
+
+.method-card:hover {
+  border-color: var(--border-strong);
+}
+
+.method-chip {
+  display: flex;
+  width: 26px;
+  height: 26px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  background: var(--bg-raised);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--ink-meta);
+}
+
+.method-link {
+  display: none;
+}
+
+@media (min-width: 64rem) {
+  .method-link {
+    display: block;
+    position: relative;
+    align-self: center;
+    height: 1px;
+    width: 100%;
+    background-image: repeating-linear-gradient(
+      90deg,
+      #2a3a43 0,
+      #2a3a43 5px,
+      transparent 5px,
+      transparent 11px
+    );
+  }
+}
+
 /* --- Fila del monitor de proyectos -----------------------------
    Más hundida que una card (--bg-inset sobre borde tenue): la lista es
    una consola, no una rejilla de tarjetas. Al abrirse coge el borde de

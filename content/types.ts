@@ -9,6 +9,12 @@ export interface TechChoice {
   category: TechCategory;
   /** Por qué se eligió esta tecnología en este proyecto, no una descripción genérica. */
   why: string;
+  /**
+   * Sustituye al contador de proyectos cuando contarlos no dice la verdad:
+   * una herramienta que solo vive en el build no aparece en el stack de
+   * ningún proyecto, y un "0 / 7" se leería como que no se usa.
+   */
+  note?: string;
 }
 
 export interface TimelinePhase {
