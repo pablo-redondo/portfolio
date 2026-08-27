@@ -5,7 +5,7 @@ import { SectionLabel } from "@/components/SectionLabel";
 import { ProjectMonitorList } from "@/components/ProjectMonitorList";
 import { TechRankBar } from "@/components/TechRankBar";
 import { Reveal } from "@/components/Reveal";
-import { HeroGrid } from "@/components/HeroGrid";
+import { HeroRoutes } from "@/components/HeroRoutes";
 import { SectionSpine } from "@/components/SectionSpine";
 import { projects } from "@/content/projects";
 import { PROJECT_TAGS } from "@/content/types";
@@ -42,20 +42,23 @@ export default async function ProyectosPage({ searchParams }: Props) {
   return (
     <div className="relative">
       <SectionSpine />
-      <section className="hero-glow border-b border-line">
-        <HeroGrid />
-        <Container>
-          <div className="grid items-start gap-12 py-16 sm:py-20 lg:grid-cols-[minmax(0,1fr)_372px] lg:gap-14">
-            <div className="min-w-0">
-              <div data-enter="1">
-                <SectionLabel>ls proyectos/</SectionLabel>
-              </div>
+      <section className="relative pt-[74px] pb-14">
+        <Container rail>
+          <HeroRoutes />
 
-              <h1 data-enter="lcp" className="text-h1 mt-5 max-w-[20ch] text-balance text-ink">
+          {/* El comando abre la sección a ancho completo, por encima de las
+              dos columnas — no metido dentro de la izquierda. */}
+          <div data-enter="1">
+            <SectionLabel>ls proyectos/</SectionLabel>
+          </div>
+
+          <div className="relative grid items-start gap-12 lg:grid-cols-[minmax(0,1fr)_356px]">
+            <div className="min-w-0">
+              <h1 data-enter="lcp" className="text-h1 mb-5 max-w-[20ch] text-balance text-ink">
                 Proyectos
               </h1>
 
-              <p data-enter="3" className="text-body mt-5 text-ink-soft">
+              <p data-enter="3" className="text-body text-ink-soft">
                 Siete proyectos con su caso de estudio: el problema real que resuelven,
                 las decisiones técnicas y lo que no salió bien.
               </p>
@@ -68,8 +71,8 @@ export default async function ProyectosPage({ searchParams }: Props) {
         </Container>
       </section>
 
-      <section className="py-16">
-        <Container>
+      <section className="pt-14 pb-[130px]">
+        <Container rail>
           <Reveal>
             <SectionLabel
               action={
@@ -86,19 +89,13 @@ export default async function ProyectosPage({ searchParams }: Props) {
               con JavaScript desactivado, es compartible y el navegador puede
               volver atrás. */}
           <Reveal>
-            <nav className="mb-10 flex flex-wrap gap-2" aria-label="Filtrar por etiqueta">
-              <FiltroPill
-                href="/proyectos"
-                label="todo"
-                count={projects.length}
-                active={!activeTag}
-              />
+            <nav className="mb-2 flex flex-wrap items-center gap-2" aria-label="Filtrar por etiqueta">
+              <FiltroPill href="/proyectos" label="todo" active={!activeTag} />
               {PROJECT_TAGS.map((t) => (
                 <FiltroPill
                   key={t}
                   href={`/proyectos?tag=${encodeURIComponent(t)}`}
                   label={t}
-                  count={projects.filter((p) => p.tags.includes(t)).length}
                   active={activeTag === t}
                 />
               ))}
@@ -119,19 +116,17 @@ export default async function ProyectosPage({ searchParams }: Props) {
 }
 
 /**
- * Pastilla del filtro. El estado activo va en cian, pero también lleva un
- * marcador de texto (`✓`) y `aria-current`: en escala de grises, o con un
- * lector de pantalla, se sigue sabiendo cuál está puesta.
+ * Pastilla del filtro. La activa se rellena y coge borde de acento; el
+ * relleno, y no solo el tono, es lo que la distingue en escala de grises.
+ * `aria-current` la marca para un lector de pantalla.
  */
 function FiltroPill({
   href,
   label,
-  count,
   active,
 }: {
   href: string;
   label: string;
-  count: number;
   active: boolean;
 }) {
   return (
@@ -141,9 +136,7 @@ function FiltroPill({
       aria-current={active ? "true" : undefined}
       className="filter-pill"
     >
-      {active && <span aria-hidden>✓</span>}
       {label}
-      <span className="text-[10px] opacity-70 tabular-nums">{count}</span>
     </Link>
   );
 }

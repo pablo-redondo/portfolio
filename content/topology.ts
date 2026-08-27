@@ -1,4 +1,4 @@
-import type { Project } from "@/content/types";
+import type { Project, TechCategory } from "@/content/types";
 
 export type TopologyNode = {
   slug: string;
@@ -73,7 +73,33 @@ export function buildTopology(projects: Project[]): {
   return { nodes, edges: [...edgeMap.values()] };
 }
 
-export type TechRankItem = { name: string; count: number };
+export type TechRankItem = { name: string; count: number; category: TechCategory };
+
+/**
+ * La capa en la que trabaja una tecnología, leída de los propios proyectos:
+ * cada `TechChoice` ya declara su `category`, así que basta con quedarse
+ * con la que más se repite entre las entradas que mencionan la palabra.
+ * Nada de una tabla paralela que se desincronice del contenido.
+ */
+function categoryFor(keyword: string, projects: Project[]): TechCategory {
+  const votos = new Map<TechCategory, number>();
+  for (const project of projects) {
+    for (const tech of project.stack) {
+      if (tech.name.toLowerCase().includes(keyword.toLowerCase())) {
+        votos.set(tech.category, (votos.get(tech.category) ?? 0) + 1);
+      }
+    }
+  }
+  let mejor: TechCategory = "tooling";
+  let max = 0;
+  for (const [cat, n] of votos) {
+    if (n > max) {
+      max = n;
+      mejor = cat;
+    }
+  }
+  return mejor;
+}
 
 /**
  * Cuántos proyectos usan cada tecnología reconocible, de más a menos. Usa
@@ -86,6 +112,7 @@ export function buildTechRanking(projects: Project[], limit = 6): TechRankItem[]
   return KEYWORDS.map((name) => ({
     name,
     count: tagsByProject.filter((tags) => tags.has(name)).length,
+    category: categoryFor(name, projects),
   }))
     .filter((item) => item.count > 0)
     .sort((a, b) => b.count - a.count)

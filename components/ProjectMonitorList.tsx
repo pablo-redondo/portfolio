@@ -167,37 +167,48 @@ function Fila({
   const estado = service?.state ?? "unknown";
 
   return (
-    <div className={`surface-card rounded-xl transition-colors ${open ? "border-accent/50" : ""}`}>
+    <div className={`monitor-row ${open ? "monitor-row-open" : ""}`}>
       <button
         type="button"
         onClick={onToggle}
         aria-expanded={open}
-        className="flex w-full items-center gap-4 px-5 py-4 text-left"
+        className="grid w-full cursor-pointer grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-6 py-[22px] text-left sm:grid-cols-[minmax(0,1fr)_74px_104px_16px] sm:gap-[22px]"
       >
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
-            <span className="font-mono text-base font-bold text-ink">{project.title}</span>
-            <span className="text-mono-meta text-ink-meta">{project.tags[0]}</span>
-          </div>
-          <p className="mt-1 truncate text-sm text-ink-soft">{project.tagline}</p>
-        </div>
+        <span className="flex min-w-0 flex-col gap-1.5">
+          <span className="flex min-w-0 items-baseline gap-3">
+            <span className="font-sans text-xl leading-tight font-bold text-ink">
+              {project.title}
+            </span>
+            <span className="shrink-0 font-mono text-[11px] text-ink-meta">
+              {project.tags[0]}
+            </span>
+          </span>
+          <span className="truncate text-[15px] leading-normal text-ink-soft">
+            {project.tagline}
+          </span>
+        </span>
 
-        <span className="text-mono-data hidden shrink-0 text-right text-ink tabular-nums sm:block">
+        <span className="hidden text-right font-mono text-[13px] font-medium text-ink-soft tabular-nums sm:block">
           {loading ? "…" : service?.latencyMs != null ? `${service.latencyMs} ms` : "—"}
         </span>
 
-        <span
-          className={`flex shrink-0 items-center gap-1.5 font-mono text-[11px] whitespace-nowrap ${
-            loading ? "text-ink-faint" : ESTADO_TONE[estado]
-          }`}
-        >
-          <span aria-hidden className="inline-block h-1.5 w-1.5 rounded-full bg-current" />
+        {/* Solo el punto lleva color: la etiqueta ya nombra el estado, así
+            que teñirla también sería repetir el dato en dos sitios. */}
+        <span className="flex items-center justify-end gap-[7px] font-mono text-[11px] whitespace-nowrap text-ink-meta">
+          <span
+            aria-hidden
+            className={`inline-block h-1.5 w-1.5 rounded-full bg-current ${
+              loading ? "text-ink-faint" : ESTADO_TONE[estado]
+            }`}
+          />
           {loading ? "comprobando…" : ESTADO_LABEL[estado]}
         </span>
 
         <span
           aria-hidden
-          className={`shrink-0 text-ink-meta transition-transform ${open ? "rotate-90" : ""}`}
+          className={`hidden text-right font-mono text-[13px] text-ink-faint transition-transform sm:block ${
+            open ? "rotate-90" : ""
+          }`}
         >
           ›
         </span>
@@ -213,7 +224,7 @@ export function ProjectMonitorList({ projects }: { projects: Project[] }) {
   const [openSlug, setOpenSlug] = useState<string | null>(null);
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-1.5">
       {projects.map((project) => (
         <Fila
           key={project.slug}

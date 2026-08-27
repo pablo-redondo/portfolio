@@ -1,4 +1,18 @@
 import type { TechRankItem } from "@/content/topology";
+import type { TechCategory } from "@/content/types";
+
+/**
+ * El color de la barra es la capa en la que trabaja esa tecnología, los
+ * mismos cuatro tonos que agrupan el stack en /sobre-mi. No es decoración:
+ * de un vistazo se ve si lo que se repite entre proyectos es frontend,
+ * backend, infra o herramientas.
+ */
+const CAPA_COLOR: Record<TechCategory, string> = {
+  frontend: "var(--accent)",
+  backend: "var(--ok)",
+  infra: "var(--warn)",
+  tooling: "var(--meta)",
+};
 
 /**
  * Ranking de tecnologías por número de proyectos que la usan. Cuenta real
@@ -19,30 +33,34 @@ export function TechRankBar({ items }: { items: TechRankItem[] }) {
         <span />
       </div>
 
-      <div className="p-5">
-        <p className="text-mono-meta text-ink-meta">
-          <span className="text-accent">$</span> sort -rn tecnologias.txt | head
-        </p>
+      <p className="px-5 pt-4 pb-2 font-mono text-xs text-ink-meta">
+        <span className="text-accent">$</span> sort -rn tecnologias.txt | head
+      </p>
 
-        <div className="mt-5 flex flex-col gap-3.5">
-          {items.map((item, i) => (
-            <div key={item.name} className="grid grid-cols-[minmax(0,7.5rem)_1fr_1.5rem] items-center gap-3">
-              <span className="text-mono-data min-w-0 truncate text-ink-soft">{item.name}</span>
-              <span className="h-1.5 overflow-hidden rounded-full bg-surface-2">
-                <span
-                  className="bar-grow block h-full rounded-full bg-accent"
-                  style={{
-                    width: `${Math.max(6, (item.count / max) * 100)}%`,
-                    animationDelay: `${i * 60}ms`,
-                  }}
-                />
-              </span>
-              <span className="text-mono-data text-right text-ink tabular-nums">
-                {item.count}
-              </span>
-            </div>
-          ))}
-        </div>
+      <div className="grid gap-[9px] px-5 pt-2 pb-[18px]">
+        {items.map((item, i) => (
+          <div
+            key={item.name}
+            className="grid grid-cols-[minmax(0,104px)_minmax(0,1fr)_26px] items-center gap-3"
+          >
+            <span className="min-w-0 truncate font-mono text-xs leading-tight text-ink-soft">
+              {item.name}
+            </span>
+            <span className="block h-1.5 overflow-hidden rounded-[3px] bg-surface-2">
+              <span
+                className="bar-grow block h-full rounded-[3px]"
+                style={{
+                  width: `${Math.max(6, (item.count / max) * 100)}%`,
+                  background: CAPA_COLOR[item.category],
+                  animationDelay: `${i * 60}ms`,
+                }}
+              />
+            </span>
+            <span className="text-right font-mono text-xs leading-tight font-medium text-ink tabular-nums">
+              {item.count}
+            </span>
+          </div>
+        ))}
       </div>
     </div>
   );

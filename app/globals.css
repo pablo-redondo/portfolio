@@ -173,9 +173,9 @@ body {
 .text-h1 {
   font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   font-weight: 800;
-  font-size: clamp(38px, 4.1vw, 56px);
-  letter-spacing: -0.03em;
-  line-height: 1.05;
+  font-size: clamp(38px, 4.2vw, 58px);
+  letter-spacing: -0.034em;
+  line-height: 1.03;
 }
 
 .text-h2 {
@@ -329,6 +329,27 @@ body {
 
 /* Resplandor difuso tras el hero: rompe el plano sin ser un patrón
    de fondo ni partículas. */
+/* --- Fila del monitor de proyectos -----------------------------
+   Más hundida que una card (--bg-inset sobre borde tenue): la lista es
+   una consola, no una rejilla de tarjetas. Al abrirse coge el borde de
+   acento para marcar cuál está desplegada. */
+.monitor-row {
+  border: 1px solid var(--bg-raised);
+  border-radius: 12px;
+  background: var(--bg-inset);
+  transition:
+    border-color 250ms var(--ease-out),
+    background-color 250ms var(--ease-out);
+}
+
+.monitor-row:hover {
+  border-color: var(--border-strong);
+}
+
+.monitor-row-open {
+  border-color: color-mix(in oklab, var(--accent) 50%, transparent);
+}
+
 /* --- Card de proyecto y chip de stack --------------------------
    Los valores salen del sistema de diseño: panel a 12px de radio sobre
    --bg-panel, y chips de texto sobre --bg-raised. El hover marca el foco
@@ -2193,9 +2214,9 @@ a.ls-row:focus-visible .ls-arrow {
   align-items: center;
   gap: 0.5rem;
   border-radius: 6px;
-  border: 1px solid var(--line);
-  background: var(--surface-2);
-  color: var(--ink-soft);
+  border: 1px solid var(--border);
+  background: var(--bg-panel);
+  color: var(--ink-body);
   padding: 7px 13px;
   font-family: var(--font-mono), monospace;
   font-size: 12px;
@@ -2212,11 +2233,14 @@ a.ls-row:focus-visible .ls-arrow {
   border-color: var(--line-strong);
 }
 
+/* Relleno teñido y no macizo: el sistema de diseño marca la activa con
+   un 16% de acento sobre el fondo, borde de acento y el propio texto en
+   acento — se lee encendida sin invertir el contraste de la fila. */
 .filter-pill[data-active="true"],
 .filter-pill:has(input:checked) {
-  background: var(--accent);
+  background: color-mix(in oklab, var(--accent) 16%, transparent);
   border-color: var(--accent);
-  color: var(--accent-ink);
+  color: var(--accent);
 }
 
 /* El radio va oculto dentro de la etiqueta, así que el anillo de foco lo
