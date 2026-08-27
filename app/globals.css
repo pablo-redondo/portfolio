@@ -803,6 +803,16 @@ body {
   }
 }
 
+/* Arista del grafo: solo color y opacidad cambian al aislar vecinos,
+   nunca el grosor — el mismo criterio que ya seguía el nodo. */
+@media (prefers-reduced-motion: no-preference) {
+  .edge-line {
+    transition:
+      stroke var(--motion-fast) var(--ease-out),
+      stroke-opacity var(--motion-fast) var(--ease-out);
+  }
+}
+
 /* --- Punto que recorre una arista activa del grafo ------------- */
 .edge-flow {
   stroke-dasharray: 3 7;

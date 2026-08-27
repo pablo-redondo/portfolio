@@ -80,9 +80,10 @@ export function TopologyGraph({ nodes, edges, defaultSlug }: Props) {
                     x2={p2.x}
                     y2={p2.y}
                     stroke={on ? "var(--accent)" : "var(--border-strong)"}
-                    strokeWidth={on ? width * 1.4 : width}
+                    strokeWidth={width}
                     strokeOpacity={on ? 0.9 : 0.55}
                     vectorEffect="non-scaling-stroke"
+                    className="edge-line"
                   />
                   {/* La corriente de datos entre dos proyectos: solo se ve
                       en la arista activa, no como adorno permanente. */}
