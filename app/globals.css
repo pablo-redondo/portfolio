@@ -220,6 +220,15 @@ body {
   font-size: clamp(12px, 0.722rem + 0.11vw, 13px);
 }
 
+/* Cifra suelta de la franja del hero: el mismo mono que --data, un punto
+   más grande, porque ahí el número es el contenido y no un pie de tabla. */
+.text-mono-stat {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 1;
+}
+
 .text-mono-meta {
   font-family: var(--font-mono), ui-monospace, monospace;
   font-weight: 400;
@@ -320,6 +329,73 @@ body {
 
 /* Resplandor difuso tras el hero: rompe el plano sin ser un patrón
    de fondo ni partículas. */
+/* --- Card de proyecto y chip de stack --------------------------
+   Los valores salen del sistema de diseño: panel a 12px de radio sobre
+   --bg-panel, y chips de texto sobre --bg-raised. El hover marca el foco
+   con borde y elevación mínima, nunca con escala (el catálogo descarta
+   expresamente el «hover que agranda la tarjeta»). */
+.project-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-panel);
+  padding: 24px;
+  transition:
+    border-color 220ms var(--ease-out),
+    transform 220ms var(--ease-out);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .project-card:hover,
+  .project-card:focus-visible {
+    transform: translateY(-2px);
+  }
+}
+
+.project-card:hover,
+.project-card:focus-visible {
+  border-color: var(--border-strong);
+}
+
+.tech-chip {
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: var(--bg-raised);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  line-height: 1;
+  color: var(--ink-body);
+  white-space: nowrap;
+}
+
+/* --- Campo de rutas del hero (catálogo #8) ---------------------
+   Full-bleed a 100 vw por detrás del contenido. El degradado lateral
+   protege la legibilidad del texto sobre la red, y el fundido inferior
+   de 300 px cose el hero con la sección siguiente en vez de cortarlo. */
+.hero-routes {
+  position: absolute;
+  left: calc(50% - 50vw);
+  width: 100vw;
+  top: 0;
+  bottom: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.hero-routes::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      to right,
+      var(--bg-base) 0%,
+      color-mix(in oklab, var(--bg-base) 55%, transparent) 34%,
+      transparent 62%
+    ),
+    linear-gradient(to bottom, transparent calc(100% - 300px), var(--bg-base) 100%);
+}
+
 .hero-glow {
   position: relative;
   isolation: isolate;
@@ -667,8 +743,10 @@ body {
 }
 
 @media (min-width: 68rem) {
+  /* Mismas proporciones que el sistema de diseño, sin la columna de
+     uptime: ese dato no se guarda en ningún sitio todavía. */
   .status-grid {
-    grid-template-columns: 1.3fr 0.85fr 140px 80px 104px;
+    grid-template-columns: 1.6fr 1fr 132px 88px 112px;
   }
 
   .status-spark {
@@ -914,6 +992,68 @@ body {
     border-top: 0;
     border-left: 1px solid var(--border);
   }
+}
+
+/* --- Nodo del grafo de topología -------------------------------
+   Un punto con la etiqueta debajo, como en un diagrama de red: la
+   pastilla con el nombre dentro engordaba tanto el nodo que las aristas
+   quedaban tapadas. El punto marca la posición exacta a la que llegan
+   las aristas y el texto cuelga sin desplazarlo. */
+.topo-node {
+  position: absolute;
+  width: 13px;
+  height: 13px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+}
+
+.topo-node-dot {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--bg-raised);
+  border: 1px solid var(--border-strong);
+  transition:
+    background-color var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out),
+    box-shadow var(--motion-fast) var(--ease-out);
+}
+
+.topo-node:hover .topo-node-dot,
+.topo-node:focus-visible .topo-node-dot,
+.topo-node[data-active="true"] .topo-node-dot {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 18px var(--accent-glow);
+}
+
+.topo-node-label {
+  position: absolute;
+  top: calc(100% + 9px);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  line-height: 1.2;
+  color: var(--ink-meta);
+  transition: color var(--motion-fast) var(--ease-out);
+}
+
+.topo-node:hover .topo-node-label,
+.topo-node:focus-visible .topo-node-label,
+.topo-node[data-active="true"] .topo-node-label {
+  color: var(--ink);
+}
+
+.topo-node-meta {
+  color: var(--accent);
+  font-size: 10px;
 }
 
 /* Nodo del grafo. Mismo criterio de estado que el resto del sistema:

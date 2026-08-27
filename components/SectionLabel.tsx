@@ -11,24 +11,25 @@ type Props = {
 };
 
 /**
- * Etiqueta de sección con forma de comando: el `$` en acento, el resto en
- * --ink-meta, y una línea que la separa del titular que sigue.
+ * Etiqueta de sección con forma de comando: el `$` en acento y el resto en
+ * --ink-meta. Sin regla debajo: en el sistema de diseño la etiqueta va
+ * suelta y es el margen de 26px lo que la separa de lo que sigue.
+ *
+ * El marcador [data-hop] ancla el nodo de la traza vertical a esta fila,
+ * 34px a la izquierda — dentro del carril que reserva <Container rail>.
  */
 export function SectionLabel({ children, action }: Props) {
   return (
-    <div className="mb-3">
-      <div className="relative flex items-center gap-3">
-        <span
-          data-hop
-          aria-hidden
-          className="absolute left-[-34px] top-1/2 z-[3] h-6 w-6 -translate-y-1/2 cursor-pointer rounded-full"
-        />
-        <p className="text-mono-cmd text-ink-meta">
-          <span className="text-accent">$</span> <Typewriter text={children} />
-        </p>
-        {action && <div className="ml-auto shrink-0">{action}</div>}
-      </div>
-      <span className="divider mt-3 block" aria-hidden />
+    <div className="relative mb-[26px] flex items-center gap-2.5">
+      <span
+        data-hop
+        aria-hidden
+        className="absolute left-[-34px] top-1/2 z-[3] h-6 w-6 -translate-y-1/2 cursor-pointer rounded-full"
+      />
+      <p className="text-mono-cmd text-ink-meta">
+        <span className="text-accent">$</span> <Typewriter text={children} />
+      </p>
+      {action && <div className="ml-auto shrink-0">{action}</div>}
     </div>
   );
 }

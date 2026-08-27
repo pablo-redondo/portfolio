@@ -23,7 +23,9 @@ export function FeaturedProject({ project }: { project: Project }) {
   const fases = project.timeline?.length;
 
   return (
-    <div className="card-lift surface-card group relative grid gap-8 p-7 sm:p-9 lg:grid-cols-[minmax(0,1fr)_330px] lg:gap-11">
+    // Borde en acento: es la única card destacada de la página y el
+    // sistema de diseño la distingue por el borde, no por el tamaño.
+    <div className="card-lift surface-card group relative grid gap-8 border-accent/45 p-7 sm:p-9 lg:grid-cols-[minmax(0,1fr)_330px] lg:gap-11">
       <Link href={`/proyectos/${project.slug}`} className="absolute inset-0 z-0 rounded-[inherit]">
         <span className="sr-only">Leer el caso de estudio de {project.title}</span>
       </Link>

@@ -25,12 +25,15 @@ export function HeroStats() {
   const up = services.filter((s) => s.state === "up").length;
 
   return (
-    <div className="flex flex-wrap items-center gap-x-9 gap-y-3 border-t border-line pt-5">
+    <div className="relative mt-[58px] flex flex-wrap items-center gap-x-9 gap-y-3 border-t border-line pt-[22px]">
       <Stat k="servicios" v={state === "ready" ? `${up} / ${services.length} operativos` : "—"} />
       <Stat k="rtt" v={timing ? `${Math.round(timing.total)} ms` : "—"} />
       <Stat k="último check" v={checkedAt ? haceTiempo(checkedAt) : "—"} />
-      <Link href="/proyectos" className="text-mono-cmd ml-auto text-ink-meta hover:text-accent">
-        ir a ~/proyectos →
+      <Link
+        href="/proyectos"
+        className="ml-auto font-mono text-xs text-ink-meta transition-colors hover:text-accent"
+      >
+        ir a ~/proyectos
       </Link>
     </div>
   );
@@ -38,9 +41,9 @@ export function HeroStats() {
 
 function Stat({ k, v }: { k: string; v: string }) {
   return (
-    <span className="flex items-baseline gap-2.5">
+    <span className="flex items-baseline gap-[9px]">
       <span className="text-mono-meta text-ink-meta uppercase">{k}</span>
-      <span className="text-mono-data text-ink tabular-nums">{v}</span>
+      <span className="text-mono-stat text-ink tabular-nums">{v}</span>
     </span>
   );
 }

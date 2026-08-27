@@ -18,9 +18,27 @@ type Point = { x: number; y: number };
  * con física necesitaría JS corriendo en bucle; en círculo la geometría
  * sale de una fórmula y el grafo es idéntico en servidor y en cliente.
  */
+const SCATTER: Point[] = [
+  { x: 15, y: 32 },
+  { x: 45, y: 19 },
+  { x: 78, y: 26 },
+  { x: 55, y: 47 },
+  { x: 24, y: 57 },
+  { x: 85, y: 61 },
+  { x: 45, y: 80 },
+];
+
 function layout(nodes: TopologyNode[]): Map<string, Point> {
   const positions = new Map<string, Point>();
   nodes.forEach((node, i) => {
+    // Reparto disperso fijo, no un círculo perfecto: en círculo las
+    // aristas se cruzan todas por el centro y la forma de la red no se
+    // lee. Si algún día hay más de siete, el círculo vuelve como respaldo.
+    const p = SCATTER[i];
+    if (p) {
+      positions.set(node.slug, p);
+      return;
+    }
     const angle = (2 * Math.PI * i) / nodes.length - Math.PI / 2;
     positions.set(node.slug, {
       x: 50 + 37 * Math.cos(angle),
@@ -106,19 +124,31 @@ export function TopologyGraph({ nodes, edges, defaultSlug }: Props) {
 
           {nodes.map((node) => {
             const p = positions.get(node.slug)!;
+            const on = node.slug === selectedSlug;
+            const grado = edges.filter((e) => e.a === node.slug || e.b === node.slug).length;
             return (
               <Link
                 key={node.slug}
                 href={`/proyectos/${node.slug}`}
-                data-active={node.slug === selectedSlug}
+                data-active={on}
                 onMouseEnter={() => setActive(node.slug)}
                 onMouseLeave={() => setActive(clearIfSelf(node.slug))}
                 onFocus={() => setActive(node.slug)}
                 onBlur={() => setActive(clearIfSelf(node.slug))}
-                className="topology-node text-mono-data"
+                className="topo-node"
                 style={{ left: `${p.x}%`, top: `${p.y}%` }}
               >
-                {node.label}
+                <span className="topo-node-dot" aria-hidden />
+                <span className="topo-node-label">
+                  {node.label}
+                  {/* El nodo activo dice de qué está hecho ahí mismo, sin
+                      obligar a leer la ficha lateral para saberlo. */}
+                  {on && (
+                    <span className="topo-node-meta">
+                      {node.techCount} tech · {grado} aristas
+                    </span>
+                  )}
+                </span>
               </Link>
             );
           })}

@@ -5,7 +5,13 @@
  * cómo te presentas no debería obligar a tocar JSX.
  */
 export const HOME_HERO = {
-  headline: "Full-stack con base de infraestructura real.",
+  /**
+   * El titular va en dos tramos porque el sistema de diseño pinta el
+   * segundo en el color de acento. Es el mismo texto, partido donde cambia
+   * el color — no dos frases distintas.
+   */
+  headline: "Full-stack con base de ",
+  headlineAccent: "infraestructura real.",
   // Qué construyo y cómo, no de dónde vengo. La referencia a producción se
   // queda porque es lo que sostiene el titular, pero como criterio de hoy y
   // no como biografía.
