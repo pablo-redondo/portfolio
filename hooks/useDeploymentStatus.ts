@@ -5,6 +5,9 @@ import type { ServiceStatus } from "@/app/api/status/route";
 
 export type DeploymentStatusState = "loading" | "ready" | "error";
 
+/** Igual que la caché del servidor: repetir antes no traería nada nuevo. */
+const POLL_MS = 5 * 60 * 1000;
+
 export function useDeploymentStatus() {
   const [state, setState] = useState<DeploymentStatusState>("loading");
   const [services, setServices] = useState<ServiceStatus[]>([]);
@@ -12,26 +15,34 @@ export function useDeploymentStatus() {
 
   useEffect(() => {
     let cancelled = false;
+    let timer = 0;
 
-    fetch("/api/status")
-      .then((res) => {
-        if (!res.ok) throw new Error(String(res.status));
-        return res.json();
-      })
-      .then((data: { services: ServiceStatus[]; checkedAt: string }) => {
-        if (cancelled) return;
-        setServices(data.services);
-        setCheckedAt(data.checkedAt);
-        setState("ready");
-      })
-      .catch(() => {
-        // La comprobación es información extra, no contenido: si falla,
-        // la página no debe enseñar un error.
-        if (!cancelled) setState("error");
-      });
+    const load = () => {
+      fetch("/api/status")
+        .then((res) => {
+          if (!res.ok) throw new Error(String(res.status));
+          return res.json();
+        })
+        .then((data: { services: ServiceStatus[]; checkedAt: string }) => {
+          if (cancelled) return;
+          setServices(data.services);
+          setCheckedAt(data.checkedAt);
+          setState("ready");
+        })
+        .catch(() => {
+          // La comprobación es información extra, no contenido: si falla,
+          // la página no debe enseñar un error.
+          if (!cancelled) setState("error");
+        })
+        .finally(() => {
+          if (!cancelled) timer = window.setTimeout(load, POLL_MS);
+        });
+    };
+    load();
 
     return () => {
       cancelled = true;
+      window.clearTimeout(timer);
     };
   }, []);
 

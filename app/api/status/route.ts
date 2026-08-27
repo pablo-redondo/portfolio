@@ -26,6 +26,8 @@ const TIMEOUT_MS = 8000;
 
 export type PhaseTimings = { dns: number; tcp: number; tls: number; ttfb: number };
 
+export type HistoryPoint = { at: string; latencyMs: number | null; state: ServiceStatus["state"] };
+
 export type ServiceStatus = {
   slug: string;
   title: string;
@@ -35,6 +37,13 @@ export type ServiceStatus = {
   latencyMs: number | null;
   /** Desglose real por fase de esta comprobación. Null si no llegó a responder. */
   phases: PhaseTimings | null;
+  /**
+   * Muestras reales de comprobaciones anteriores, más antigua primero — no
+   * hay una cadencia fija (solo se añade una al expirar la caché de 5 min,
+   * y solo si alguien visita entonces), así que el hueco real entre la
+   * primera y la última es el dato honesto, no "últimos 2 minutos" fijo.
+   */
+  history: HistoryPoint[];
 };
 
 type Payload = {
@@ -44,7 +53,15 @@ type Payload = {
 
 let cache: { at: number; payload: Payload } | null = null;
 
-function check(slug: string, title: string, url: string): Promise<ServiceStatus> {
+// Un punto por servicio cada vez que expira la caché — como mucho unas
+// pocas decenas de kB en memoria del proceso, se pierde en un cold start
+// igual que la propia caché de arriba.
+const HISTORY_SIZE = 12;
+const history = new Map<string, HistoryPoint[]>();
+
+type Check = Omit<ServiceStatus, "history">;
+
+function check(slug: string, title: string, url: string): Promise<Check> {
   return new Promise((resolve) => {
     let target: URL;
     try {
@@ -61,7 +78,7 @@ function check(slug: string, title: string, url: string): Promise<ServiceStatus>
     let tlsAt: number | null = null;
     let settled = false;
 
-    const finish = (result: ServiceStatus) => {
+    const finish = (result: Check) => {
       if (settled) return;
       settled = true;
       resolve(result);
@@ -136,11 +153,22 @@ export async function GET() {
   const targets = projects.filter((p) => p.demoUrl);
 
   // En paralelo: el timeout de uno no puede arrastrar a los demás.
-  const services = await Promise.all(
+  const checked = await Promise.all(
     targets.map((p) => check(p.slug, p.title, p.demoUrl as string)),
   );
+  const checkedAt = new Date().toISOString();
 
-  const payload: Payload = { checkedAt: new Date().toISOString(), services };
+  const services: ServiceStatus[] = checked.map((result) => {
+    const prior = history.get(result.slug) ?? [];
+    const updated = [
+      ...prior,
+      { at: checkedAt, latencyMs: result.latencyMs, state: result.state },
+    ].slice(-HISTORY_SIZE);
+    history.set(result.slug, updated);
+    return { ...result, history: updated };
+  });
+
+  const payload: Payload = { checkedAt, services };
   cache = { at: Date.now(), payload };
 
   return Response.json(payload);

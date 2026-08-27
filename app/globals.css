@@ -647,19 +647,33 @@ body {
 }
 
 .status-endpoint,
-.status-rtt {
+.status-rtt,
+.status-spark {
   display: none;
 }
 
+/* La sparkline solo entra a partir de 68rem: por debajo, endpoint + rtt
+   + estado ya ocupan la fila y meterla ahí la dejaría sin sitio real. */
 @media (min-width: 56rem) {
   .status-grid {
-    grid-template-columns: 1.6fr 1fr 88px 112px;
+    grid-template-columns: 1.5fr 0.95fr 88px 112px;
     gap: 16px;
   }
 
   .status-endpoint,
   .status-rtt {
     display: block;
+  }
+}
+
+@media (min-width: 68rem) {
+  .status-grid {
+    grid-template-columns: 1.3fr 0.85fr 140px 80px 104px;
+  }
+
+  .status-spark {
+    display: flex;
+    align-items: center;
   }
 }
 
@@ -762,6 +776,46 @@ body {
     opacity: 0;
   }
   100% {
+    opacity: 0;
+  }
+}
+
+/* --- Pulso de comprobación real (catálogo #6) -------------------
+   A diferencia de .pulse-dot (bucle infinito, decorativo) este es un
+   único disparo por montaje: el llamador cambia la `key` del elemento
+   solo cuando llega un `checkedAt` nuevo de /api/status, así que el
+   anillo solo aparece justo cuando acaba de haber una comprobación de
+   verdad, nunca en bucle. --pulse-delay escalona 0,32s por fila. */
+.healthcheck-pulse {
+  position: relative;
+  display: inline-block;
+  isolation: isolate;
+}
+
+.healthcheck-pulse::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .healthcheck-pulse::after {
+    animation: healthcheck-ring 2s var(--ease-out) both;
+    animation-delay: var(--pulse-delay, 0s);
+  }
+}
+
+@keyframes healthcheck-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(3.6);
     opacity: 0;
   }
 }
