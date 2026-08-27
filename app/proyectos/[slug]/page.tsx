@@ -8,6 +8,7 @@ import { PhaseTabs } from "@/components/PhaseTabs";
 import { AuditBox } from "@/components/AuditBox";
 import { CodeDiff } from "@/components/CodeDiff";
 import { CodeBlock } from "@/components/CodeBlock";
+import { EvalVsWorkerDemo } from "@/components/EvalVsWorkerDemo";
 import { Reveal } from "@/components/Reveal";
 import { LiveDemo } from "@/components/LiveDemo";
 import { DeploymentBadge } from "@/components/DeploymentStatus";
@@ -232,24 +233,9 @@ export default async function ProjectPage({ params }: Props) {
 
       {/* --- Reto técnico --- */}
       <HopSection id="reto" n={(hopN += 1)} eyebrow="lo más difícil" title="Reto técnico">
-        {caseStudy.challengeCode && (
-          <div className="mb-7 grid gap-3 sm:grid-cols-2">
-            <div className="rounded-lg border border-crit/30 bg-crit/5 p-4">
-              <p className="text-mono-meta text-crit uppercase">eval() en el hilo principal</p>
-              <p className="text-body-sm mt-2 text-ink-soft">
-                Mismo scope que el resto de la app: un bucle infinito bloquea la UI sin
-                retorno.
-              </p>
-            </div>
-            <div className="rounded-lg border border-ok/30 bg-ok/5 p-4">
-              <p className="text-mono-meta text-ok uppercase">worker aislado + terminate()</p>
-              <p className="text-body-sm mt-2 text-ink-soft">
-                Hilo real y aislado; el principal puede matarlo desde fuera si se
-                cuelga.
-              </p>
-            </div>
-          </div>
-        )}
+        {/* La demo interactiva es específica de este reto (eval() vs Worker):
+            no tendría sentido para el challengeCode de otro proyecto. */}
+        {project.slug === "codequest-rpg" && <EvalVsWorkerDemo />}
         <p className="max-w-[70ch] leading-relaxed text-ink-soft">{caseStudy.challenge}</p>
         {caseStudy.challengeCode && (
           <div className="mt-6">

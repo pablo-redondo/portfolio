@@ -43,6 +43,12 @@ export function TopologyGraph({ nodes, edges, defaultSlug }: Props) {
   const positions = layout(nodes);
   const byslug = new Map(nodes.map((n) => [n.slug, n]));
 
+  // El grosor de cada arista es el número real de tecnologías compartidas,
+  // no un valor fijo: una arista gruesa significa stack repetido a
+  // propósito, no un adorno.
+  const maxShared = Math.max(...edges.map((e) => e.techs.length), 1);
+  const grosor = (e: TopologyEdge) => 0.15 + (e.techs.length / maxShared) * 0.55;
+
   const selectedSlug = active ?? defaultSlug ?? nodes[0]?.slug;
   const selected = byslug.get(selectedSlug);
   const selectedEdges = edges.filter((e) => e.a === selectedSlug || e.b === selectedSlug);
@@ -65,6 +71,7 @@ export function TopologyGraph({ nodes, edges, defaultSlug }: Props) {
               const p2 = positions.get(edge.b);
               if (!p1 || !p2) return null;
               const on = selectedSlug === edge.a || selectedSlug === edge.b;
+              const width = grosor(edge);
               return (
                 <g key={`${edge.a}-${edge.b}`}>
                   <line
@@ -73,7 +80,7 @@ export function TopologyGraph({ nodes, edges, defaultSlug }: Props) {
                     x2={p2.x}
                     y2={p2.y}
                     stroke={on ? "var(--accent)" : "var(--border-strong)"}
-                    strokeWidth={on ? 0.45 : 0.2}
+                    strokeWidth={on ? width * 1.4 : width}
                     strokeOpacity={on ? 0.9 : 0.55}
                     vectorEffect="non-scaling-stroke"
                   />

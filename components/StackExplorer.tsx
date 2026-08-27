@@ -12,6 +12,20 @@ const CATEGORY_LABELS: Record<TechCategory, string> = {
   tooling: "Tooling",
 };
 
+/** Un punto por proyecto; los primeros `count` se rellenan. */
+function UsageDots({ count, total }: { count: number; total: number }) {
+  return (
+    <span className="flex shrink-0 items-center gap-[3px]" aria-hidden>
+      {Array.from({ length: total }).map((_, i) => (
+        <span
+          key={i}
+          className={`h-1 w-1 rounded-full ${i < count ? "bg-accent" : "bg-line-strong"}`}
+        />
+      ))}
+    </span>
+  );
+}
+
 /**
  * Stack filtrable por capa.
  *
@@ -99,28 +113,33 @@ export function StackExplorer({ stack, usage, totalProyectos }: Props) {
             {/* Mismo marcador "+"/"−" que las fases de un caso de estudio y
                 el raíl de carrera: el "porqué" de cada tecnología queda
                 plegado hasta que se pincha en la ficha. */}
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 [&::-webkit-details-marker]:hidden">
-              <h3 className="flex min-w-0 items-center gap-2 font-mono text-sm font-semibold text-ink">
-                <TechIcon
-                  name={tech.name}
-                  fallbackDot
-                  className="h-4 w-4 text-ink-faint transition-colors group-hover:text-accent"
-                />
-                <span className="min-w-0">{tech.name}</span>
-              </h3>
-              <span className="flex shrink-0 items-center gap-2">
-                <span className="font-mono text-[10px] tracking-wider text-ink-faint uppercase">
-                  {CATEGORY_LABELS[tech.category]}
+            <summary className="cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+              <div className="flex items-center justify-between gap-3">
+                <h3 className="flex min-w-0 items-center gap-2 font-mono text-sm font-semibold text-ink">
+                  <TechIcon
+                    name={tech.name}
+                    fallbackDot
+                    className="h-4 w-4 text-ink-faint transition-colors group-hover:text-accent"
+                  />
+                  <span className="min-w-0">{tech.name}</span>
+                </h3>
+                <span className="flex shrink-0 items-center gap-2">
+                  <span className="font-mono text-[10px] tracking-wider text-ink-faint uppercase">
+                    {CATEGORY_LABELS[tech.category]}
+                  </span>
+                  <span className="phase-toggle" aria-hidden />
                 </span>
-                <span className="phase-toggle" aria-hidden />
-              </span>
-            </summary>
+              </div>
 
-            {usage && totalProyectos && (
-              <p className="text-mono-meta -mt-1 mb-2.5 text-ink-faint">
-                {usage.get(tech.name) ?? 0} / {totalProyectos} proyectos
-              </p>
-            )}
+              {usage && totalProyectos && (
+                <p className="mt-2.5 flex items-center gap-2">
+                  <UsageDots count={usage.get(tech.name) ?? 0} total={totalProyectos} />
+                  <span className="text-mono-meta text-ink-faint">
+                    {usage.get(tech.name) ?? 0} / {totalProyectos} proyectos
+                  </span>
+                </p>
+              )}
+            </summary>
 
             <div className="detail-in mt-2.5 border-t border-line pt-2.5">
               <p className="text-sm leading-relaxed text-ink-soft">{tech.why}</p>

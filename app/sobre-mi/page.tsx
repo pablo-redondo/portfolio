@@ -256,7 +256,7 @@ export default function SobreMiPage() {
 
       <section className="py-20">
         <Container>
-          <SectionHead label="ls stack/" title="Stack">
+          <SectionHead label="lsof -i stack" title="Stack">
             <p className="mt-6 max-w-[62ch] text-ink-soft">
               No es una lista de logos: cada tecnología está aquí por un motivo
               concreto, el mismo que aparece en los casos de estudio. Filtra

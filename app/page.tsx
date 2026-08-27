@@ -127,7 +127,8 @@ export default function HomePage() {
             <span className="heading-rule mt-4 mb-5" aria-hidden />
             <p className="text-body mb-8 text-ink-soft">
               Cada nodo es un proyecto; cada arista, las tecnologías que comparten.
-              Pasa el foco o el ratón por un nodo para aislar sus vecinos.
+              Las aristas gruesas son stack repetido a propósito. Pasa el foco o el
+              ratón por un nodo para aislar sus vecinos.
             </p>
           </Reveal>
 
