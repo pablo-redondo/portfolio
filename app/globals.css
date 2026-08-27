@@ -1299,6 +1299,24 @@ body:has(#stack:target) .hop-link[data-hop="contexto"] {
   }
 }
 
+/* Cursor de bloque del componente <Typewriter> — cadencia irregular por
+   JS, a diferencia del type-in de arriba (pasos fijos por CSS). Sin
+   reduced-motion no se monta nunca (ver el propio componente). */
+.typewriter-caret {
+  display: inline-block;
+  width: 0.5em;
+  height: 1em;
+  margin-left: 1px;
+  vertical-align: -0.15em;
+  background: var(--accent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .typewriter-caret {
+    animation: cursor-blink 1s step-end infinite;
+  }
+}
+
 /* --- Pista de scroll al pie del hero -----------------------
    Un trazo fino que recorre hacia abajo dentro de su carril. Sin texto
    ni flecha, y `aria-hidden` en el marcado: no aporta nada a quien

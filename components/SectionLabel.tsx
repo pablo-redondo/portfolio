@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Typewriter } from "@/components/Typewriter";
 
 type Props = {
   children: string;
@@ -23,7 +24,7 @@ export function SectionLabel({ children, action }: Props) {
           className="absolute left-[-34px] top-1/2 z-[3] h-6 w-6 -translate-y-1/2 cursor-pointer rounded-full"
         />
         <p className="text-mono-cmd text-ink-meta">
-          <span className="text-accent">$</span> {children}
+          <span className="text-accent">$</span> <Typewriter text={children} />
         </p>
         {action && <div className="ml-auto shrink-0">{action}</div>}
       </div>
