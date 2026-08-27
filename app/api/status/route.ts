@@ -1,3 +1,5 @@
+import { request as httpRequest } from "node:http";
+import { request as httpsRequest } from "node:https";
 import { projects } from "@/content/projects";
 
 /**
@@ -11,12 +13,18 @@ import { projects } from "@/content/projects";
  * contra los despliegues ajenos cada vez que alguien abre la página. Es el
  * mismo criterio que aplica NetPulse con su intervalo de cinco minutos:
  * ante servicios que no son míos, mejor pasarse de discreto.
+ *
+ * Va con http/https de bajo nivel y no con fetch: solo así se pueden leer
+ * los eventos de socket (lookup/connect/secureConnect) y sacar un desglose
+ * real por fase en vez de un único RTT total.
  */
 
 export const dynamic = "force-dynamic";
 
 const TTL_MS = 5 * 60 * 1000;
 const TIMEOUT_MS = 8000;
+
+export type PhaseTimings = { dns: number; tcp: number; tls: number; ttfb: number };
 
 export type ServiceStatus = {
   slug: string;
@@ -25,6 +33,8 @@ export type ServiceStatus = {
   state: "up" | "down" | "unknown";
   httpStatus: number | null;
   latencyMs: number | null;
+  /** Desglose real por fase de esta comprobación. Null si no llegó a responder. */
+  phases: PhaseTimings | null;
 };
 
 type Payload = {
@@ -34,33 +44,88 @@ type Payload = {
 
 let cache: { at: number; payload: Payload } | null = null;
 
-async function check(slug: string, title: string, url: string): Promise<ServiceStatus> {
-  const startedAt = Date.now();
-  try {
-    const res = await fetch(url, {
-      method: "GET",
-      redirect: "follow",
-      cache: "no-store",
-      signal: AbortSignal.timeout(TIMEOUT_MS),
-      headers: {
-        // Identificable, para que quien mire sus logs sepa de dónde sale.
-        "user-agent": "pablo-redondo.dev status check",
+function check(slug: string, title: string, url: string): Promise<ServiceStatus> {
+  return new Promise((resolve) => {
+    let target: URL;
+    try {
+      target = new URL(url);
+    } catch {
+      resolve({ slug, title, url, state: "down", httpStatus: null, latencyMs: null, phases: null });
+      return;
+    }
+
+    const requestFn = target.protocol === "https:" ? httpsRequest : httpRequest;
+    const t0 = Date.now();
+    let dnsAt: number | null = null;
+    let tcpAt: number | null = null;
+    let tlsAt: number | null = null;
+    let settled = false;
+
+    const finish = (result: ServiceStatus) => {
+      if (settled) return;
+      settled = true;
+      resolve(result);
+    };
+
+    const req = requestFn(
+      target,
+      {
+        method: "GET",
+        timeout: TIMEOUT_MS,
+        // Sin keep-alive: cada comprobación abre una conexión nueva, para
+        // que dns/tcp/tls sean la fase real y no un socket reutilizado a 0.
+        agent: false,
+        headers: { "user-agent": "pablo-redondo.dev status check" },
       },
+      (res) => {
+        const ttfbAt = Date.now();
+        res.resume();
+        res.on("end", () => {
+          const connectDoneAt = tlsAt ?? tcpAt ?? t0;
+          finish({
+            slug,
+            title,
+            url,
+            state: (res.statusCode ?? 0) < 400 ? "up" : "down",
+            httpStatus: res.statusCode ?? null,
+            latencyMs: ttfbAt - t0,
+            phases: {
+              dns: Math.max(0, (dnsAt ?? t0) - t0),
+              tcp: Math.max(0, (tcpAt ?? dnsAt ?? t0) - (dnsAt ?? t0)),
+              tls: Math.max(0, (tlsAt ?? tcpAt ?? t0) - (tcpAt ?? t0)),
+              ttfb: Math.max(0, ttfbAt - connectDoneAt),
+            },
+          });
+        });
+        res.on("error", () => {
+          finish({ slug, title, url, state: "down", httpStatus: null, latencyMs: null, phases: null });
+        });
+      },
+    );
+
+    req.on("socket", (socket) => {
+      socket.on("lookup", () => {
+        dnsAt = Date.now();
+      });
+      socket.on("connect", () => {
+        tcpAt = Date.now();
+      });
+      socket.on("secureConnect", () => {
+        tlsAt = Date.now();
+      });
     });
 
-    return {
-      slug,
-      title,
-      url,
-      // <400 se considera arriba: un 3xx sigue siendo un servicio que responde.
-      state: res.status < 400 ? "up" : "down",
-      httpStatus: res.status,
-      latencyMs: Date.now() - startedAt,
-    };
-  } catch {
-    // Timeout, DNS, TLS o red: no llegó a responder.
-    return { slug, title, url, state: "down", httpStatus: null, latencyMs: null };
-  }
+    req.on("timeout", () => {
+      req.destroy(new Error("timeout"));
+    });
+
+    req.on("error", () => {
+      // Timeout, DNS, TLS o red: no llegó a responder.
+      finish({ slug, title, url, state: "down", httpStatus: null, latencyMs: null, phases: null });
+    });
+
+    req.end();
+  });
 }
 
 export async function GET() {

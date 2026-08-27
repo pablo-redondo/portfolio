@@ -56,6 +56,15 @@ const RASGOS = [
   },
 ];
 
+// Autocrítica honesta, no una virtud disfrazada de defecto ("trabajo
+// demasiado", etc). Son las tres carencias reales frente a lo que pide un
+// primer puesto de desarrollador.
+const KNOWN_ISSUES = [
+  "Todos los proyectos de esta web los he decidido yo. No he trabajado todavía en un equipo de producto grande, con roadmap ajeno y prioridades que no controlo — es exactamente lo que busco ahora.",
+  "Docker y los PaaS los uso para desplegar lo mío, pero no he operado contenedores a escala ni montado observabilidad de verdad (métricas, trazas, alertas). Sé lo que falta porque lo he visto funcionar desde el otro lado.",
+  "Mi experiencia con datos es relacional. NoSQL, colas y todo lo que va con procesamiento asíncrono lo he leído, no lo he puesto en producción.",
+];
+
 // Los cuatro puestos anteriores al desarrollo, tal como constan en el CV.
 // Nada de resumen genérico: fecha, empresa y lo único que de verdad importa
 // de cada uno. start/end en YYYY-MM: es lo que deja calcular la duración de
@@ -239,6 +248,26 @@ export default function SobreMiPage() {
             <Link href="/proyectos/restaurant" className="btn btn-secondary mt-4">
               Ver Sistema de Reservas
             </Link>
+          </Reveal>
+
+          <Reveal className="surface-panel mt-6 p-6">
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="bg-warn/15 text-warn rounded font-mono text-[10px] tracking-wide uppercase px-2 py-1">
+                Known issues
+              </span>
+              <span className="text-mono-meta text-ink-meta">lo que todavía no sé hacer</span>
+            </div>
+
+            <div className="mt-5 grid gap-6 lg:grid-cols-3">
+              {KNOWN_ISSUES.map((text, i) => (
+                <div key={i} className="flex flex-col gap-2.5">
+                  <span className="text-warn font-mono text-[11px] font-medium">
+                    #{i + 1}
+                  </span>
+                  <p className="text-sm leading-relaxed text-ink-soft">{text}</p>
+                </div>
+              ))}
+            </div>
           </Reveal>
         </Container>
       </section>

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/Container";
 import { SectionLabel } from "@/components/SectionLabel";
-import { ProjectCard } from "@/components/ProjectCard";
+import { ProjectMonitorList } from "@/components/ProjectMonitorList";
 import { TechRankBar } from "@/components/TechRankBar";
 import { Reveal } from "@/components/Reveal";
 import { HeroGrid } from "@/components/HeroGrid";
@@ -21,9 +21,6 @@ export const metadata: Metadata = {
   description: DESCRIPTION,
   openGraph: { title: `${TITLE} · Pablo Redondo`, description: DESCRIPTION },
 };
-
-/** Cards visibles sin hacer scroll: no llevan reveal para no retrasar el LCP. */
-const ABOVE_FOLD_CARDS = 3;
 
 type Props = {
   searchParams: Promise<{ tag?: string }>;
@@ -108,24 +105,7 @@ export default async function ProyectosPage({ searchParams }: Props) {
             </nav>
           </Reveal>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {/* El insignia ocupa dos columnas; el resto, una. Las primeras
-                cards caen dentro del pliegue y una de ellas es el elemento
-                LCP: animarlas de entrada retrasa la métrica. */}
-            {filtered.map((project, i) =>
-              i < ABOVE_FOLD_CARDS ? (
-                <ProjectCard key={project.slug} project={project} featured={project.featured} />
-              ) : (
-                <Reveal
-                  key={project.slug}
-                  delay={((i - ABOVE_FOLD_CARDS) % 3) * 60}
-                  className={project.featured ? "sm:col-span-2" : undefined}
-                >
-                  <ProjectCard project={project} />
-                </Reveal>
-              ),
-            )}
-          </div>
+          <ProjectMonitorList projects={filtered} />
 
           {filtered.length === 0 && (
             <p className="text-body py-12 text-center text-ink-soft">
