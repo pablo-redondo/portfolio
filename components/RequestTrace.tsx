@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { useNavigationTiming, type NavTiming } from "@/hooks/useNavigationTiming";
 
 const STEPS: { key: keyof Pick<NavTiming, "dns" | "tcp" | "tls" | "ttfb">; label: string }[] = [
@@ -15,13 +16,32 @@ const STEPS: { key: keyof Pick<NavTiming, "dns" | "tcp" | "tls" | "ttfb">; label
  * muestra. Si la conexión ya estaba abierta (visita repetida, HTTP keep
  * alive) no hay DNS/TCP/TLS que medir, y se dice así en vez de pintar tres
  * barras a cero que parecerían un acierto perfecto.
+ *
+ * Catálogo de animaciones #7 — "Traza de la petición en el hero": las
+ * barras crecen (scaleX, no width: no dispara reflow) cuando el hero
+ * termina de teclearse, escalonadas 90ms. Con reduced-motion se ven ya
+ * en su estado final, sin esperar al typewriter de al lado.
  */
 export function RequestTrace() {
   const timing = useNavigationTiming();
   const max = timing ? Math.max(timing.dns, timing.tcp, timing.tls, timing.ttfb, 1) : 1;
+  const rootRef = useRef<HTMLDivElement>(null);
+  const [armed, setArmed] = useState(false);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      Promise.resolve().then(() => setArmed(true));
+      return;
+    }
+
+    const scope = rootRef.current?.closest("section") ?? window;
+    const onDone = () => setArmed(true);
+    scope.addEventListener("typewriter-done", onDone, { once: true });
+    return () => scope.removeEventListener("typewriter-done", onDone);
+  }, []);
 
   return (
-    <div className="win">
+    <div className="win" ref={rootRef}>
       <div className="win-bar">
         <div className="win-dots" aria-hidden>
           <span className="win-dot" />
@@ -48,7 +68,7 @@ export function RequestTrace() {
           </p>
         ) : (
           <div className="mt-5 flex flex-col gap-4">
-            {STEPS.map((step) => {
+            {STEPS.map((step, i) => {
               const value = timing ? timing[step.key] : 0;
               const pct = timing ? Math.max(4, (value / max) * 100) : 0;
               return (
@@ -61,8 +81,11 @@ export function RequestTrace() {
                   </div>
                   <div className="h-1 overflow-hidden rounded-full bg-surface-2">
                     <div
-                      className="h-full rounded-full bg-accent transition-[width] duration-700 ease-out"
-                      style={{ width: `${pct}%` }}
+                      className="waterfall-bar h-full rounded-full bg-accent"
+                      style={{
+                        transform: `scaleX(${armed ? pct / 100 : 0})`,
+                        transitionDelay: `${i * 90}ms`,
+                      }}
                     />
                   </div>
                 </div>

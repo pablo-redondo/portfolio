@@ -21,7 +21,12 @@ export function Typewriter({ text }: { text: string }) {
     if (!el) return;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) return;
+    if (reduced) {
+      // Con reduced-motion no hay nada que teclear, pero lo que depende de
+      // "cuando termina" (la traza del hero) debe ver su estado final ya.
+      el.dispatchEvent(new CustomEvent("typewriter-done", { bubbles: true }));
+      return;
+    }
 
     let timer = 0;
     let started = false;
@@ -38,6 +43,7 @@ export function Typewriter({ text }: { text: string }) {
       setDisplay(text.slice(0, i));
       if (i >= text.length) {
         setDone(true);
+        el.dispatchEvent(new CustomEvent("typewriter-done", { bubbles: true }));
         return;
       }
       timer = window.setTimeout(() => type(i + 1), 26 + Math.random() * 34);

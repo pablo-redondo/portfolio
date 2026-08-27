@@ -789,6 +789,20 @@ body {
   }
 }
 
+/* --- Barras del waterfall del hero (catálogo #7) ---------------
+   scaleX, no width: crecer no dispara layout en las filas vecinas.
+   Transform ya trae origin desde el propio elemento (origin-left de
+   Tailwind); el desfase de 90ms por barra lo pone el estilo en línea. */
+.waterfall-bar {
+  transform-origin: left;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .waterfall-bar {
+    transition: transform 700ms var(--ease-out);
+  }
+}
+
 /* --- Punto que recorre una arista activa del grafo ------------- */
 .edge-flow {
   stroke-dasharray: 3 7;
