@@ -3,13 +3,12 @@ import { join } from "node:path";
 import type { Metadata } from "next";
 import { Container } from "@/components/Container";
 import { SectionLabel } from "@/components/SectionLabel";
-import { HeroGrid } from "@/components/HeroGrid";
+import { HeroRoutes } from "@/components/HeroRoutes";
 import { SectionSpine } from "@/components/SectionSpine";
 import { WhoisCard } from "@/components/WhoisCard";
 import { SocketsTable, type Socket } from "@/components/SocketsTable";
-import { ContactShell } from "@/components/ContactShell";
-import { Terminal } from "@/components/Terminal";
 import { SITE } from "@/content/site";
+import { projects } from "@/content/projects";
 
 const TITLE = "Contacto";
 const DESCRIPTION = "Contacta con Pablo Redondo — email, GitHub, LinkedIn y CV.";
@@ -31,8 +30,18 @@ function tamanoCV(): string | null {
   }
 }
 
+/** Repos públicos reales, contados a partir de los que cada proyecto ya declara. */
+function contarRepos(): number {
+  const urls = new Set<string>();
+  for (const project of projects) {
+    for (const repo of project.repos) urls.add(repo.url);
+  }
+  return urls.size;
+}
+
 export default function ContactoPage() {
   const cvKb = tamanoCV();
+  const repoCount = contarRepos();
 
   const sockets: Socket[] = [
     {
@@ -40,7 +49,8 @@ export default function ContactoPage() {
       socket: "tcp/587",
       destino: SITE.email,
       href: `mailto:${SITE.email}`,
-      dato: "smtp",
+      protocolo: "smtp",
+      respuesta: "< 24 h",
       accion: "escribir",
     },
     {
@@ -48,7 +58,8 @@ export default function ContactoPage() {
       socket: "tcp/443",
       destino: SITE.github.replace(/^https:\/\//, ""),
       href: SITE.github,
-      dato: "https",
+      protocolo: "https",
+      respuesta: `${repoCount} repos públicos`,
       accion: "abrir",
     },
     ...(SITE.linkedin
@@ -58,7 +69,8 @@ export default function ContactoPage() {
             socket: "tcp/443",
             destino: SITE.linkedin.replace(/^https:\/\/(www\.)?/, "").replace(/\/$/, ""),
             href: SITE.linkedin,
-            dato: "https",
+            protocolo: "https",
+            respuesta: "< 24 h",
             accion: "abrir",
           } satisfies Socket,
         ]
@@ -70,7 +82,8 @@ export default function ContactoPage() {
             socket: "tcp/443",
             destino: SITE.cvUrl.replace(/^\//, ""),
             href: SITE.cvUrl,
-            dato: cvKb ?? "pdf",
+            protocolo: "https",
+            respuesta: cvKb ?? "pdf",
             accion: "descargar",
           } satisfies Socket,
         ]
@@ -80,26 +93,27 @@ export default function ContactoPage() {
   return (
     <div className="relative">
       <SectionSpine />
-      <section className="hero-glow border-b border-line">
-        <HeroGrid />
-        <Container>
-          <div className="grid items-center gap-12 py-16 sm:py-20 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
-            <div className="min-w-0">
-              <div data-enter="1">
-                <SectionLabel>whois pablo</SectionLabel>
-              </div>
+      <section className="relative pt-[74px] pb-16">
+        <Container rail>
+          <HeroRoutes />
 
-              <h1 data-enter="lcp" className="text-h1 mt-5 max-w-[18ch] text-balance text-ink">
+          <div data-enter="1">
+            <SectionLabel>whois pablo</SectionLabel>
+          </div>
+
+          <div className="relative grid items-start gap-12 lg:grid-cols-[minmax(0,1fr)_344px]">
+            <div className="min-w-0">
+              <h1 data-enter="lcp" className="text-h1 mb-5 max-w-[18ch] text-balance text-ink">
                 Hablemos
               </h1>
 
-              <p data-enter="3" className="text-body mt-6 max-w-[58ch] text-ink-soft">
+              <p data-enter="3" className="text-body mb-8 max-w-[58ch] text-ink-soft">
                 Busco mi primera posición como desarrollador full-stack. Sin
                 formulario ni backend de por medio: un email directo funciona
                 mejor.
               </p>
 
-              <div data-enter="4" className="mt-8 flex flex-wrap gap-3">
+              <div data-enter="4" className="flex flex-wrap gap-3">
                 <a href={`mailto:${SITE.email}`} className="btn btn-primary">
                   Escribir un email
                 </a>
@@ -111,46 +125,31 @@ export default function ContactoPage() {
               </div>
             </div>
 
-            <div data-enter="4" className="min-w-0 lg:w-full lg:max-w-md lg:justify-self-end">
+            <div data-enter="4" className="min-w-0">
               <WhoisCard />
             </div>
           </div>
         </Container>
       </section>
 
-      <section className="border-b border-line py-20">
-        <Container>
-          <SectionLabel>ss -ltn</SectionLabel>
-          <h2 className="text-h2 mt-3 text-ink">Canales a la escucha</h2>
-          <span className="heading-rule mt-4 mb-8" aria-hidden />
+      <section className="pt-[84px] pb-[130px]">
+        <Container rail>
+          <SectionLabel
+            action={
+              <span className="font-mono text-[11px] text-ink-meta">
+                {sockets.length} sockets
+              </span>
+            }
+          >
+            ss -ltn
+          </SectionLabel>
+          <h2 className="text-h2 mb-2.5 text-ink">Canales a la escucha</h2>
+          <p className="text-body mb-[26px] max-w-[60ch] text-ink-soft">
+            Cuatro sockets abiertos, cada uno con su tiempo de respuesta real.
+            El correo es el que atiendo antes.
+          </p>
 
           <SocketsTable sockets={sockets} />
-        </Container>
-      </section>
-
-      <section className="py-16">
-        <Container>
-          <SectionLabel>escribe help</SectionLabel>
-          <h2 className="text-h2 mt-3 text-ink">¿Prefieres teclear?</h2>
-          <span className="heading-rule mt-4 mb-8" aria-hidden />
-
-          <Terminal
-            title="pablo@galicia — ~/contacto"
-            lines={[
-              {
-                command: "help",
-                instant: true,
-                output: "escribe un comando — o usa los canales de arriba, que funcionan igual sin JavaScript.",
-              },
-            ]}
-          >
-            <ContactShell
-              email={SITE.email}
-              github={SITE.github}
-              linkedin={SITE.linkedin}
-              cv={SITE.cvUrl}
-            />
-          </Terminal>
         </Container>
       </section>
     </div>

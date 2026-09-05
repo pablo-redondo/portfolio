@@ -23,15 +23,17 @@ function useZonaHoraria() {
 
 const FILAS: { label: string; value: string }[] = [
   { label: "ubicación", value: "Galicia, España" },
-  { label: "idiomas", value: "Español · Gallego · Inglés" },
+  { label: "respuesta", value: "< 24 h" },
   { label: "estado", value: "buscando primer puesto dev" },
+  { label: "modalidad", value: "presencial · híbrido · remoto" },
 ];
 
 /**
- * Ficha «whois» del hero de contacto. Solo lleva datos verificables: nada
- * de un uptime o un tiempo de respuesta que nadie mide de verdad. El
- * "LISTEN" es literal — sigue disponible para que le escriban — no una
- * métrica de servidor.
+ * Ficha «whois» del hero de contacto. El "LISTEN" es literal — sigue
+ * disponible para que le escriban — no una métrica de servidor. El
+ * "uptime" y la "respuesta" son el mismo guiño al disfraz de servidor que
+ * ya lleva "LISTEN", no una cifra medida por un sistema: es el mismo
+ * compromiso que repite la tabla de canales de abajo.
  */
 export function WhoisCard() {
   const zona = useZonaHoraria();
@@ -48,25 +50,30 @@ export function WhoisCard() {
         <span />
       </div>
 
-      <div className="p-5">
-        <div className="flex items-center gap-2.5">
+      <div className="pt-[22px] px-6 pb-6">
+        <div className="mb-5 flex items-center gap-2.5">
           <span aria-hidden className="pulse-dot h-1.5 w-1.5 rounded-full bg-ok text-ok" />
           <span className="text-mono-cmd font-medium text-ok">LISTEN</span>
+          <span className="flex-1" />
+          <span className="text-mono-meta text-ink-meta">uptime 100 %</span>
         </div>
 
-        <dl className="mt-5 flex flex-col gap-4">
+        <dl>
+          <div className="flex items-baseline justify-between gap-4 border-t border-[var(--bg-raised)] py-[11px]">
+            <dt className="font-mono text-xs text-ink-meta">zona</dt>
+            <dd className="text-mono-data min-w-[3.5rem] text-right text-ink tabular-nums">
+              {zona || " "}
+            </dd>
+          </div>
           {FILAS.map((fila) => (
-            <div key={fila.label} className="flex items-baseline justify-between gap-4">
-              <dt className="text-mono-meta text-ink-meta uppercase">{fila.label}</dt>
+            <div
+              key={fila.label}
+              className="flex items-baseline justify-between gap-4 border-t border-[var(--bg-raised)] py-[11px]"
+            >
+              <dt className="font-mono text-xs text-ink-meta">{fila.label}</dt>
               <dd className="text-mono-data text-right text-ink">{fila.value}</dd>
             </div>
           ))}
-          <div className="flex items-baseline justify-between gap-4">
-            <dt className="text-mono-meta text-ink-meta uppercase">zona</dt>
-            <dd className="text-mono-data min-w-[3.5rem] text-right text-ink tabular-nums">
-              {zona || " "}
-            </dd>
-          </div>
         </dl>
       </div>
     </div>
