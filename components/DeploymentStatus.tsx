@@ -3,6 +3,7 @@
 import type { ServiceStatus } from "@/app/api/status/route";
 import { useDeploymentStatus as useStatus } from "@/hooks/useDeploymentStatus";
 import { Sparkline } from "@/components/Sparkline";
+import { SITE } from "@/content/site";
 
 const LABELS: Record<ServiceStatus["state"], string> = {
   up: "operativo",
@@ -123,24 +124,50 @@ function ventanaReal(history: ServiceStatus["history"]) {
 export function DeploymentStatusPanel() {
   const { state, services, checkedAt } = useStatus();
 
+  // Los siete a la vez casi nunca es un fallo de cada proyecto por
+  // separado: es el hosting gratuito compartido teniendo un mal momento.
+  // Una tabla entera en rojo bajo el hero lee como "esto está roto"; un
+  // aviso único y honesto lee como lo que es — un aviso, no una avería.
+  const todosCaidos =
+    state === "ready" && services.length > 0 && services.every((s) => s.state !== "up");
+
   return (
     <div className="status-table">
-      <div className="status-head">
-        <div className="status-grid !p-0">
-          <span className="text-mono-meta text-ink-meta uppercase">servicio</span>
-          <span className="status-endpoint text-mono-meta text-ink-meta uppercase">
-            endpoint
-          </span>
-          <span className="status-spark text-mono-meta text-ink-meta uppercase">latencia</span>
-          <span className="status-rtt text-mono-meta text-right text-ink-meta uppercase">
-            rtt
-          </span>
-          <span className="text-mono-meta text-right text-ink-meta uppercase">estado</span>
+      {!todosCaidos && (
+        <div className="status-head">
+          <div className="status-grid !p-0">
+            <span className="text-mono-meta text-ink-meta uppercase">servicio</span>
+            <span className="status-endpoint text-mono-meta text-ink-meta uppercase">
+              endpoint
+            </span>
+            <span className="status-spark text-mono-meta text-ink-meta uppercase">latencia</span>
+            <span className="status-rtt text-mono-meta text-right text-ink-meta uppercase">
+              rtt
+            </span>
+            <span className="status-uptime text-mono-meta text-right text-ink-meta uppercase">
+              uptime
+            </span>
+            <span className="text-mono-meta text-right text-ink-meta uppercase">estado</span>
+          </div>
         </div>
-      </div>
+      )}
 
-      {state === "ready" && services.length > 0
-        ? services.map((service, i) => {
+      {todosCaidos ? (
+        <div className="px-5 py-6">
+          <p className="flex items-center gap-2 font-mono text-[13px] text-ink">
+            <Dot tone={TONES.down} />
+            Ahora mismo ninguno responde.
+          </p>
+          <p className="text-body-sm mt-2 text-ink-meta">
+            El código de cada proyecto sigue disponible en{" "}
+            <a href={SITE.github} className="link-quiet">
+              GitHub
+            </a>
+            .
+          </p>
+        </div>
+      ) : state === "ready" && services.length > 0 ? (
+        services.map((service, i) => {
             const historyValues = service.history
               .map((h) => h.latencyMs)
               .filter((v): v is number => v !== null);
@@ -170,6 +197,12 @@ export function DeploymentStatusPanel() {
                   {service.latencyMs !== null ? `${service.latencyMs} ms` : "—"}
                 </span>
                 <span
+                  className="status-uptime text-mono-data text-right text-ink tabular-nums"
+                  title={ventana ?? undefined}
+                >
+                  {service.uptimePct !== null ? `${service.uptimePct.toFixed(1)} %` : "—"}
+                </span>
+                <span
                   className={`flex items-center justify-end gap-2 font-mono text-[11px] ${TONES[service.state]}`}
                 >
                   <Dot
@@ -183,17 +216,20 @@ export function DeploymentStatusPanel() {
               </div>
             );
           })
-        : // Filas fantasma: reservan el alto exacto, así la tabla no
-          // provoca ningún salto de layout al llegar los datos.
-          Array.from({ length: 7 }).map((_, i) => (
-            <div key={i} className="status-row status-grid">
-              <span className="h-4 w-40 rounded bg-surface-2" />
-              <span className="status-endpoint h-4 w-32 rounded bg-surface-2" />
-              <span className="status-spark h-4 w-full rounded bg-surface-2" />
-              <span className="status-rtt h-4 w-12 justify-self-end rounded bg-surface-2" />
-              <span className="h-4 w-20 justify-self-end rounded bg-surface-2" />
-            </div>
-          ))}
+      ) : (
+        // Filas fantasma: reservan el alto exacto, así la tabla no
+        // provoca ningún salto de layout al llegar los datos.
+        Array.from({ length: 7 }).map((_, i) => (
+          <div key={i} className="status-row status-grid">
+            <span className="h-4 w-40 rounded bg-surface-2" />
+            <span className="status-endpoint h-4 w-32 rounded bg-surface-2" />
+            <span className="status-spark h-4 w-full rounded bg-surface-2" />
+            <span className="status-rtt h-4 w-12 justify-self-end rounded bg-surface-2" />
+            <span className="status-uptime h-4 w-12 justify-self-end rounded bg-surface-2" />
+            <span className="h-4 w-20 justify-self-end rounded bg-surface-2" />
+          </div>
+        ))
+      )}
 
       <p className="text-mono-meta px-5 py-3.5 text-ink-meta">
         {state === "error"

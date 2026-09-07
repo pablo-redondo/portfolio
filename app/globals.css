@@ -858,7 +858,8 @@ body {
 
 .status-endpoint,
 .status-rtt,
-.status-spark {
+.status-spark,
+.status-uptime {
   display: none;
 }
 
@@ -877,15 +878,20 @@ body {
 }
 
 @media (min-width: 68rem) {
-  /* Mismas proporciones que el sistema de diseño, sin la columna de
-     uptime: ese dato no se guarda en ningún sitio todavía. */
+  /* Mismas proporciones que el sistema de diseño. El uptime ya sale de
+     /api/status (histórico real en KV), así que entra aquí junto a la
+     sparkline. */
   .status-grid {
-    grid-template-columns: 1.6fr 1fr 132px 88px 112px;
+    grid-template-columns: 1.6fr 1fr 132px 88px 70px 112px;
   }
 
   .status-spark {
     display: flex;
     align-items: center;
+  }
+
+  .status-uptime {
+    display: block;
   }
 }
 

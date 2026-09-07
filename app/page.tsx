@@ -18,7 +18,7 @@ import { buildTopology } from "@/content/topology";
 
 const TITLE = "Pablo Redondo — Desarrollador full-stack";
 const DESCRIPTION =
-  "Full-stack con base de infraestructura real: React, Next.js, Node.js y TypeScript, con pruebas automatizadas, CI y despliegue real. Proyectos, stack y casos de estudio.";
+  "Desarrollador full-stack con años de infraestructura 24×7 detrás: React, Next.js, Node.js y TypeScript, con pruebas automatizadas, CI y despliegue real. Proyectos, stack y casos de estudio.";
 
 export const metadata: Metadata = {
   title: { absolute: TITLE },

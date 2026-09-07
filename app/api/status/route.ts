@@ -1,5 +1,6 @@
 import { request as httpRequest } from "node:http";
 import { request as httpsRequest } from "node:https";
+import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { projects } from "@/content/projects";
 
 /**
@@ -24,6 +25,16 @@ export const dynamic = "force-dynamic";
 const TTL_MS = 5 * 60 * 1000;
 const TIMEOUT_MS = 8000;
 
+/**
+ * Ventana real del uptime: 30 días de histórico en KV, no una cifra de
+ * muestra. Los primeros días tras desplegar esto el % sale de lo poco que
+ * haya — mejor eso que fingir treinta días que todavía no pasaron.
+ */
+const HISTORY_WINDOW_MS = 30 * 24 * 60 * 60 * 1000;
+// Tope duro además de la ventana temporal: si un día hay tráfico real de
+// sobra, el valor de KV no crece sin límite.
+const HISTORY_MAX_POINTS = 500;
+
 export type PhaseTimings = { dns: number; tcp: number; tls: number; ttfb: number };
 
 export type HistoryPoint = { at: string; latencyMs: number | null; state: ServiceStatus["state"] };
@@ -37,6 +48,12 @@ export type ServiceStatus = {
   latencyMs: number | null;
   /** Desglose real por fase de esta comprobación. Null si no llegó a responder. */
   phases: PhaseTimings | null;
+  /**
+   * % de comprobaciones en "up" dentro de la ventana de 30 días guardada en
+   * KV. Null si todavía no hay ni una muestra persistida — nunca un 100%
+   * de partida sin datos detrás.
+   */
+  uptimePct: number | null;
   /**
    * Muestras reales de comprobaciones anteriores, más antigua primero — no
    * hay una cadencia fija (solo se añade una al expirar la caché de 5 min,
@@ -53,13 +70,7 @@ type Payload = {
 
 let cache: { at: number; payload: Payload } | null = null;
 
-// Un punto por servicio cada vez que expira la caché — como mucho unas
-// pocas decenas de kB en memoria del proceso, se pierde en un cold start
-// igual que la propia caché de arriba.
-const HISTORY_SIZE = 12;
-const history = new Map<string, HistoryPoint[]>();
-
-type Check = Omit<ServiceStatus, "history">;
+type Check = Omit<ServiceStatus, "history" | "uptimePct">;
 
 function check(slug: string, title: string, url: string): Promise<Check> {
   return new Promise((resolve) => {
@@ -145,6 +156,26 @@ function check(slug: string, title: string, url: string): Promise<Check> {
   });
 }
 
+function historyKey(slug: string) {
+  return `history:${slug}`;
+}
+
+/** Descarta lo que ya salió de la ventana de 30 días y aplica el tope duro. */
+function trimHistory(points: HistoryPoint[], now: number): HistoryPoint[] {
+  const cutoff = now - HISTORY_WINDOW_MS;
+  const dentroDeVentana = points.filter((p) => new Date(p.at).getTime() >= cutoff);
+  return dentroDeVentana.slice(-HISTORY_MAX_POINTS);
+}
+
+function uptimePct(points: HistoryPoint[]): number | null {
+  // "unknown" no cuenta ni a favor ni en contra: no es una comprobación
+  // real de si el servicio respondió.
+  const medibles = points.filter((p) => p.state !== "unknown");
+  if (medibles.length === 0) return null;
+  const arriba = medibles.filter((p) => p.state === "up").length;
+  return (arriba / medibles.length) * 100;
+}
+
 export async function GET() {
   if (cache && Date.now() - cache.at < TTL_MS) {
     return Response.json(cache.payload);
@@ -157,16 +188,39 @@ export async function GET() {
     targets.map((p) => check(p.slug, p.title, p.demoUrl as string)),
   );
   const checkedAt = new Date().toISOString();
+  const now = Date.now();
 
-  const services: ServiceStatus[] = checked.map((result) => {
-    const prior = history.get(result.slug) ?? [];
-    const updated = [
-      ...prior,
-      { at: checkedAt, latencyMs: result.latencyMs, state: result.state },
-    ].slice(-HISTORY_SIZE);
-    history.set(result.slug, updated);
-    return { ...result, history: updated };
-  });
+  // Sin el binding (por ejemplo en un entorno que no lo expone) el panel
+  // sigue funcionando: solo se queda sin histórico ni uptime, nunca roto.
+  let kv: KVNamespace | null = null;
+  try {
+    const { env } = await getCloudflareContext({ async: true });
+    kv = env.STATUS_HISTORY ?? null;
+  } catch {
+    kv = null;
+  }
+
+  const services: ServiceStatus[] = await Promise.all(
+    checked.map(async (result) => {
+      const key = historyKey(result.slug);
+      const prior = kv ? ((await kv.get<HistoryPoint[]>(key, "json")) ?? []) : [];
+      const updated = trimHistory(
+        [...prior, { at: checkedAt, latencyMs: result.latencyMs, state: result.state }],
+        now,
+      );
+
+      if (kv) {
+        try {
+          await kv.put(key, JSON.stringify(updated));
+        } catch {
+          // Persistir el histórico es un extra, no el propio check: si KV
+          // falla, la respuesta sigue siendo válida con lo que ya había.
+        }
+      }
+
+      return { ...result, history: updated, uptimePct: uptimePct(updated) };
+    }),
+  );
 
   const payload: Payload = { checkedAt, services };
   cache = { at: Date.now(), payload };

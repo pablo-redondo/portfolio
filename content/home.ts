@@ -10,11 +10,12 @@ export const HOME_HERO = {
    * segundo en el color de acento. Es el mismo texto, partido donde cambia
    * el color — no dos frases distintas.
    */
-  headline: "Full-stack con base de ",
-  headlineAccent: "infraestructura real.",
-  // Qué construyo y cómo, no de dónde vengo. La referencia a producción se
-  // queda porque es lo que sostiene el titular, pero como criterio de hoy y
-  // no como biografía.
+  headline: "Construyo los sistemas que ",
+  headlineAccent: "antes sostenía.",
+  // Aquí sí de dónde vengo: es lo que explica el titular. Los cuatro años
+  // dando soporte a una red 24×7 no son biografía de relleno — son la razón
+  // de que el criterio de esta web sea "¿dónde miro cuando algo falla?" en
+  // vez de solo "¿qué construyo?".
   intro:
-    "Construyo aplicaciones completas con React, Next.js, Node.js y TypeScript sobre PostgreSQL, con tests, CI y despliegue real — no solo funcionando en local. La diferencia está en lo que viene después del deploy: cuando algo va lento o falla, sé dónde mirar.",
+    "React, Next.js, Node y TypeScript sobre PostgreSQL, con tests, CI y despliegue real. Vengo de administrar infraestructura en 24×7, y eso decide cómo trabajo: cuando algo va lento o se cae, sé por dónde empezar a mirar — la petición, la latencia, el proceso que falla.",
 };

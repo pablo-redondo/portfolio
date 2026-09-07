@@ -31,5 +31,16 @@
 		// Optimización de imágenes de Cloudflare
 		// ver https://opennext.js.org/cloudflare/howtos/image
 		"binding": "IMAGES"
-	}
+	},
+	"kv_namespaces": [
+		{
+			// Historial real de /api/status: una muestra por comprobación,
+			// para que el % de uptime del panel salga de datos que de verdad
+			// pasaron, no de un número inventado. Sin esto no sobrevive a un
+			// cold start del Worker — un Map en memoria se vacía en cada uno.
+			"binding": "STATUS_HISTORY",
+			"id": "24d0077456c14bfba2cdf102bf4c48e4",
+			"preview_id": "c6cb6db52e83400897f878caa0dc5708"
+		}
+	]
 }

@@ -21,9 +21,9 @@ export function useDeploymentStatus() {
       fetch("/api/status")
         .then((res) => {
           if (!res.ok) throw new Error(String(res.status));
-          return res.json();
+          return res.json() as Promise<{ services: ServiceStatus[]; checkedAt: string }>;
         })
-        .then((data: { services: ServiceStatus[]; checkedAt: string }) => {
+        .then((data) => {
           if (cancelled) return;
           setServices(data.services);
           setCheckedAt(data.checkedAt);
