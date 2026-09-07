@@ -658,8 +658,13 @@ body {
 /* La sparkline solo entra a partir de 68rem: por debajo, endpoint + rtt
    + estado ya ocupan la fila y meterla ahí la dejaría sin sitio real. */
 @media (min-width: 56rem) {
+  /* El nombre del servicio es corto siempre ("CodeQuest RPG",
+     "pablo-redondo.dev"); el endpoint es el subdominio completo
+     (p.ej. "codequest.pablo-redondo.dev") y es lo que de verdad
+     necesita el ancho — antes sobraba columna en servicio mientras
+     el endpoint se recortaba con puntos suspensivos. */
   .status-grid {
-    grid-template-columns: 1.5fr 0.95fr 88px 112px;
+    grid-template-columns: 0.85fr 1.35fr 88px 112px;
     gap: 16px;
   }
 
@@ -670,11 +675,8 @@ body {
 }
 
 @media (min-width: 68rem) {
-  /* Mismas proporciones que el sistema de diseño. El uptime ya sale de
-     /api/status (histórico real en KV), así que entra aquí junto a la
-     sparkline. */
   .status-grid {
-    grid-template-columns: 1.6fr 1fr 132px 88px 70px 112px;
+    grid-template-columns: 0.8fr 1.35fr 132px 88px 70px 112px;
   }
 
   .status-spark {
