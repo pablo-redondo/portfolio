@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { ServiceStatus } from "@/app/api/status/route";
+import { SITE } from "@/content/site";
 
 type State = "loading" | "ready" | "error";
 
@@ -104,6 +105,13 @@ function nombreCorto(title: string) {
 export function DeploymentStatusPanel() {
   const { state, services } = useStatus();
 
+  // Los seis a la vez casi nunca es un fallo de cada proyecto por separado:
+  // es el hosting gratuito compartido teniendo un mal momento. Una pared de
+  // seis puntos rojos en el hero lee como "esto está roto"; un aviso único
+  // y honesto lee como lo que es — un aviso, no una avería.
+  const todosCaidos =
+    state === "ready" && services.length > 0 && services.every((s) => s.state !== "up");
+
   return (
     <div className="surface-card overflow-hidden">
       <div className="flex items-center justify-between gap-3 border-b border-line bg-surface-2 px-4 py-2.5">
@@ -115,38 +123,54 @@ export function DeploymentStatusPanel() {
         </span>
       </div>
 
-      <ul className="divide-y divide-line">
-        {state === "ready" && services.length > 0
-          ? services.map((service) => (
-              <li
-                key={service.slug}
-                className="flex min-w-0 items-center justify-between gap-4 px-4 py-3"
-              >
-                <span className="min-w-0 truncate font-mono text-[13px] text-ink">
-                  {nombreCorto(service.title)}
-                </span>
-                <span
-                  className={`flex shrink-0 items-center gap-1.5 font-mono text-[11px] ${TONES[service.state]}`}
+      {todosCaidos ? (
+        <div className="px-4 py-5">
+          <p className="flex items-start gap-2 font-mono text-[13px] text-ink">
+            <Dot tone={TONES.down} />
+            Ahora mismo ninguno responde.
+          </p>
+          <p className="mt-2 text-[13px] text-ink-soft">
+            El código de cada proyecto sigue disponible en{" "}
+            <a href={SITE.github} className="link-quiet">
+              GitHub
+            </a>
+            .
+          </p>
+        </div>
+      ) : (
+        <ul className="divide-y divide-line">
+          {state === "ready" && services.length > 0
+            ? services.map((service) => (
+                <li
+                  key={service.slug}
+                  className="flex min-w-0 items-center justify-between gap-4 px-4 py-3"
                 >
-                  {service.latencyMs !== null && (
-                    <span className="text-ink-faint tabular-nums">
-                      {service.latencyMs} ms
-                    </span>
-                  )}
-                  <Dot tone={TONES[service.state]} />
-                  {LABELS[service.state]}
-                </span>
-              </li>
-            ))
-          : // Filas fantasma: reservan el alto exacto, así el panel no
-            // provoca ningún salto de layout al llegar los datos.
-            Array.from({ length: 6 }).map((_, i) => (
-              <li key={i} className="flex min-w-0 items-center justify-between gap-4 px-4 py-3">
-                <span className="h-4 w-32 rounded bg-surface-2" />
-                <span className="h-4 w-20 rounded bg-surface-2" />
-              </li>
-            ))}
-      </ul>
+                  <span className="min-w-0 truncate font-mono text-[13px] text-ink">
+                    {nombreCorto(service.title)}
+                  </span>
+                  <span
+                    className={`flex shrink-0 items-center gap-1.5 font-mono text-[11px] ${TONES[service.state]}`}
+                  >
+                    {service.latencyMs !== null && (
+                      <span className="text-ink-faint tabular-nums">
+                        {service.latencyMs} ms
+                      </span>
+                    )}
+                    <Dot tone={TONES[service.state]} />
+                    {LABELS[service.state]}
+                  </span>
+                </li>
+              ))
+            : // Filas fantasma: reservan el alto exacto, así el panel no
+              // provoca ningún salto de layout al llegar los datos.
+              Array.from({ length: 6 }).map((_, i) => (
+                <li key={i} className="flex min-w-0 items-center justify-between gap-4 px-4 py-3">
+                  <span className="h-4 w-32 rounded bg-surface-2" />
+                  <span className="h-4 w-20 rounded bg-surface-2" />
+                </li>
+              ))}
+        </ul>
+      )}
 
       <p className="border-t border-line px-4 py-2.5 font-mono text-[10px] text-ink-faint">
         Comprobación HTTP real desde el servidor, cacheada 5 min
