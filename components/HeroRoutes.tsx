@@ -18,7 +18,7 @@ import { useEffect, useRef } from "react";
  * sigue ahí, pero ni los paquetes ni el barrido se mueven.
  */
 
-const ROUTE_COUNT = 22;
+const ROUTE_COUNT = 26;
 const ACCENT: [number, number, number] = [76, 201, 255];
 const OK: [number, number, number] = [0, 229, 160];
 const PROBE_RADIUS = 250;
@@ -103,8 +103,8 @@ export function HeroRoutes() {
       const rnd = mulberry(20260827);
       routes = [];
       for (let i = 0; i < ROUTE_COUNT; i++) {
-        // 4 troncales y 3 rutas en verde, como fija el catálogo.
-        routes.push(buildRoute(w, h, rnd, i >= ROUTE_COUNT - 3, i < 4));
+        // 5 troncales y 4 rutas en verde, como fija el catálogo.
+        routes.push(buildRoute(w, h, rnd, i >= ROUTE_COUNT - 4, i < 5));
       }
     };
 
@@ -128,22 +128,30 @@ export function HeroRoutes() {
           const dSweep = Math.abs(mx - sweepX);
           const scan = Math.max(0, 1 - dSweep / 180);
 
-          const base = route.trunk ? 0.16 : 0.09;
-          const alpha = Math.min(0.75, base + lit * 0.5 + scan * 0.32);
+          const base = route.trunk ? 0.32 : 0.19;
+          const alpha = Math.min(0.92, base + lit * 0.5 + scan * 0.35);
+
+          // Halo suave: la misma técnica que ya usa el raíl vertical
+          // (SectionSpine) para que las rutas troncales lean como
+          // circuito iluminado y no como una línea plana de más.
+          ctx.shadowColor = `rgba(${r},${g},${b},0.65)`;
+          ctx.shadowBlur = route.trunk ? 4 : 2;
 
           ctx.beginPath();
           ctx.moveTo(s.x1, s.y1);
           ctx.lineTo(s.x2, s.y2);
           ctx.strokeStyle = `rgba(${r},${g},${b},${alpha})`;
-          ctx.lineWidth = route.trunk ? 1.1 : 0.8;
+          ctx.lineWidth = route.trunk ? 1.4 : 1;
           ctx.stroke();
 
           // Pad en el vértice donde arranca el tramo.
           ctx.beginPath();
           ctx.rect(s.x1 - 2, s.y1 - 2, 4, 4);
-          ctx.strokeStyle = `rgba(${r},${g},${b},${Math.min(0.8, alpha + 0.12)})`;
+          ctx.strokeStyle = `rgba(${r},${g},${b},${Math.min(0.95, alpha + 0.12)})`;
           ctx.lineWidth = 0.8;
           ctx.stroke();
+
+          ctx.shadowBlur = 0;
         }
 
         if (!reduced && route.len > 0) {
@@ -151,14 +159,17 @@ export function HeroRoutes() {
           const p = ((t * 0.001 * route.speed + route.phase) % 1) * route.len;
           const head = pointAt(route, p);
           if (head) {
+            ctx.shadowColor = `rgba(${r},${g},${b},0.8)`;
+            ctx.shadowBlur = 3;
             for (let k = 0; k < 5; k++) {
               const tail = pointAt(route, Math.max(0, p - k * 9));
               if (!tail) continue;
               ctx.beginPath();
-              ctx.arc(tail.x, tail.y, 1.7 - k * 0.22, 0, Math.PI * 2);
-              ctx.fillStyle = `rgba(${r},${g},${b},${0.6 - k * 0.11})`;
+              ctx.arc(tail.x, tail.y, 2.1 - k * 0.26, 0, Math.PI * 2);
+              ctx.fillStyle = `rgba(${r},${g},${b},${0.85 - k * 0.14})`;
               ctx.fill();
             }
+            ctx.shadowBlur = 0;
           }
         }
       }
