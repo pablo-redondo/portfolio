@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useNavigationTiming, type NavTiming } from "@/hooks/useNavigationTiming";
+import { TerminalWindow } from "@/components/TerminalWindow";
 
 const STEPS: { key: keyof Pick<NavTiming, "dns" | "tcp" | "tls" | "ttfb">; label: string }[] = [
   { key: "dns", label: "dns" },
@@ -41,18 +42,8 @@ export function RequestTrace() {
   }, []);
 
   return (
-    <div className="win" ref={rootRef}>
-      <div className="win-bar">
-        <div className="win-dots" aria-hidden>
-          <span className="win-dot" />
-          <span className="win-dot" />
-          <span className="win-dot" />
-        </div>
-        <span className="win-title">traza — pablo-redondo.dev</span>
-        <span />
-      </div>
-
-      <div className="p-5">
+    <TerminalWindow title="traza — pablo-redondo.dev">
+      <div ref={rootRef} className="p-5">
         <div className="flex items-center justify-between gap-3">
           <span className="text-mono-meta text-ink-meta uppercase">traza de esta petición</span>
           <span className={`text-mono-data text-ok transition-opacity ${timing ? "opacity-100" : "opacity-0"}`}>
@@ -98,6 +89,6 @@ export function RequestTrace() {
           el gráfico es la petición que acabas de hacer, no un adorno
         </p>
       </div>
-    </div>
+    </TerminalWindow>
   );
 }

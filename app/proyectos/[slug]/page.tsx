@@ -12,7 +12,7 @@ import { EvalVsWorkerDemo } from "@/components/EvalVsWorkerDemo";
 import { Reveal } from "@/components/Reveal";
 import { LiveDemo } from "@/components/LiveDemo";
 import { DeploymentBadge } from "@/components/DeploymentStatus";
-import { HeroGrid } from "@/components/HeroGrid";
+import { HeroRoutes } from "@/components/HeroRoutes";
 import { HopScrollSpy } from "@/components/HopScrollSpy";
 import { projects } from "@/content/projects";
 import { hasScreenshot } from "@/lib/screenshots";
@@ -98,72 +98,74 @@ export default async function ProjectPage({ params }: Props) {
 
   return (
     <>
-      {/* --- Cabecera --- */}
-      <section className="hero-glow border-b border-line">
-        <HeroGrid />
+      {/* --- Cabecera ---
+          Mismo lenguaje que el resto del sitio (Fase 3/4): HeroRoutes de
+          fondo y la escala tipográfica del sistema de diseño, no la
+          cabecera de antes de esa migración. Sin <Container rail> — esta
+          página no monta <SectionSpine />, así que el hueco de 46px no
+          tendría línea que llenar, y las secciones "hop" de más abajo
+          siguen alineadas con <Container> a secas. */}
+      <section className="relative border-b border-line pt-[74px] pb-16">
+        <HeroRoutes />
         <Container>
-          <div className="py-16 sm:py-20">
-            <p data-enter="1" className="text-mono-cmd text-ink-meta">
-              <Link href="/proyectos" className="hover:text-accent">
-                cd ../proyectos
-              </Link>{" "}
-              <span className="text-ink">{project.slug}</span>
-            </p>
+          <p data-enter="1" className="text-mono-cmd text-ink-meta">
+            <Link href="/proyectos" className="hover:text-accent">
+              cd ../proyectos
+            </Link>{" "}
+            <span className="text-ink">{project.slug}</span>
+          </p>
 
-            <div data-enter="lcp" className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-3">
-              <h1 className="font-mono text-4xl font-bold tracking-tight sm:text-5xl">
-                {project.title}
-              </h1>
-              <StatusBadge status={project.status} />
-            </div>
-
-            <p data-enter="3" className="mt-5 max-w-[65ch] text-lg leading-relaxed text-ink-soft">
-              {project.tagline}
-            </p>
-
-            <div data-enter="4" className="mt-6 flex flex-wrap gap-2">
-              {project.tags.map((tag) => (
-                <span key={tag} className="chip">
-                  {tag}
-                </span>
-              ))}
-            </div>
-
-            <div data-enter="4" className="mt-8 flex flex-wrap gap-3">
-              {project.demoUrl && (
-                <a href={project.demoUrl} className="btn btn-primary">
-                  Abrir demo
-                </a>
-              )}
-              {project.repos.map((repo) => (
-                <a key={repo.url} href={repo.url} className="btn btn-secondary">
-                  {repo.label}
-                </a>
-              ))}
-            </div>
-
-            {/* Cifras reales del propio caso de estudio: fases y el dato
-                suelto que ya cuenta el resultado, si los hay. El badge de
-                despliegue no depende de que existan: se muestra siempre
-                que haya demo que comprobar. */}
-            {(hayTimeline || caseStudy.stat || project.metric || project.demoUrl) && (
-              <div
-                data-enter="4"
-                className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-2 border-t border-line pt-5"
-              >
-                {hayTimeline && (
-                  <MetaStat label="fases" value={String(project.timeline!.length)} />
-                )}
-                {caseStudy.stat && (
-                  <MetaStat label={caseStudy.stat.label} value={caseStudy.stat.value} />
-                )}
-                {project.metric && (
-                  <MetaStat label={project.metric.label} value={project.metric.note} />
-                )}
-                {project.demoUrl && <DeploymentBadge slug={project.slug} />}
-              </div>
-            )}
+          <div data-enter="lcp" className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-3">
+            <h1 className="text-h1 text-ink">{project.title}</h1>
+            <StatusBadge status={project.status} />
           </div>
+
+          <p data-enter="3" className="text-body mt-5 max-w-[65ch] text-ink-soft">
+            {project.tagline}
+          </p>
+
+          <div data-enter="4" className="mt-6 flex flex-wrap gap-2">
+            {project.tags.map((tag) => (
+              <span key={tag} className="chip">
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          <div data-enter="4" className="mt-8 flex flex-wrap gap-3">
+            {project.demoUrl && (
+              <a href={project.demoUrl} className="btn btn-primary">
+                Abrir demo
+              </a>
+            )}
+            {project.repos.map((repo) => (
+              <a key={repo.url} href={repo.url} className="btn btn-secondary">
+                {repo.label}
+              </a>
+            ))}
+          </div>
+
+          {/* Cifras reales del propio caso de estudio: fases y el dato
+              suelto que ya cuenta el resultado, si los hay. El badge de
+              despliegue no depende de que existan: se muestra siempre
+              que haya demo que comprobar. */}
+          {(hayTimeline || caseStudy.stat || project.metric || project.demoUrl) && (
+            <div
+              data-enter="4"
+              className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-2 border-t border-line pt-5"
+            >
+              {hayTimeline && (
+                <MetaStat label="fases" value={String(project.timeline!.length)} />
+              )}
+              {caseStudy.stat && (
+                <MetaStat label={caseStudy.stat.label} value={caseStudy.stat.value} />
+              )}
+              {project.metric && (
+                <MetaStat label={project.metric.label} value={project.metric.note} />
+              )}
+              {project.demoUrl && <DeploymentBadge slug={project.slug} />}
+            </div>
+          )}
         </Container>
       </section>
 

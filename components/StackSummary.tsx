@@ -1,6 +1,7 @@
 import type { TechCategory, TechChoice } from "@/content/types";
 import { Reveal } from "@/components/Reveal";
 import { TechIcon } from "@/components/TechIcon";
+import { TerminalWindow } from "@/components/TerminalWindow";
 
 const CATEGORY_ORDER: TechCategory[] = ["frontend", "backend", "infra", "tooling"];
 
@@ -19,43 +20,38 @@ const CATEGORY_LABELS: Record<TechCategory, string> = {
  */
 export function StackSummary({ stack }: { stack: TechChoice[] }) {
   return (
-    <Reveal stagger className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {CATEGORY_ORDER.map((category) => {
-        const items = stack.filter((tech) => tech.category === category);
-        if (items.length === 0) return null;
+    <TerminalWindow title="cat — stack.txt">
+      <Reveal stagger className="grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-4">
+        {CATEGORY_ORDER.map((category) => {
+          const items = stack.filter((tech) => tech.category === category);
+          if (items.length === 0) return null;
 
-        return (
-          <div
-            key={category}
-            className="card-scan surface-card group flex h-full flex-col p-5"
-          >
-            <div className="flex items-baseline justify-between gap-3 border-b border-line pb-3">
-              <h3 className="font-mono text-xs font-semibold tracking-wider text-accent uppercase">
-                {CATEGORY_LABELS[category]}
-              </h3>
-              <span className="font-mono text-[11px] text-ink-faint">
-                {String(items.length).padStart(2, "0")}
-              </span>
+          return (
+            <div key={category} className="card-scan surface-card group flex h-full flex-col p-5">
+              <div className="flex items-baseline justify-between gap-3 border-b border-line pb-3">
+                <h3 className="font-mono text-xs font-semibold tracking-wider text-accent uppercase">
+                  {CATEGORY_LABELS[category]}
+                </h3>
+                <span className="font-mono text-[11px] text-ink-faint">
+                  {String(items.length).padStart(2, "0")}
+                </span>
+              </div>
+
+              <ul className="mt-4 flex flex-col gap-2.5">
+                {items.map((tech) => (
+                  <li
+                    key={tech.name}
+                    className="flex items-center gap-2.5 font-mono text-[13px] leading-snug text-ink"
+                  >
+                    <TechIcon name={tech.name} fallbackDot className="h-3.5 w-3.5 text-ink-faint" />
+                    {tech.name}
+                  </li>
+                ))}
+              </ul>
             </div>
-
-            <ul className="mt-4 flex flex-col gap-2.5">
-              {items.map((tech) => (
-                <li
-                  key={tech.name}
-                  className="flex items-center gap-2.5 font-mono text-[13px] leading-snug text-ink"
-                >
-                  <TechIcon
-                    name={tech.name}
-                    fallbackDot
-                    className="h-3.5 w-3.5 text-ink-faint"
-                  />
-                  {tech.name}
-                </li>
-              ))}
-            </ul>
-          </div>
-        );
-      })}
-    </Reveal>
+          );
+        })}
+      </Reveal>
+    </TerminalWindow>
   );
 }

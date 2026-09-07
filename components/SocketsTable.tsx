@@ -1,3 +1,5 @@
+import { TerminalWindow } from "@/components/TerminalWindow";
+
 export type Socket = {
   nombre: string;
   socket: string;
@@ -24,7 +26,7 @@ export type Socket = {
  */
 export function SocketsTable({ sockets }: { sockets: Socket[] }) {
   return (
-    <div className="status-table">
+    <TerminalWindow title="ss -ltn — contacto">
       <div className="status-head">
         <div className="sockets-grid !p-0">
           <span className="text-mono-meta text-ink-meta uppercase">estado</span>
@@ -61,6 +63,6 @@ export function SocketsTable({ sockets }: { sockets: Socket[] }) {
           <span className="text-mono-cmd text-right text-accent">{s.accion}</span>
         </a>
       ))}
-    </div>
+    </TerminalWindow>
   );
 }

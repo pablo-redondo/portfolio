@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import type { TopologyEdge, TopologyNode } from "@/content/topology";
+import { TerminalWindow } from "@/components/TerminalWindow";
 
 type Props = {
   nodes: TopologyNode[];
@@ -78,7 +79,8 @@ export function TopologyGraph({ nodes, edges, defaultSlug }: Props) {
     current === slug ? null : current;
 
   return (
-    <div className="topo-panel">
+    <TerminalWindow title="netstat — topología">
+      <div className="topo-panel">
       <div className="relative min-h-0 min-w-0 p-3.5">
         {/* Alto fijo en móvil: el panel no tiene altura propia hasta `lg`,
             y sin esto el área del grafo colapsaría a cero. */}
@@ -225,6 +227,7 @@ export function TopologyGraph({ nodes, edges, defaultSlug }: Props) {
           </>
         )}
       </aside>
-    </div>
+      </div>
+    </TerminalWindow>
   );
 }

@@ -1,3 +1,5 @@
+import { TerminalWindow } from "@/components/TerminalWindow";
+
 export type TraceHop = {
   role: string;
   company: string;
@@ -47,7 +49,7 @@ function duracion(start: string | null, end: string | null): string | null {
  */
 export function CareerTraceroute({ hops }: { hops: TraceHop[] }) {
   return (
-    <div className="status-table">
+    <TerminalWindow title="traceroute — carrera">
       <div className="status-head">
         <div className="trace-grid !p-0">
           <span className="text-mono-meta text-ink-meta uppercase">hop</span>
@@ -94,6 +96,6 @@ export function CareerTraceroute({ hops }: { hops: TraceHop[] }) {
       <p className="text-mono-meta px-5 py-3.5 text-ink-meta">
         destino alcanzado · desarrollo full-stack
       </p>
-    </div>
+    </TerminalWindow>
   );
 }

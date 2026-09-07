@@ -1,6 +1,7 @@
 import type { TechChoice } from "@/content/types";
 import { Reveal } from "@/components/Reveal";
 import { TechIcon } from "@/components/TechIcon";
+import { TerminalWindow } from "@/components/TerminalWindow";
 
 const CATEGORY_LABELS: Record<TechChoice["category"], string> = {
   frontend: "frontend",
@@ -20,25 +21,27 @@ export function StackTable({ stack }: { stack: TechChoice[] }) {
     stack.length % 2 === 1 ? "sm:grid-cols-2 lg:grid-cols-3" : "sm:grid-cols-2";
 
   return (
-    <Reveal stagger className={`grid gap-3 ${columnas}`}>
-      {stack.map((tech) => (
-        <div key={tech.name} className="card-scan surface-panel group p-4">
-          <div className="flex items-center justify-between gap-3">
-            <h3 className="flex min-w-0 items-center gap-2 font-mono text-sm font-semibold text-ink">
-              <TechIcon
-                name={tech.name}
-                fallbackDot
-                className="h-4 w-4 text-ink-faint transition-colors group-hover:text-accent"
-              />
-              <span className="min-w-0">{tech.name}</span>
-            </h3>
-            <span className="shrink-0 font-mono text-[10px] tracking-wide text-ink-faint uppercase">
-              {CATEGORY_LABELS[tech.category]}
-            </span>
+    <TerminalWindow title="ls -la — stack/">
+      <Reveal stagger className={`grid gap-3 p-5 ${columnas}`}>
+        {stack.map((tech) => (
+          <div key={tech.name} className="card-scan surface-panel group p-4">
+            <div className="flex items-center justify-between gap-3">
+              <h3 className="flex min-w-0 items-center gap-2 font-mono text-sm font-semibold text-ink">
+                <TechIcon
+                  name={tech.name}
+                  fallbackDot
+                  className="h-4 w-4 text-ink-faint transition-colors group-hover:text-accent"
+                />
+                <span className="min-w-0">{tech.name}</span>
+              </h3>
+              <span className="shrink-0 font-mono text-[10px] tracking-wide text-ink-faint uppercase">
+                {CATEGORY_LABELS[tech.category]}
+              </span>
+            </div>
+            <p className="mt-1.5 text-sm leading-relaxed text-ink-soft">{tech.why}</p>
           </div>
-          <p className="mt-1.5 text-sm leading-relaxed text-ink-soft">{tech.why}</p>
-        </div>
-      ))}
-    </Reveal>
+        ))}
+      </Reveal>
+    </TerminalWindow>
   );
 }

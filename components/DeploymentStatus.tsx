@@ -3,6 +3,7 @@
 import type { ServiceStatus } from "@/app/api/status/route";
 import { useDeploymentStatus as useStatus } from "@/hooks/useDeploymentStatus";
 import { Sparkline } from "@/components/Sparkline";
+import { TerminalWindow } from "@/components/TerminalWindow";
 import { SITE } from "@/content/site";
 
 const LABELS: Record<ServiceStatus["state"], string> = {
@@ -132,7 +133,7 @@ export function DeploymentStatusPanel() {
     state === "ready" && services.length > 0 && services.every((s) => s.state !== "up");
 
   return (
-    <div className="status-table">
+    <TerminalWindow title="status — despliegues">
       {!todosCaidos && (
         <div className="status-head">
           <div className="status-grid !p-0">
@@ -236,6 +237,6 @@ export function DeploymentStatusPanel() {
           ? "La comprobación no está disponible ahora mismo."
           : "Check HTTP real desde el servidor, cacheado 5 min"}
       </p>
-    </div>
+    </TerminalWindow>
   );
 }

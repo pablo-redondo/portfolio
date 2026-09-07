@@ -1,4 +1,5 @@
 import { Fragment } from "react";
+import { TerminalWindow } from "@/components/TerminalWindow";
 
 export type MethodStage = {
   /** El titular de la etapa. */
@@ -22,7 +23,8 @@ export type MethodStage = {
  */
 export function MethodPipeline({ stages }: { stages: MethodStage[] }) {
   return (
-    <div className="method-pipeline">
+    <TerminalWindow title="runbook — incidente">
+      <div className="method-pipeline p-5">
       {stages.map((stage, i) => (
         <Fragment key={stage.title}>
           {i > 0 && <span className="method-link" aria-hidden />}
@@ -46,6 +48,7 @@ export function MethodPipeline({ stages }: { stages: MethodStage[] }) {
           </div>
         </Fragment>
       ))}
-    </div>
+      </div>
+    </TerminalWindow>
   );
 }

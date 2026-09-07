@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { Project, TechCategory } from "@/content/types";
 import type { ServiceStatus } from "@/app/api/status/route";
 import { TechIcon } from "@/components/TechIcon";
+import { TerminalWindow } from "@/components/TerminalWindow";
 import { techIcon } from "@/content/tech-icons";
 import { useDeploymentStatus } from "@/hooks/useDeploymentStatus";
 
@@ -224,17 +225,19 @@ export function ProjectMonitorList({ projects }: { projects: Project[] }) {
   const [openSlug, setOpenSlug] = useState<string | null>(null);
 
   return (
-    <div className="flex flex-col gap-1.5">
-      {projects.map((project) => (
-        <Fila
-          key={project.slug}
-          project={project}
-          service={services.find((s) => s.slug === project.slug)}
-          loading={state === "loading"}
-          open={openSlug === project.slug}
-          onToggle={() => setOpenSlug((cur) => (cur === project.slug ? null : project.slug))}
-        />
-      ))}
-    </div>
+    <TerminalWindow title="top — proyectos">
+      <div className="flex flex-col gap-1.5 p-3">
+        {projects.map((project) => (
+          <Fila
+            key={project.slug}
+            project={project}
+            service={services.find((s) => s.slug === project.slug)}
+            loading={state === "loading"}
+            open={openSlug === project.slug}
+            onToggle={() => setOpenSlug((cur) => (cur === project.slug ? null : project.slug))}
+          />
+        ))}
+      </div>
+    </TerminalWindow>
   );
 }

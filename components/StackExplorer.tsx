@@ -1,6 +1,7 @@
 import type { TechCategory, TechChoice } from "@/content/types";
 import { Reveal } from "@/components/Reveal";
 import { TechIcon } from "@/components/TechIcon";
+import { TerminalWindow } from "@/components/TerminalWindow";
 import { techIcon } from "@/content/tech-icons";
 
 const CATEGORY_ORDER: TechCategory[] = ["frontend", "backend", "infra", "tooling"];
@@ -61,7 +62,8 @@ export function StackExplorer({ stack, usage, totalProyectos }: Props) {
   })).filter((g) => g.items.length > 0);
 
   return (
-    <div className="grid gap-[30px]">
+    <TerminalWindow title="lsof — stack">
+      <div className="grid gap-[30px] p-5">
       {grupos.map((grupo) => (
         <Reveal key={grupo.category}>
           <div className="mb-3.5 flex items-center gap-3">
@@ -120,6 +122,7 @@ export function StackExplorer({ stack, usage, totalProyectos }: Props) {
           </div>
         </Reveal>
       ))}
-    </div>
+      </div>
+    </TerminalWindow>
   );
 }

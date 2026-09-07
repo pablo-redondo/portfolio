@@ -1,5 +1,6 @@
 import type { TechRankItem } from "@/content/topology";
 import type { TechCategory } from "@/content/types";
+import { TerminalWindow } from "@/components/TerminalWindow";
 
 /**
  * El color de la barra es la capa en la que trabaja esa tecnología, los
@@ -22,17 +23,7 @@ export function TechRankBar({ items }: { items: TechRankItem[] }) {
   const max = Math.max(...items.map((i) => i.count), 1);
 
   return (
-    <div className="win min-w-0">
-      <div className="win-bar">
-        <div className="win-dots" aria-hidden>
-          <span className="win-dot" />
-          <span className="win-dot" />
-          <span className="win-dot" />
-        </div>
-        <span className="win-title">stack — agregado</span>
-        <span />
-      </div>
-
+    <TerminalWindow title="stack — agregado" className="min-w-0">
       <p className="px-5 pt-4 pb-2 font-mono text-xs text-ink-meta">
         <span className="text-accent">$</span> sort -rn tecnologias.txt | head
       </p>
@@ -62,6 +53,6 @@ export function TechRankBar({ items }: { items: TechRankItem[] }) {
           </div>
         ))}
       </div>
-    </div>
+    </TerminalWindow>
   );
 }

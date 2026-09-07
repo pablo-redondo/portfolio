@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { TerminalWindow } from "@/components/TerminalWindow";
 
 /** Desfase horario real de Madrid ahora mismo (UTC+1 o UTC+2 según el DST). */
 function useZonaHoraria() {
@@ -39,17 +40,7 @@ export function WhoisCard() {
   const zona = useZonaHoraria();
 
   return (
-    <div className="win">
-      <div className="win-bar">
-        <div className="win-dots" aria-hidden>
-          <span className="win-dot" />
-          <span className="win-dot" />
-          <span className="win-dot" />
-        </div>
-        <span className="win-title">whois — pablo</span>
-        <span />
-      </div>
-
+    <TerminalWindow title="whois — pablo">
       <div className="pt-[22px] px-6 pb-6">
         <div className="mb-5 flex items-center gap-2.5">
           <span aria-hidden className="pulse-dot h-1.5 w-1.5 rounded-full bg-ok text-ok" />
@@ -76,6 +67,6 @@ export function WhoisCard() {
           ))}
         </dl>
       </div>
-    </div>
+    </TerminalWindow>
   );
 }
