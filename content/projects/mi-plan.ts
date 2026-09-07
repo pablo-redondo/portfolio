@@ -9,7 +9,7 @@ export const miPlan: Project = {
   featured: false,
   tags: ["Herramientas"],
   repos: [{ label: "Repositorio", url: "https://github.com/pablo-redondo/mi-plan" }],
-  demoUrl: "https://mi-plan-zeta.vercel.app",
+  demoUrl: "https://mi-plan.pablo-redondo.dev",
   images: [],
   stack: [
     {

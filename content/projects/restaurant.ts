@@ -13,7 +13,7 @@ export const restaurant: Project = {
     { label: "API", url: "https://github.com/pablo-redondo/restaurant-api" },
     { label: "Web", url: "https://github.com/pablo-redondo/restaurant-web" },
   ],
-  demoUrl: "https://restaurant-web-lilac.vercel.app",
+  demoUrl: "https://marques.pablo-redondo.dev",
   demoNote:
     "La web es instantánea, pero la API vive en Fly.io y duerme por inactividad: la primera petición tras un rato puede tardar unos segundos mientras arranca la máquina.",
   images: [],

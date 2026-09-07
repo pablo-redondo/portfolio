@@ -8,7 +8,7 @@ export const carreraVolei: Project = {
   featured: false,
   tags: ["Herramientas"],
   repos: [{ label: "Repositorio", url: "https://github.com/pablo-redondo/carrera-volei" }],
-  demoUrl: "https://carrera-volei.vercel.app",
+  demoUrl: "https://voley.pablo-redondo.dev",
   images: [],
   stack: [],
   caseStudy: {
