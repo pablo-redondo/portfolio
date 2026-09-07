@@ -905,21 +905,41 @@ body {
 .topo-side {
   display: flex;
   flex-direction: column;
-  min-height: 0;
   border-top: 1px solid var(--border);
   background: var(--bg-inset);
   padding: 24px 26px 20px;
 }
 
 @media (min-width: 64rem) {
+  /* `min-height` y no `height`: con muchas aristas compartidas la lista
+     de la derecha puede pedir más de 536px, y antes ese sobrante se
+     recortaba con scroll interno — un scrollbar que tapaba la última
+     fila. Ahora la fila de la rejilla crece con el contenido en vez de
+     cortarlo. El grafo de la izquierda no se ve arrastrado por ese
+     crecimiento porque lleva su propio alto fijo (`.topo-graph`, no
+     `auto`), así que el `stretch` por defecto de la rejilla no lo toca
+     — solo estira `.topo-side`, que es justo lo que necesita su fondo y
+     su borde para llegar siempre hasta abajo. */
   .topo-panel {
     grid-template-columns: minmax(0, 1fr) 356px;
-    height: 536px;
+    min-height: 536px;
   }
 
   .topo-side {
     border-top: 0;
     border-left: 1px solid var(--border);
+  }
+}
+
+.topo-graph {
+  height: 380px;
+}
+
+@media (min-width: 64rem) {
+  .topo-graph {
+    /* Alto fijo y propio: no depende de cuánto mida la barra lateral,
+       así que nunca da un salto al cambiar de nodo seleccionado. */
+    height: 536px;
   }
 }
 
@@ -930,8 +950,8 @@ body {
    las aristas y el texto cuelga sin desplazarlo. */
 .topo-node {
   position: absolute;
-  width: 13px;
-  height: 13px;
+  width: 18px;
+  height: 18px;
   transform: translate(-50%, -50%);
   border-radius: 50%;
 }
@@ -957,58 +977,48 @@ body {
   box-shadow: 0 0 18px var(--accent-glow);
 }
 
+/* La etiqueta lleva su propio fondo — antes era texto suelto sobre el
+   grafo, y con siete nodos y sus aristas cruzándose una línea de fondo
+   podía pasar justo por debajo de un nombre y partirlo visualmente en
+   dos. El fondo opaco tapa ese tramo de línea en vez de competir con
+   él: la etiqueta siempre se lee entera, la cruce por debajo o no. */
 .topo-node-label {
   position: absolute;
-  top: calc(100% + 9px);
+  top: calc(100% + 10px);
   left: 50%;
   transform: translateX(-50%);
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
+  gap: 2px;
   white-space: nowrap;
+  border-radius: 7px;
+  border: 1px solid transparent;
+  background: var(--bg-inset);
+  padding: 3px 8px;
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 11px;
   line-height: 1.2;
   color: var(--ink-meta);
-  transition: color var(--motion-fast) var(--ease-out);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  transition:
+    color var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out);
 }
 
 .topo-node:hover .topo-node-label,
 .topo-node:focus-visible .topo-node-label,
 .topo-node[data-active="true"] .topo-node-label {
   color: var(--ink);
+  background: var(--bg-raised);
+  border-color: color-mix(in oklab, var(--accent) 50%, transparent);
 }
 
 .topo-node-meta {
   color: var(--accent);
   font-size: 10px;
-}
-
-/* Nodo del grafo. Mismo criterio de estado que el resto del sistema:
-   borde + halo, nunca un cambio de tamaño ni en hover ni en foco. */
-.topology-node {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  border: 1px solid var(--border-strong);
-  border-radius: 999px;
-  background: var(--bg-raised);
-  color: var(--ink-body);
-  padding: 7px 12px;
-  white-space: nowrap;
-  transition:
-    border-color var(--motion-fast) var(--ease-out),
-    background-color var(--motion-fast) var(--ease-out),
-    color var(--motion-fast) var(--ease-out),
-    box-shadow var(--motion-fast) var(--ease-out);
-}
-
-.topology-node:hover,
-.topology-node:focus-visible,
-.topology-node[data-active="true"] {
-  border-color: var(--accent);
-  color: var(--ink);
-  box-shadow: 0 0 0 4px var(--accent-glow);
 }
 
 /* --- Diff de código -------------------------------------------

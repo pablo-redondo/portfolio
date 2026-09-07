@@ -82,9 +82,10 @@ export function TopologyGraph({ nodes, edges, defaultSlug }: Props) {
     <TerminalWindow title="netstat — topología">
       <div className="topo-panel">
       <div className="relative min-h-0 min-w-0 p-3.5">
-        {/* Alto fijo en móvil: el panel no tiene altura propia hasta `lg`,
-            y sin esto el área del grafo colapsaría a cero. */}
-        <div className="relative h-[380px] w-full lg:h-full">
+        {/* .topo-graph lleva su propio alto fijo (ver globals.css): así el
+            área del grafo no depende ni colapsa por lo que mida la barra
+            lateral del nodo activo. */}
+        <div className="topo-graph relative w-full">
           <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full" aria-hidden>
             {edges.map((edge) => {
               const p1 = positions.get(edge.a);
@@ -188,7 +189,12 @@ export function TopologyGraph({ nodes, edges, defaultSlug }: Props) {
               stack compartido con
             </p>
 
-            <div className="min-h-0 flex-1 overflow-y-auto">
+            {/* Sin min-h-0 ni overflow-y-auto: antes esta lista se recortaba
+                con scroll interno cuando un nodo tenía muchas aristas
+                compartidas, y el scrollbar tapaba la última fila. Ahora
+                crece lo que haga falta — es la fila de la rejilla la que
+                se adapta (ver .topo-panel), nunca esta lista la que corta. */}
+            <div className="flex-1">
               {selectedEdges.length > 0 ? (
                 <ul>
                   {selectedEdges.map((edge) => {
