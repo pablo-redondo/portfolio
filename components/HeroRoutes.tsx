@@ -131,11 +131,20 @@ export function HeroRoutes() {
           const base = route.trunk ? 0.32 : 0.19;
           const alpha = Math.min(0.92, base + lit * 0.5 + scan * 0.35);
 
-          // Halo suave: la misma técnica que ya usa el raíl vertical
-          // (SectionSpine) para que las rutas troncales lean como
-          // circuito iluminado y no como una línea plana de más.
-          ctx.shadowColor = `rgba(${r},${g},${b},0.65)`;
-          ctx.shadowBlur = route.trunk ? 4 : 2;
+          // Halo falso y barato: una segunda pasada ancha y tenue debajo
+          // del trazo nítido, en vez de shadowBlur. shadowBlur por trazo
+          // dentro de un bucle a 60fps (con "lighter" encima, que fuerza
+          // el peor camino de composición) es carísimo — con 26 rutas
+          // bajaba el frame rate a ~3fps. Dos stroke() sin sombra cuestan
+          // una fracción de eso y se leen casi igual de "iluminados".
+          if (route.trunk) {
+            ctx.beginPath();
+            ctx.moveTo(s.x1, s.y1);
+            ctx.lineTo(s.x2, s.y2);
+            ctx.strokeStyle = `rgba(${r},${g},${b},${alpha * 0.3})`;
+            ctx.lineWidth = 4;
+            ctx.stroke();
+          }
 
           ctx.beginPath();
           ctx.moveTo(s.x1, s.y1);
@@ -150,8 +159,6 @@ export function HeroRoutes() {
           ctx.strokeStyle = `rgba(${r},${g},${b},${Math.min(0.95, alpha + 0.12)})`;
           ctx.lineWidth = 0.8;
           ctx.stroke();
-
-          ctx.shadowBlur = 0;
         }
 
         if (!reduced && route.len > 0) {
@@ -159,8 +166,6 @@ export function HeroRoutes() {
           const p = ((t * 0.001 * route.speed + route.phase) % 1) * route.len;
           const head = pointAt(route, p);
           if (head) {
-            ctx.shadowColor = `rgba(${r},${g},${b},0.8)`;
-            ctx.shadowBlur = 3;
             for (let k = 0; k < 5; k++) {
               const tail = pointAt(route, Math.max(0, p - k * 9));
               if (!tail) continue;
@@ -169,7 +174,6 @@ export function HeroRoutes() {
               ctx.fillStyle = `rgba(${r},${g},${b},${0.85 - k * 0.14})`;
               ctx.fill();
             }
-            ctx.shadowBlur = 0;
           }
         }
       }
