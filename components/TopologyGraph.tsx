@@ -170,14 +170,14 @@ export function TopologyGraph({ nodes, edges, defaultSlug }: Props) {
             <p className="text-mono-data mt-1.5 text-accent">{selected.slug}</p>
             <p className="text-body-sm mt-3 line-clamp-2 text-ink-soft">{selected.tagline}</p>
 
-            <div className="mt-4 grid grid-cols-2 gap-2.5">
-              <div className="rounded-lg border border-line p-3">
+            <div className="mt-4 grid grid-cols-2 gap-4">
+              <div>
                 <p className="font-mono text-lg leading-none font-medium text-ink tabular-nums">
                   {selectedEdges.length}
                 </p>
                 <p className="text-mono-meta mt-1.5 text-ink-meta uppercase">aristas</p>
               </div>
-              <div className="rounded-lg border border-line p-3">
+              <div className="border-l border-line pl-4">
                 <p className="font-mono text-lg leading-none font-medium text-ink tabular-nums">
                   {selected.techCount}
                 </p>
@@ -221,8 +221,8 @@ export function TopologyGraph({ nodes, edges, defaultSlug }: Props) {
                   })}
                 </ul>
               ) : (
-                <p className="text-mono-data rounded-lg border border-dashed border-line-strong p-3.5 leading-relaxed text-ink-meta">
-                  nodo aislado · vainilla, sin dependencias que compartir con nadie
+                <p className="text-mono-data leading-relaxed text-ink-faint">
+                  # nodo aislado · vainilla, sin dependencias que compartir con nadie
                 </p>
               )}
             </div>

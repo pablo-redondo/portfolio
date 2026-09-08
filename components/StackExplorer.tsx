@@ -17,7 +17,7 @@ const CATEGORY_COLOR: Record<TechCategory, string> = {
 /** Un punto por proyecto; los primeros `count` se rellenan. */
 function UsageDots({ count, total }: { count: number; total: number }) {
   return (
-    <span className="mt-auto flex shrink-0 items-center gap-1" aria-hidden>
+    <span className="ml-auto flex shrink-0 items-center gap-1" aria-hidden>
       {Array.from({ length: total }).map((_, i) => (
         <span
           key={i}
@@ -93,7 +93,7 @@ export function StackExplorer({ stack, usage, totalProyectos }: Props) {
                     )}
                   </span>
 
-                  <div>
+                  <div className="min-w-0 flex-1">
                     <p className="font-mono text-[13px] leading-tight font-semibold text-ink">
                       {tech.name}
                     </p>

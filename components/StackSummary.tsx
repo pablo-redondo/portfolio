@@ -27,7 +27,7 @@ export function StackSummary({ stack }: { stack: TechChoice[] }) {
           if (items.length === 0) return null;
 
           return (
-            <div key={category} className="win-card group flex h-full flex-col p-5">
+            <div key={category} className="flex h-full flex-col">
               <div className="flex items-baseline justify-between gap-3 border-b border-line pb-3">
                 <h3 className="font-mono text-xs font-semibold tracking-wider text-accent uppercase">
                   {CATEGORY_LABELS[category]}

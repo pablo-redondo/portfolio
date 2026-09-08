@@ -24,7 +24,7 @@ export function StackTable({ stack }: { stack: TechChoice[] }) {
     <TerminalWindow title="ls -la — stack/">
       <Reveal stagger className={`grid gap-3 p-5 ${columnas}`}>
         {stack.map((tech) => (
-          <div key={tech.name} className="win-card group p-4">
+          <div key={tech.name} className="group border-b border-line pb-4">
             <div className="flex items-center justify-between gap-3">
               <h3 className="flex min-w-0 items-center gap-2 font-mono text-sm font-semibold text-ink">
                 <TechIcon

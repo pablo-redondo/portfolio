@@ -335,15 +335,11 @@ body {
    quince, quince marcas a todo color compiten entre ellas. */
 .tech-card {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: 14px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--bg-panel);
-  padding: 18px 16px 16px;
-  transition:
-    border-color 240ms var(--ease-out),
-    background-color 240ms var(--ease-out);
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  transition: border-color 240ms var(--ease-out);
 }
 
 .tech-card:hover {
@@ -392,17 +388,17 @@ body {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--bg-panel);
-  padding: 24px 24px 22px;
-  transition:
-    border-color 280ms var(--ease-out),
-    background-color 280ms var(--ease-out);
 }
 
-.method-card:hover {
-  border-color: var(--border-strong);
+/* Sin la caja no hay borde que delimite cada etapa: en vertical (por
+   debajo de `lg`, donde el conector punteado no se pinta) una regla
+   arriba hace ese trabajo. A partir de `lg` las etapas ya están una al
+   lado de la otra y es el conector el que las separa. */
+@media (max-width: 63.9375rem) {
+  .method-card:not(:first-child) {
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+  }
 }
 
 .method-chip {
@@ -620,25 +616,6 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-/* --- Card dentro de una ventana de terminal -------------------
-   Tratamiento único para cualquier tarjeta que vive en el cuerpo hundido
-   de un `.win`: un tono por encima del fondo, borde fino, y solo el
-   borde reacciona. Nunca `--bg-raised` aquí — ese tono es para lo que
-   flota SOBRE un panel, y dentro de una ventana ya hundida se lee como
-   una caja clara fuera de sitio. Sin sombra ni escala: el acento entero
-   de la ventana ya es la caja. */
-.win-card {
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--bg-panel);
-  transition: border-color 220ms var(--ease-out);
-}
-
-.win-card:hover,
-.win-card:focus-within {
-  border-color: var(--border-strong);
 }
 
 /* --- Tabla de status ----------------------------------------
@@ -1092,19 +1069,16 @@ body {
 
 /* --- Caja de auditoría (salvar / tirar) ------------------------- */
 .audit-box {
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--border-strong);
-  background: var(--bg-panel);
-  padding: 1.25rem 1.375rem;
+  border-top: 2px solid var(--border-strong);
+  padding-top: 14px;
 }
 
 .audit-box[data-kind="keep"] {
-  border-left-color: var(--ok);
+  border-top-color: var(--ok);
 }
 
 .audit-box[data-kind="cut"] {
-  border-left-color: var(--crit);
+  border-top-color: var(--crit);
 }
 
 /* --- Navegación por "hops" del caso de estudio -------------------
