@@ -17,5 +17,5 @@ export const HOME_HERO = {
   // de que el criterio de esta web sea "¿dónde miro cuando algo falla?" en
   // vez de solo "¿qué construyo?".
   intro:
-    "React, Next.js, Node y TypeScript sobre PostgreSQL, con tests, CI y despliegue real. Vengo de administrar infraestructura en 24×7, y eso decide cómo trabajo: cuando algo va lento o se cae, sé por dónde empezar a mirar — la petición, la latencia, el proceso que falla.",
+    "React, Next.js, Node y TypeScript sobre PostgreSQL, con tests, CI y despliegue real. Vengo de administrar infraestructura en 24×7, y eso decide cómo trabajo: cuando algo va lento o se cae, sé por dónde empezar a mirar — la petición, la latencia, el proceso que falla. Programo dirigiendo IA (Claude), no a mano línea a línea; la arquitectura y cada decisión siguen siendo mías.",
 };

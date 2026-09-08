@@ -73,6 +73,15 @@ const KNOWN_ISSUES = [
   "Mi experiencia con datos es relacional. NoSQL, colas y todo lo que va con procesamiento asíncrono lo he leído, no lo he puesto en producción.",
 ];
 
+// Tres reglas reales, no una declaración de intenciones. Cada una tiene que
+// poder comprobarse en el propio repo: las decisiones documentadas en cada
+// caso de estudio, los commits, la propia arquitectura.
+const IA_RULES = [
+  "La arquitectura, el modelo de datos y qué se descarta los decido yo antes de pedirle nada a la IA — no le paso el problema entero y espero una app hecha.",
+  "Reviso cada diff como si fuera de un compañero de equipo: nada se sube sin que entienda por qué está ahí y qué pasaría si lo quitara.",
+  "Si no puedo defender una línea en una entrevista, no está terminada — el criterio de 'hecho' no es que compile, es que sea mía de verdad.",
+];
+
 // Los cuatro puestos anteriores al desarrollo, tal como constan en el CV.
 // Nada de resumen genérico: fecha, empresa y lo único que de verdad importa
 // de cada uno. start/end en YYYY-MM: es lo que deja calcular la duración de
@@ -308,6 +317,35 @@ export default function SobreMiPage() {
               {KNOWN_ISSUES.map((text, i) => (
                 <div key={i} className="flex flex-col gap-2.5">
                   <span className="text-warn font-mono text-[11px] font-medium">
+                    #{i + 1}
+                  </span>
+                  <p className="text-sm leading-relaxed text-ink-soft">{text}</p>
+                </div>
+              ))}
+            </div>
+          </Reveal>
+        </Container>
+      </section>
+
+      <section id="workflow-ia" className="pt-[92px]">
+        <Container rail>
+          <SectionHead
+            label="cat workflow-ia.md"
+            count={`${IA_RULES.length} reglas`}
+            title="El papel real de la IA en mi trabajo"
+          >
+            <p className="text-body mb-[30px] max-w-[62ch] text-ink-soft">
+              Escribo estos proyectos dirigiendo a Claude, no a mano línea a línea. No lo
+              escondo porque no hay nada que esconder: acelera la escritura, pero no decide
+              qué construir, ni por qué, ni cuándo algo está terminado.
+            </p>
+          </SectionHead>
+
+          <Reveal className="surface-panel p-6">
+            <div className="grid gap-6 lg:grid-cols-3">
+              {IA_RULES.map((text, i) => (
+                <div key={i} className="flex flex-col gap-2.5">
+                  <span className="text-accent font-mono text-[11px] font-medium">
                     #{i + 1}
                   </span>
                   <p className="text-sm leading-relaxed text-ink-soft">{text}</p>

@@ -151,24 +151,30 @@ export default async function ProjectPage({ params }: Props) {
           {/* Cifras reales del propio caso de estudio: fases y el dato
               suelto que ya cuenta el resultado, si los hay. El badge de
               despliegue no depende de que existan: se muestra siempre
-              que haya demo que comprobar. */}
-          {(hayTimeline || caseStudy.stat || project.metric || project.demoUrl) && (
-            <div
-              data-enter="4"
-              className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-2 border-t border-line pt-5"
+              que haya demo que comprobar. La nota de la IA cierra la fila
+              siempre — es la única que no depende de qué tenga este
+              proyecto en concreto. */}
+          <div
+            data-enter="4"
+            className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-2 border-t border-line pt-5"
+          >
+            {hayTimeline && (
+              <MetaStat label="fases" value={String(project.timeline!.length)} />
+            )}
+            {caseStudy.stat && (
+              <MetaStat label={caseStudy.stat.label} value={caseStudy.stat.value} />
+            )}
+            {project.metric && (
+              <MetaStat label={project.metric.label} value={project.metric.note} />
+            )}
+            {project.demoUrl && <DeploymentBadge slug={project.slug} />}
+            <Link
+              href="/sobre-mi#workflow-ia"
+              className="text-mono-meta text-ink-meta ml-auto normal-case transition-colors hover:text-accent"
             >
-              {hayTimeline && (
-                <MetaStat label="fases" value={String(project.timeline!.length)} />
-              )}
-              {caseStudy.stat && (
-                <MetaStat label={caseStudy.stat.label} value={caseStudy.stat.value} />
-              )}
-              {project.metric && (
-                <MetaStat label={project.metric.label} value={project.metric.note} />
-              )}
-              {project.demoUrl && <DeploymentBadge slug={project.slug} />}
-            </div>
-          )}
+              dirigido con IA (Claude) · cómo trabajo
+            </Link>
+          </div>
         </Container>
       </section>
 
