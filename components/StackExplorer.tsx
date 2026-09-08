@@ -17,7 +17,7 @@ const CATEGORY_COLOR: Record<TechCategory, string> = {
 /** Un punto por proyecto; los primeros `count` se rellenan. */
 function UsageDots({ count, total }: { count: number; total: number }) {
   return (
-    <span className="ml-auto flex shrink-0 items-center gap-1" aria-hidden>
+    <span className="flex shrink-0 items-center gap-1" aria-hidden>
       {Array.from({ length: total }).map((_, i) => (
         <span
           key={i}
@@ -45,15 +45,13 @@ type Props = {
 /**
  * El stack por capas, con las cuatro abiertas a la vez.
  *
- * Antes era un filtro de pastillas con `:has()`: para ver el backend había
- * que pedirlo. Con quince piezas caben todas en pantalla, así que la capa
- * pasa a ser un encabezado con su guion de color y el filtro sobra — se ve
- * de un vistazo cuánto pesa cada capa, que es justo lo que la sección
- * quiere contar.
- *
- * El "por qué" de cada elección va en el `title` de la ficha y en el texto
- * accesible: sigue siendo el dato importante, pero no se lleva por delante
- * la rejilla.
+ * Antes cada pieza vivía apretada en una rejilla de cuatro o cinco
+ * columnas, con el motivo real escondido en un tooltip nativo — invisible
+ * sin ratón, y en la práctica invisible del todo, porque nadie pasa el
+ * cursor sistemáticamente por quince fichas. Eso contradecía la propia
+ * entradilla de la sección: "no es una lista de logos". Ahora cada
+ * tecnología es una fila a ancho completo y el porqué se lee siempre, sin
+ * pasar el ratón por encima ni abrir nada.
  */
 export function StackExplorer({ stack, usage, totalProyectos }: Props) {
   const grupos = CATEGORY_ORDER.map((category) => ({
@@ -66,7 +64,7 @@ export function StackExplorer({ stack, usage, totalProyectos }: Props) {
       <div className="grid gap-[30px] p-5">
       {grupos.map((grupo) => (
         <Reveal key={grupo.category}>
-          <div className="mb-3.5 flex items-center gap-3">
+          <div className="mb-1 flex items-center gap-3">
             <span
               aria-hidden
               className="h-[3px] w-[22px] shrink-0 rounded-sm"
@@ -80,11 +78,11 @@ export function StackExplorer({ stack, usage, totalProyectos }: Props) {
             </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+          <div className="flex flex-col">
             {grupo.items.map((tech) => {
               const usados = usage?.get(tech.name);
               return (
-                <div key={tech.name} className="tech-card" title={tech.why}>
+                <div key={tech.name} className="tech-card">
                   <span className="tech-card-logo" aria-hidden>
                     {techIcon(tech.name) ? (
                       <TechIcon name={tech.name} className="h-[22px] w-[22px]" />
@@ -94,28 +92,25 @@ export function StackExplorer({ stack, usage, totalProyectos }: Props) {
                   </span>
 
                   <div className="min-w-0 flex-1">
-                    <p className="font-mono text-[13px] leading-tight font-semibold text-ink">
-                      {tech.name}
+                    <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                      <p className="font-mono text-sm font-semibold text-ink">{tech.name}</p>
+
+                      {tech.note ? (
+                        <span className="text-warn shrink-0 font-mono text-[11px]">
+                          {tech.note}
+                        </span>
+                      ) : usados !== undefined && totalProyectos ? (
+                        <span className="flex shrink-0 items-center gap-2 font-mono text-[11px] text-ink-meta">
+                          {usados}/{totalProyectos}
+                          <UsageDots count={usados} total={totalProyectos} />
+                        </span>
+                      ) : null}
+                    </div>
+
+                    <p className="mt-1.5 max-w-[68ch] text-sm leading-relaxed text-ink-soft">
+                      {tech.why}
                     </p>
-                    {tech.note ? (
-                      <p className="text-warn mt-1 font-mono text-[11px] leading-snug">
-                        {tech.note}
-                      </p>
-                    ) : usados !== undefined && totalProyectos ? (
-                      <p className="mt-1 font-mono text-[11px] leading-snug text-ink-meta">
-                        {usados} / {totalProyectos} proyectos
-                      </p>
-                    ) : null}
                   </div>
-
-                  {!tech.note && usados !== undefined && totalProyectos ? (
-                    <UsageDots count={usados} total={totalProyectos} />
-                  ) : null}
-
-                  {/* El motivo no cabe en la ficha sin romper la rejilla,
-                      pero no puede perderse: va al árbol de accesibilidad
-                      y al tooltip nativo. */}
-                  <span className="sr-only">{tech.why}</span>
                 </div>
               );
             })}

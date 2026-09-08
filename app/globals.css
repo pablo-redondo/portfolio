@@ -335,9 +335,9 @@ body {
    quince, quince marcas a todo color compiten entre ellas. */
 .tech-card {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 14px;
-  padding: 12px 0;
+  padding: 16px 0;
   border-bottom: 1px solid var(--border);
   transition: border-color 240ms var(--ease-out);
 }
