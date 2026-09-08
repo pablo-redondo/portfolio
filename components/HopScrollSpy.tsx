@@ -28,11 +28,15 @@ export function HopScrollSpy({ hopIds }: { hopIds: string[] }) {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const setActive = (id: string) => {
+      const idx = hopIds.indexOf(id);
       links.forEach((el, key) => {
         el?.classList.toggle("hop-link-js-active", key === id);
         el?.classList.toggle("hop-link-js-inactive", key !== id);
+        // El punto se rellena para todo hop hasta el activo, como los
+        // saltos que ya respondieron en un traceroute real — no solo el
+        // que se está leyendo ahora mismo.
+        el?.classList.toggle("hop-link-js-lit", hopIds.indexOf(key) <= idx);
       });
-      const idx = hopIds.indexOf(id);
       if (barRef.current && idx >= 0) {
         barRef.current.style.width = `${((idx + 1) / hopIds.length) * 100}%`;
       }

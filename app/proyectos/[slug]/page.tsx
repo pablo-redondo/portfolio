@@ -59,7 +59,10 @@ function HopSection({
   return (
     <section id={id} className="hop-section border-b border-line py-16">
       <Container>
-        <Reveal>
+        <Reveal className="relative">
+          <span className="trait-index" aria-hidden>
+            {String(n).padStart(2, "0")}
+          </span>
           <p className="text-mono-meta mb-2 text-ink-meta uppercase">
             hop {String(n).padStart(2, "0")} · {eyebrow}
           </p>
@@ -180,7 +183,7 @@ export default async function ProjectPage({ params }: Props) {
           <div className="flex gap-6 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {hops.map((hop, i) => (
               <a key={hop.id} href={`#${hop.id}`} data-hop={hop.id} className="hop-link">
-                <span className="text-mono-meta mr-1.5 text-ink-meta normal-case">
+                <span className="hop-node" aria-hidden>
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 {hop.label}
@@ -263,15 +266,24 @@ export default async function ProjectPage({ params }: Props) {
       {/* --- Resultado --- */}
       <HopSection id="resultado" n={(hopN += 1)} eyebrow="dónde está hoy" title="Resultado">
         {project.metric && (
-          <div className="mb-7 grid max-w-md grid-cols-2 gap-3">
-            <div className="rounded-lg border border-line p-4">
-              <p className="text-xl font-medium text-crit">{project.metric.before.value}</p>
+          <div className="mb-8 flex flex-wrap items-center gap-6">
+            <div>
+              <p className="font-mono text-2xl font-medium text-crit">
+                {project.metric.before.value}
+              </p>
               <p className="text-mono-meta mt-1 text-ink-meta uppercase">
                 {project.metric.before.note}
               </p>
             </div>
-            <div className="rounded-lg border border-line p-4">
-              <p className="text-xl font-medium text-ok">{project.metric.after.value}</p>
+
+            <span aria-hidden className="font-mono text-2xl text-ink-faint">
+              →
+            </span>
+
+            <div>
+              <p className="font-mono text-4xl font-semibold text-ok">
+                {project.metric.after.value}
+              </p>
               <p className="text-mono-meta mt-1 text-ink-meta uppercase">
                 {project.metric.after.note}
               </p>

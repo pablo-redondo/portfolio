@@ -1097,6 +1097,8 @@ body {
    destino y no el propio enlace, :has() los conecta: seis reglas fijas,
    una por id de hop, válidas para cualquier proyecto. */
 .hop-link {
+  display: flex;
+  align-items: center;
   padding: 0.65rem 0.2rem;
   color: var(--ink-meta);
   border-bottom: 2px solid transparent;
@@ -1108,6 +1110,43 @@ body {
 
 .hop-link:hover {
   color: var(--ink);
+}
+
+/* El número dentro de un punto, no suelto — el mismo hop se lee como una
+   parada de traceroute, no como el índice de una lista. El color hereda
+   del propio .hop-link (que ya lo tiñe de acento cuando es el activo, con
+   o sin JavaScript), así el punto y la etiqueta cambian a la vez. */
+.hop-node {
+  display: inline-flex;
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+  transition:
+    background-color 200ms var(--ease-out),
+    color 200ms var(--ease-out),
+    box-shadow 200ms var(--ease-out);
+}
+
+/* Mejora progresiva: los hops ya recorridos se rellenan de acento, como
+   saltos de un traceroute real que ya respondieron — <HopScrollSpy> es
+   quien sabe cuáles son, así que sin JavaScript se quedan solo con el
+   anillo de arriba. */
+.hop-link.hop-link-js-lit .hop-node {
+  background: var(--accent);
+  color: var(--bg-inset);
+}
+
+/* El activo, además de relleno, con un halo de luz — nunca desplazamiento
+   ni escala, el mismo criterio del resto del catálogo. */
+.hop-link.hop-link-js-active .hop-node {
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 25%, transparent);
 }
 
 body:has(#contexto:target) .hop-link[data-hop="contexto"],
@@ -1158,15 +1197,32 @@ body:has(#stack:target) .hop-link[data-hop="contexto"] {
 /* Barra de progreso del caso de estudio: cuánto de los seis tramos llevas
    leído, bajo la propia nav de hops. */
 .hop-progress {
+  position: relative;
   height: 2px;
   background: var(--border);
-  overflow: hidden;
 }
 
 .hop-progress-fill {
+  position: relative;
   height: 100%;
   width: 0%;
   background: var(--accent);
+}
+
+/* La cabeza de lectura: un punto de luz en el borde de avance de la
+   barra, el mismo lenguaje del paquete que recorre el hero y del pulso
+   de la traza vertical — aquí, aplicado a cuánto caso llevas leído. */
+.hop-progress-fill::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -3px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  transform: translateY(-50%);
+  box-shadow: 0 0 8px 1px var(--accent-glow);
 }
 
 @media (prefers-reduced-motion: no-preference) {
