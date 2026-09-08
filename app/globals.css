@@ -1750,6 +1750,26 @@ body:has(#stack:target) .hop-link[data-hop="contexto"] {
   text-decoration-color: currentColor;
 }
 
+/* Pista de que la card entera es el enlace, no un botón propio — de ahí
+   el `pointer-events-none` en su envoltorio. Mismo lenguaje que
+   `.link-quiet` (subrayado tenue que se aclara), pero el hover lo dispara
+   la card (`.group`), no el propio texto. Sin flecha: el subrayado ya
+   dice "esto lleva a algo". */
+.story-link {
+  font-weight: 500;
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent) 35%, transparent);
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+  transition: text-decoration-color 200ms var(--ease-out);
+}
+
+.group:hover .story-link,
+.group:focus-visible .story-link {
+  text-decoration-color: currentColor;
+}
+
 /* --- Foco de los botones -------------------------------------
    El anillo global (:focus-visible en app/globals.css) ya pone el borde;
    aquí se añade el halo que pide el sistema de diseño — siempre con

@@ -71,7 +71,9 @@ export function FeaturedProject({ project }: { project: Project }) {
             </div>
           )}
 
-          <p className="text-mono-cmd mt-6 font-medium text-accent">leer el caso de estudio →</p>
+          <p className="mt-6">
+            <span className="story-link text-mono-cmd">Leer el caso de estudio</span>
+          </p>
         </div>
 
         {project.metric && (
