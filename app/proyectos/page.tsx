@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/Container";
 import { SectionLabel } from "@/components/SectionLabel";
-import { ProjectMonitorList } from "@/components/ProjectMonitorList";
+import { ProjectList } from "@/components/ProjectList";
+import { FeaturedProject } from "@/components/FeaturedProject";
 import { TechRankBar } from "@/components/TechRankBar";
 import { Reveal } from "@/components/Reveal";
 import { HeroRoutes } from "@/components/HeroRoutes";
@@ -30,9 +31,21 @@ export default async function ProyectosPage({ searchParams }: Props) {
   const { tag } = await searchParams;
   const activeTag = PROJECT_TAGS.includes(tag as (typeof PROJECT_TAGS)[number]) ? tag : undefined;
 
-  const filtered = activeTag
+  const featured = projects.find((project) => project.featured);
+
+  const base = activeTag
     ? projects.filter((project) => project.tags.includes(activeTag))
     : projects;
+
+  // El insignia solo se separa del resto cuando no hay filtro activo: si
+  // ya se ha pedido una etiqueta concreta, mostrarlo aparte igualmente
+  // sería imponer una jerarquía que el propio filtro contradice. Con "de
+  // Y" contando `base` y no la lista de abajo, el número no miente: los
+  // 7 siguen siendo 7, uno de ellos vive arriba.
+  const destacado = !activeTag ? featured : undefined;
+  const filtered = destacado
+    ? base.filter((project) => project.slug !== destacado.slug)
+    : base;
 
   // El filtro activo se imprime en la propia línea de comando, como en el
   // sistema de diseño: el estado del filtro se lee como texto y no solo
@@ -71,17 +84,30 @@ export default async function ProyectosPage({ searchParams }: Props) {
         </Container>
       </section>
 
+      {destacado && (
+        <section className="pt-14">
+          <Container rail>
+            <Reveal>
+              <SectionLabel>cat destacado.md</SectionLabel>
+            </Reveal>
+            <Reveal>
+              <FeaturedProject project={destacado} />
+            </Reveal>
+          </Container>
+        </section>
+      )}
+
       <section className="pt-14 pb-[130px]">
         <Container rail>
           <Reveal>
             <SectionLabel
               action={
                 <span className="text-mono-meta text-ink-meta normal-case">
-                  {filtered.length} de {projects.length}
+                  {base.length} de {projects.length}
                 </span>
               }
             >
-              {`top --tag=${filtro}`}
+              {`find proyectos/ --tag=${filtro}`}
             </SectionLabel>
           </Reveal>
 
@@ -89,7 +115,7 @@ export default async function ProyectosPage({ searchParams }: Props) {
               con JavaScript desactivado, es compartible y el navegador puede
               volver atrás. */}
           <Reveal>
-            <nav className="mb-2 flex flex-wrap items-center gap-2" aria-label="Filtrar por etiqueta">
+            <nav className="mb-8 flex flex-wrap items-center gap-2" aria-label="Filtrar por etiqueta">
               <FiltroPill href="/proyectos" label="todo" active={!activeTag} />
               {PROJECT_TAGS.map((t) => (
                 <FiltroPill
@@ -102,9 +128,9 @@ export default async function ProyectosPage({ searchParams }: Props) {
             </nav>
           </Reveal>
 
-          <ProjectMonitorList projects={filtered} />
-
-          {filtered.length === 0 && (
+          {filtered.length > 0 ? (
+            <ProjectList projects={filtered} />
+          ) : (
             <p className="text-body py-12 text-center text-ink-soft">
               Ningún proyecto con esa etiqueta todavía.
             </p>

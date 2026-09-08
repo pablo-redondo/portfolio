@@ -438,25 +438,35 @@ body {
   }
 }
 
-/* --- Fila del monitor de proyectos -----------------------------
-   Más hundida que una card (--bg-inset sobre borde tenue): la lista es
-   una consola, no una rejilla de tarjetas. Al abrirse coge el borde de
-   acento para marcar cuál está desplegada. */
-.monitor-row {
-  border: 1px solid var(--bg-raised);
-  border-radius: 12px;
-  background: var(--bg-inset);
-  transition:
-    border-color 250ms var(--ease-out),
-    background-color 250ms var(--ease-out);
+/* --- Fila del índice de proyectos -------------------------------
+   Sin caja: un divisor fino la separa de la siguiente, como el resto de
+   listas del sistema de diseño. La fila entera es el enlace, así que el
+   propio divisor es el único elemento que reacciona al pasar por
+   encima — no hay superficie que iluminar. */
+.project-row {
+  display: block;
+  padding: 28px 0;
+  border-top: 1px solid var(--border);
+  transition: border-color 220ms var(--ease-out);
 }
 
-.monitor-row:hover {
+.project-row:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.project-row:hover,
+.project-row:focus-visible {
   border-color: var(--border-strong);
 }
 
-.monitor-row-open {
-  border-color: color-mix(in oklab, var(--accent) 50%, transparent);
+.project-row-title {
+  transition: color 220ms var(--ease-out);
+}
+
+.project-row:hover .project-row-title,
+.project-row:focus-visible .project-row-title {
+  color: var(--accent);
 }
 
 /* --- Card de proyecto y chip de stack --------------------------
