@@ -34,7 +34,7 @@ const REGLAS = [
   [/^pnpm/i, "pnpm"],
   [/^tanstack/i, "reactquery"],
   [/^tmdb/i, "themoviedatabase"],
-  [/^vercel/i, "vercel"],
+  [/cloudflare/i, "cloudflare"],
   [/^codemirror/i, "codemirror"],
 ];
 

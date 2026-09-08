@@ -18,7 +18,7 @@ const MATCHERS: Record<string, string[]> = {
   Prisma: ["prisma"],
   Docker: ["docker"],
   "Fly.io / Render": ["fly.io", "render"],
-  Vercel: ["vercel"],
+  "Cloudflare Workers": ["cloudflare"],
   TypeScript: ["typescript"],
   "Vitest + Playwright": ["vitest", "playwright"],
   pnpm: ["pnpm"],

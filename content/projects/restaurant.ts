@@ -46,7 +46,7 @@ export const restaurant: Project = {
     {
       name: "JWT + bcryptjs",
       category: "backend",
-      why: "Autenticación stateless entre dos servicios desplegados por separado (Vercel / Fly.io), sin sesión de servidor compartida.",
+      why: "Autenticación stateless entre dos servicios desplegados por separado (Cloudflare Workers / Fly.io), sin sesión de servidor compartida.",
     },
     {
       name: "Fly.io",
@@ -54,9 +54,9 @@ export const restaurant: Project = {
       why: "Despliegue del backend con máquinas que se apagan en inactividad: barato para un proyecto de portfolio, a cambio de cold starts.",
     },
     {
-      name: "Vercel",
+      name: "Cloudflare Workers",
       category: "infra",
-      why: "Despliegue del frontend Next.js con CI/CD nativo desde main.",
+      why: "Despliegue del frontend Next.js en el edge, vía Wrangler en GitHub Actions desde main.",
     },
     {
       name: "GitHub Actions",
@@ -87,6 +87,6 @@ export const restaurant: Project = {
     challenge:
       "El manejo de errores está centralizado en un único middleware (errorHandler) que traduce excepciones de negocio (AppError) y códigos nativos de Postgres (23505 duplicado, 23503 FK inválida) a respuestas HTTP consistentes, evitando try/catch repetido en cada controlador (patrón asyncHandler). En producción, el backend en Fly.io \"duerme\" tras un rato de inactividad: la primera petición tras la inactividad puede tardar varios segundos en responder (cold start) mientras la máquina arranca. La mitigación es un workflow de GitHub Actions (keepalive.yml) que hace ping periódico a /health — el mismo endpoint pensado originalmente para probes de un orquestador, reutilizado para mantener la máquina despierta.",
     result:
-      "Ambos servicios están desplegados y comunicándose en producción de forma independiente: la web en Vercel, la API en Fly.io, vía HTTPS y JWT. La API tiene su propia suite de tests (Jest + Supertest, mocks de Postgres, sin dependencias externas) centrada en lógica de negocio — disponibilidad, ownership, reglas de reseñas — no en CRUDs triviales, y CI ejecuta lint, typecheck y tests en cada push y pull request.",
+      "Ambos servicios están desplegados y comunicándose en producción de forma independiente: la web en Cloudflare Workers, la API en Fly.io, vía HTTPS y JWT. La API tiene su propia suite de tests (Jest + Supertest, mocks de Postgres, sin dependencias externas) centrada en lógica de negocio — disponibilidad, ownership, reglas de reseñas — no en CRUDs triviales, y CI ejecuta lint, typecheck y tests en cada push y pull request.",
   },
 };

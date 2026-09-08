@@ -149,7 +149,7 @@ export const codequestRpg: Project = {
       label: "CI/CD",
       summary: "Pipeline de typecheck, lint, Vitest y Playwright, con despliegue documentado.",
       detail:
-        "GitHub Actions corre la suite completa en cada push; el deploy a Vercel usa la CLI (no la integración nativa) para que el mismo pipeline decida qué se despliega, y se salta en silencio si faltan los secrets.",
+        "GitHub Actions corre la suite completa en cada push; el deploy a Cloudflare Workers usa Wrangler por CLI para que el mismo pipeline decida qué se despliega, y se salta en silencio si faltan los secrets.",
       commitRange: "9ef5487–f2d5c9e",
     },
     {

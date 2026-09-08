@@ -42,7 +42,7 @@ export const netpulse: Project = {
     {
       name: "Render",
       category: "infra",
-      why: "Proceso persistente para el backend, necesario porque el scheduler tiene que seguir vivo entre peticiones y no solo responder bajo demanda. El frontend no lo necesita, así que va aparte en Vercel bajo demanda.",
+      why: "Proceso persistente para el backend, necesario porque el scheduler tiene que seguir vivo entre peticiones y no solo responder bajo demanda. El frontend no lo necesita, así que va aparte en Cloudflare Workers bajo demanda.",
     },
   ],
   caseStudy: {
@@ -73,6 +73,6 @@ export const netpulse: Project = {
     challenge:
       "Cada tipo de comprobación (HTTP, DNS, TCP, TLS, NTP) es una estrategia con la misma interfaz (CheckStrategy), elegida en tiempo de ejecución según el tipo de servicio — añadir un cuarto tipo de check no toca el scheduler. El scheduler lanza todos los checks activos en paralelo con Promise.allSettled para que el timeout de uno no arrastre a los demás. El caso más particular es el check de NTP: en vez de envolver una librería, implementa el protocolo a mano sobre node:dgram (paquete NTPv3 de 48 bytes) y aplica la fórmula clásica de sincronización con las cuatro marcas de tiempo (T1–T4) para calcular el desfase de reloj.",
     result:
-      "Desplegado y funcionando: backend en Render (con su scheduler corriendo de verdad contra los 21 servicios del catálogo) y frontend en Vercel, comunicándose servidor a servidor sin CORS que configurar. Los tests cubren las estrategias de check (fetch/dns/net mockeados) y la aritmética del agregado horario con una función pura, incluyendo un test que reproduce literalmente un bug real de la media. Pendiente: el plan free de Render duerme el servicio a los 15 minutos de inactividad, dejando huecos en el histórico — pasar a un plan de pago es el siguiente paso para que sea un monitor de verdad.",
+      "Desplegado y funcionando: backend en Render (con su scheduler corriendo de verdad contra los 21 servicios del catálogo) y frontend en Cloudflare Workers, comunicándose servidor a servidor sin CORS que configurar. Los tests cubren las estrategias de check (fetch/dns/net mockeados) y la aritmética del agregado horario con una función pura, incluyendo un test que reproduce literalmente un bug real de la media. Pendiente: el plan free de Render duerme el servicio a los 15 minutos de inactividad, dejando huecos en el histórico — pasar a un plan de pago es el siguiente paso para que sea un monitor de verdad.",
   },
 };

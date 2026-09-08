@@ -22,7 +22,7 @@ const KEYWORDS = [
   "React",
   "TypeScript",
   "Tailwind",
-  "Vercel",
+  "Cloudflare Workers",
   "GitHub Actions",
   "PostgreSQL",
   "Playwright",

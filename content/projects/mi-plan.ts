@@ -48,9 +48,9 @@ export const miPlan: Project = {
       why: "CI (lint, test, build) en cada push y pull request.",
     },
     {
-      name: "Vercel",
+      name: "Cloudflare Workers",
       category: "infra",
-      why: "Despliegue automático, coherente con ser una app personal de un solo usuario sin necesidad de infraestructura propia.",
+      why: "Despliegue automático vía Wrangler, coherente con ser una app personal de un solo usuario sin necesidad de infraestructura propia.",
     },
   ],
   caseStudy: {
@@ -76,6 +76,6 @@ export const miPlan: Project = {
     challenge:
       "La primera versión de la lista de la compra sumaba ingredientes y mostraba el peso total en gramos — técnicamente correcto, inútil en la práctica (\"Queso cottage 2400g\" no dice cuántos botes comprar). src/lib/shoppingList.ts mapea cada ingrediente a su formato de venta real (tarrina de 250g, cartón de 1L, docena de huevos...) y redondea hacia arriba al envase más cercano, mostrando el peso exacto solo como referencia secundaria. Es el tipo de detalle que solo aparece usando la app de verdad para hacer la compra, no diseñándola en abstracto.",
     result:
-      "En uso real desde su reescritura: desplegada en Vercel, instalable como PWA en el móvil, con CI (lint, test, build) en cada push. El diario de entrenos acumula sesiones reales de progresión de cargas, con export/import como red de seguridad frente a la pérdida de datos de localStorage.",
+      "En uso real desde su reescritura: desplegada en Cloudflare Workers, instalable como PWA en el móvil, con CI (lint, test, build) en cada push. El diario de entrenos acumula sesiones reales de progresión de cargas, con export/import como red de seguridad frente a la pérdida de datos de localStorage.",
   },
 };

@@ -277,7 +277,7 @@ export default function SobreMiPage() {
             <div className="grid gap-9 px-6 py-[26px] lg:grid-cols-[minmax(0,1fr)_306px]">
               <p className="max-w-[70ch] text-[17px] leading-relaxed text-ink-soft">
                 En Sistema de Reservas, la API y el frontend son dos repositorios
-                separados que se despliegan por separado (Fly.io / Vercel) y
+                separados que se despliegan por separado (Fly.io / Cloudflare Workers) y
                 solo se hablan por una variable de entorno — el mismo criterio
                 de tratar un servicio ajeno como una caja negra con un contrato,
                 no como código propio a medio camino.

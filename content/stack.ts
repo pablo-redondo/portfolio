@@ -60,9 +60,9 @@ export const aboutStack: TechChoice[] = [
     why: "PaaS con capa gratuita, barata para un proyecto de portfolio, a cambio de cold starts que hay que mitigar explícitamente (keepalive, reintentos).",
   },
   {
-    name: "Vercel",
+    name: "Cloudflare Workers",
     category: "infra",
-    why: "Despliegue automático desde main, sin infraestructura propia que mantener para el frontend.",
+    why: "Despliegue automático desde main vía Wrangler, en el edge y sin los cold starts del resto del stack, sin infraestructura propia que mantener.",
   },
   {
     name: "TypeScript",
