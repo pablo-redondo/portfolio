@@ -75,7 +75,7 @@ export function FeaturedProject({ project }: { project: Project }) {
         </div>
 
         {project.metric && (
-          <div className="pointer-events-none rounded-[10px] border border-line bg-bg-raised p-4.5">
+          <div className="pointer-events-none border-t border-line pt-6 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-8">
             <p className="text-mono-meta text-ink-meta uppercase">{project.metric.label}</p>
 
             <p className="mt-3 flex items-baseline gap-2.5">

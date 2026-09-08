@@ -622,6 +622,25 @@ body {
   white-space: nowrap;
 }
 
+/* --- Card dentro de una ventana de terminal -------------------
+   Tratamiento único para cualquier tarjeta que vive en el cuerpo hundido
+   de un `.win`: un tono por encima del fondo, borde fino, y solo el
+   borde reacciona. Nunca `--bg-raised` aquí — ese tono es para lo que
+   flota SOBRE un panel, y dentro de una ventana ya hundida se lee como
+   una caja clara fuera de sitio. Sin sombra ni escala: el acento entero
+   de la ventana ya es la caja. */
+.win-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-panel);
+  transition: border-color 220ms var(--ease-out);
+}
+
+.win-card:hover,
+.win-card:focus-within {
+  border-color: var(--border-strong);
+}
+
 /* --- Tabla de status ----------------------------------------
    Monitor a ancho completo. Las columnas de endpoint y latencia se caen
    por debajo de 56rem: ahí no caben sin recortar el nombre del
@@ -1299,6 +1318,10 @@ body:has(#stack:target) .hop-link[data-hop="contexto"] {
    encima. Una vuelta y se apaga, no en bucle: un brillo que no para
    distrae de lo que hay alrededor — el mismo criterio que el barrido del
    botón principal.
+
+   Reservado para `surface-featured` (el cierre de un caso de estudio):
+   es la única card que queda fuera de una ventana de terminal, así que
+   es la única a la que le sienta un acento con movimiento.
 
    El ángulo va en una custom property registrada con @property: sin
    registrar, el navegador no sabe que es un <angle> y no puede
@@ -2182,164 +2205,6 @@ details[open] > summary .phase-toggle::after {
 @media (max-width: 26rem) {
   .fact-row {
     grid-template-columns: minmax(0, 1fr);
-  }
-}
-
-/* --- Filtro del stack, sin una línea de JavaScript ---------
-   Un grupo de radios ocultos dentro de las pastillas y `:has()` para
-   ocultar lo que no toca. Se elige así en vez de con estado de React
-   porque funciona igual con el JavaScript desactivado, que es el listón
-   del resto de la web.
-
-   Si el navegador no soporta `:has()` no se pinta el filtro y se ven las
-   dieciséis: mejor eso que unas pastillas que no hacen nada. */
-
-.stack-filter {
-  display: none;
-}
-
-@supports selector(:has(*)) {
-  .stack-filter {
-    display: flex;
-  }
-
-  .stack-scope:has(input[value="frontend"]:checked)
-    [data-capa]:not([data-capa="frontend"]),
-  .stack-scope:has(input[value="backend"]:checked)
-    [data-capa]:not([data-capa="backend"]),
-  .stack-scope:has(input[value="infra"]:checked)
-    [data-capa]:not([data-capa="infra"]),
-  .stack-scope:has(input[value="tooling"]:checked)
-    [data-capa]:not([data-capa="tooling"]) {
-    display: none;
-  }
-
-  /* Las columnas se ajustan al número de tarjetas que deja ver cada filtro:
-     dos si es par, tres si es impar. La cuenta llega desde el componente en
-     una custom property, así que no hay números de contenido escritos aquí.
-
-     Solo a partir de `lg`: por debajo mandan las clases de utilidad, que ya
-     bajan a dos columnas y a una. */
-  @media (min-width: 64rem) {
-    .stack-scope:has(input[value="todo"]:checked) .stack-grid {
-      grid-template-columns: repeat(var(--cols-todo), minmax(0, 1fr));
-    }
-    .stack-scope:has(input[value="frontend"]:checked) .stack-grid {
-      grid-template-columns: repeat(var(--cols-frontend), minmax(0, 1fr));
-    }
-    .stack-scope:has(input[value="backend"]:checked) .stack-grid {
-      grid-template-columns: repeat(var(--cols-backend), minmax(0, 1fr));
-    }
-    .stack-scope:has(input[value="infra"]:checked) .stack-grid {
-      grid-template-columns: repeat(var(--cols-infra), minmax(0, 1fr));
-    }
-    .stack-scope:has(input[value="tooling"]:checked) .stack-grid {
-      grid-template-columns: repeat(var(--cols-tooling), minmax(0, 1fr));
-    }
-  }
-}
-
-/* Card de tecnología. Usa la superficie intermedia y un radio menor que
-   las tarjetas de método, para que dieciséis piezas pequeñas no se lean
-   como otra rejilla de las de arriba. */
-
-.tech-card {
-  position: relative;
-  isolation: isolate;
-  display: flex;
-  flex-direction: column;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-md);
-  background: var(--surface-2);
-  padding: 1.125rem;
-  transition:
-    border-color var(--motion-fast) var(--ease-out),
-    background-color var(--motion-fast) var(--ease-out);
-}
-
-.tech-card:hover,
-.tech-card[open] {
-  border-color: var(--accent);
-  background: var(--surface);
-}
-
-/* --- Entrada de las cards del stack ------------------------
-   Una animación, no una transición, porque las animaciones vuelven a
-   arrancar cuando un elemento pasa de `display: none` a visible. Es lo que
-   hace que al cambiar de filtro las que aparecen entren en cascada en vez
-   de aparecer de golpe, sin una línea de JavaScript.
-
-   `backwards` y no `both`: con `both` el fotograma final dejaría fijado
-   `transform: none` y se cargaría el desplazamiento del hover, porque una
-   animación pisa a las declaraciones normales. */
-
-@media (prefers-reduced-motion: no-preference) {
-  .tech-card {
-    animation: tech-in 380ms var(--ease-out) backwards;
-    /* Índice dentro de lo que enseña el filtro activo: por defecto el de la
-       lista completa, y la regla de abajo lo cambia al de la capa cuando hay
-       una marcada. Los dos los pone el componente en cada tarjeta. El tope
-       corta la cascada donde deja de leerse como cascada y empieza a ser
-       espera. */
-    --n: var(--i);
-    animation-delay: calc(min(var(--n, 0), 7) * 32ms);
-  }
-
-  /* `nth-child` cuenta hijos del DOM, no tarjetas visibles: con el filtro
-     en infra (las tarjetas 9, 10 y 11 de la lista) las tres caían en el
-     mismo escalón y entraban de golpe tras una pausa muerta, mientras que
-     frontend (1 a 4) sí escalonaba. De ahí que cada filtro se moviera
-     distinto. Con "todo" manda el índice global; con una capa, el índice
-     dentro de esa capa, que es justo el orden en que se ven. */
-  .stack-scope:has(input[value="frontend"]:checked) .tech-card,
-  .stack-scope:has(input[value="backend"]:checked) .tech-card,
-  .stack-scope:has(input[value="infra"]:checked) .tech-card,
-  .stack-scope:has(input[value="tooling"]:checked) .tech-card {
-    --n: var(--j);
-    /* Mismos fotogramas que `tech-in`, otro nombre a propósito. Una
-       animación solo vuelve a arrancar si cambia de nombre o si el elemento
-       pasa por `display: none`. Entre dos capas distintas no se salvaba
-       ninguna tarjeta, así que reentraban solas; pero entre "todo" y una
-       capa las de esa capa nunca se ocultan, y se quedaban quietas
-       saltando a su nueva posición mientras el resto sí animaba. Con el
-       nombre distinto la rejilla se recompone entera, venga de donde
-       venga. */
-    animation-name: tech-in-capa;
-  }
-}
-
-/* Dentro de un bloque con reveal la cascada espera a que el bloque entre en
-   pantalla; si arrancase al cargar, habría terminado antes de que el
-   usuario baje hasta ella. Detrás de `scripting: enabled` porque sin JS el
-   atributo se queda en "out" para siempre. */
-@media (prefers-reduced-motion: no-preference) and (scripting: enabled) {
-  [data-reveal="out"] .tech-card {
-    animation: none;
-    opacity: 0;
-  }
-}
-
-@keyframes tech-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px) scale(0.98);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-/* Copia deliberada de `tech-in`: lo que importa aquí es el nombre, no los
-   fotogramas (ver el bloque de arriba). */
-@keyframes tech-in-capa {
-  from {
-    opacity: 0;
-    transform: translateY(10px) scale(0.98);
-  }
-  to {
-    opacity: 1;
-    transform: none;
   }
 }
 
