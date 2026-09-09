@@ -274,10 +274,10 @@ export default function SobreMiPage() {
 
           {/* Prueba de la primera etapa: no es solo la anécdota de Indra, es
               algo que se puede ir a comprobar en un proyecto propio. */}
-          <Reveal className="surface-panel mt-4 overflow-hidden !p-0">
+          <Reveal className="surface-panel incident-panel mt-4 overflow-hidden !p-0">
             <div className="flex flex-wrap items-center gap-2.5 border-b border-line px-6 py-3.5">
-              <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-accent" />
-              <span className="font-mono text-xs text-ink">--codigo-ajeno</span>
+              <span aria-hidden className="live-dot h-1.5 w-1.5 rounded-full bg-accent" />
+              <span className="typing-caret font-mono text-xs text-ink">--codigo-ajeno</span>
               <span className="ml-auto font-mono text-[11px] text-ink-meta">
                 partiendo de un repo existente
               </span>
@@ -305,7 +305,7 @@ export default function SobreMiPage() {
             </div>
           </Reveal>
 
-          <Reveal className="surface-panel mt-6 p-6">
+          <Reveal className="surface-panel incident-panel mt-6 p-6">
             <div className="flex flex-wrap items-center gap-3">
               <span className="bg-warn/15 text-warn rounded font-mono text-[10px] tracking-wide uppercase px-2 py-1">
                 Known issues
@@ -313,16 +313,16 @@ export default function SobreMiPage() {
               <span className="text-mono-meta text-ink-meta">lo que todavía no sé hacer</span>
             </div>
 
-            <div className="mt-5 grid gap-6 lg:grid-cols-3">
+            <Reveal stagger className="mt-5 grid gap-6 lg:grid-cols-3">
               {KNOWN_ISSUES.map((text, i) => (
-                <div key={i} className="flex flex-col gap-2.5">
-                  <span className="text-warn font-mono text-[11px] font-medium">
+                <div key={i} className="issue-card flex flex-col gap-2.5">
+                  <span className="issue-num text-warn font-mono text-[11px] font-medium">
                     #{i + 1}
                   </span>
                   <p className="text-sm leading-relaxed text-ink-soft">{text}</p>
                 </div>
               ))}
-            </div>
+            </Reveal>
           </Reveal>
         </Container>
       </section>
