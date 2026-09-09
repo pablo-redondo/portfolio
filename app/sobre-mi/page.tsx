@@ -6,7 +6,7 @@ import { StackExplorer } from "@/components/StackExplorer";
 import { CareerTraceroute, type TraceHop } from "@/components/CareerTraceroute";
 import { Reveal } from "@/components/Reveal";
 import { HeroRoutes } from "@/components/HeroRoutes";
-import { CommitLog, type Commit } from "@/components/CommitLog";
+import { MethodPanes, type Stage } from "@/components/MethodPanes";
 import { SectionSpine } from "@/components/SectionSpine";
 import { TerminalWindow } from "@/components/TerminalWindow";
 import { aboutStack } from "@/content/stack";
@@ -40,30 +40,33 @@ const FICHA: { label: string; value: string }[] = [
   { label: "Buscando", value: "Primera posición como desarrollador" },
 ];
 
-// Cada commit es un rasgo con una prueba real detrás, no una virtud
+// Cada panel es un rasgo con una prueba real detrás, no una virtud
 // declarada. La prueba es el dato que hace que la frase no sea intercambiable
 // con la de cualquier otro portfolio.
 //
 // Van en el orden en que ocurren durante una incidencia — leer, diagnosticar,
-// cambiar — pero contados como historia (un `git log`), no como estaciones
-// de una máquina. `hash` es decorativo, el mismo recurso que un ID de traza:
-// no es un commit real que se pueda consultar. `cue` es la línea de stat al
-// pie de cada uno.
-const COMMITS: Commit[] = [
+// cambiar — pero cada uno deja un rastro de terminal distinto (un commit, un
+// check de red, un diff), no la misma tarjeta repetida tres veces. `hash` es
+// decorativo, el mismo recurso que un ID de traza: no es un commit real que
+// se pueda consultar. `cue` es la línea de stat al pie de cada uno.
+const STAGES: Stage[] = [
   {
     hash: "e6a19c2",
+    command: "git log -1 --stat",
     title: "Cómodo en código que no es mío",
     body: "En las prácticas en Indra no partía de cero: eran endpoints REST sobre microservicios ya en producción, con su propio flujo de revisión. Entender una convención ajena antes de tocarla es un hábito, no una excepción.",
     cue: "entrada: código que no es mío",
   },
   {
     hash: "4f2b8d1",
+    command: "checks --tcp --dns --tls",
     title: "Diagnóstico antes que reinicio",
     body: "Dando soporte a una red corporativa en 24×7 aprendes a no conformarte con 'no responde': hay que mirar dónde se rompe de verdad. Es el mismo criterio detrás de NetPulse: checks reales por TCP, DNS y TLS, no un ping que solo dice sí o no.",
     cue: "salida: causa identificada",
   },
   {
     hash: "91c7a05",
+    command: "git diff --stat HEAD~3",
     title: "Por fases, sin dejarlo roto entre pasos",
     body: "CodeQuest RPG era una prueba de concepto abandonada a medias. Lo reconstruí en fases: la migración a TypeScript fue archivo por archivo, comprobando build y juego jugable en cada paso, en vez de una reescritura de golpe que se rompe a mitad sin que te enteres.",
     cue: "salida: nada roto entre pasos",
@@ -269,28 +272,28 @@ export default function SobreMiPage() {
       <section className="pt-[92px]">
         <Container rail>
           <SectionHead
-            label="git log --stat -3"
-            count={`${COMMITS.length} commits`}
+            label="./cómo-trabajo.sh --run"
+            count={`${STAGES.length} comprobaciones`}
             title="Cómo trabajo"
           >
             <p className="text-body mb-[30px] max-w-[62ch] text-ink-soft">
               No son tres virtudes en una lista — es el mismo criterio
-              apareciendo tres veces, con un proyecto real detrás de cada
-              vez. El log no miente: esto es lo que hay.
+              dejando un rastro distinto cada vez, con un proyecto real
+              detrás. Tres terminales, tres pruebas, ningún adjetivo suelto.
             </p>
           </SectionHead>
 
           <Reveal>
-            <CommitLog commits={COMMITS} />
+            <MethodPanes stages={STAGES} />
           </Reveal>
 
-          {/* Prueba del primer commit: no es solo la anécdota de Indra, es
+          {/* Prueba del primer panel: no es solo la anécdota de Indra, es
               algo que se puede ir a comprobar en un proyecto propio. */}
           <Reveal className="surface-panel incident-panel mt-4 overflow-hidden !p-0">
             <div className="flex flex-wrap items-center gap-2.5 border-b border-line px-6 py-3.5">
               <span aria-hidden className="live-dot h-1.5 w-1.5 rounded-full bg-accent" />
               <span className="typing-caret font-mono text-xs text-ink">
-                git show {COMMITS[0].hash} --stat
+                git show {STAGES[0].hash} --stat
               </span>
               <span className="ml-auto font-mono text-[11px] text-ink-meta">
                 partiendo de un repo existente

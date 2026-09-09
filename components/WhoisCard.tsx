@@ -26,7 +26,7 @@ const FILAS: { label: string; value: string }[] = [
   { label: "ubicación", value: "Galicia, España" },
   { label: "respuesta", value: "< 24 h" },
   { label: "estado", value: "buscando primer puesto dev" },
-  { label: "modalidad", value: "presencial · híbrido · remoto" },
+  { label: "modalidad", value: "remoto" },
 ];
 
 /**

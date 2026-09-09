@@ -476,77 +476,19 @@ body {
   color: var(--ink);
 }
 
-/* --- "Cómo trabajo" como un git log --------------------------
-   Tres commits en vertical con su propio grafo, no tres tarjetas
-   iguales en fila: el orden en que ocurren (leer, diagnosticar,
-   cambiar) se lee como historia, no como pasos de una máquina.
-
-   Cada fila es su propio flex con un carril (`.commit-rail`) a la
-   izquierda: el nodo va fijo cerca de la línea de asunto del commit
-   (no centrado en la fila entera, que con un cuerpo largo lo dejaría
-   descolgado) y el trazo del carril ocupa el alto completo de la fila
-   para que conecte sin huecos con la fila siguiente. Solo la primera
-   fila recorta el trazo por encima del nodo y solo la última lo
-   recorta por debajo — así el grafo no sobresale ni por arriba ni
-   por abajo del log. */
-.commit-row {
-  display: flex;
-  gap: 16px;
-}
-
-.commit-row:not(:last-child) {
-  border-bottom: 1px solid var(--border);
-}
-
-.commit-rail {
-  position: relative;
-  width: 11px;
-  flex: none;
-}
-
-.commit-rail::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: 1px;
-  background: var(--border);
-  transform: translateX(-50%);
-}
-
-.commit-row:first-child .commit-rail::before {
-  top: 11px;
-}
-
-.commit-row:last-child .commit-rail::before {
-  bottom: calc(100% - 11px);
-}
-
-.commit-dot {
-  position: absolute;
-  top: 6px;
-  left: 50%;
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  background: var(--bg-inset);
-  border: 1.5px solid var(--border-strong);
-  transform: translateX(-50%);
-  transition:
-    border-color 220ms var(--ease-out),
-    box-shadow 220ms var(--ease-out);
+/* --- "Cómo trabajo" como tres paneles de terminal ---------------
+   No una tarjeta repetida tres veces: tres ventanas independientes en
+   paralelo, cada una con la salida real de su propio comando. El
+   levantamiento al hover es el mismo lenguaje que ya usa `.project-card`
+   en toda la web, no uno nuevo. */
+.method-pane {
+  transition: transform 240ms var(--ease-out);
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .commit-row:hover .commit-dot {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 4px var(--accent-soft);
+  .method-pane:hover {
+    transform: translateY(-4px);
   }
-}
-
-.commit-hash {
-  color: var(--accent);
 }
 
 /* --- Fila del índice de proyectos -------------------------------
@@ -846,26 +788,10 @@ body {
    fija. */
 .trace-grid {
   display: grid;
-  grid-template-columns: 1.75rem minmax(0, 1fr) 5rem;
+  grid-template-columns: 1.75rem minmax(0, 1fr) 4.5rem;
   gap: 10px;
-  align-items: baseline;
+  align-items: start;
   padding: 15px 20px;
-}
-
-.trace-host,
-.trace-window {
-  display: none;
-}
-
-@media (min-width: 40rem) {
-  .trace-grid {
-    grid-template-columns: 1.75rem minmax(0, 1fr) minmax(0, 9rem) minmax(0, 8rem) 5rem;
-  }
-
-  .trace-host,
-  .trace-window {
-    display: block;
-  }
 }
 
 /* --- Punto con anillo de pulso --------------------------------

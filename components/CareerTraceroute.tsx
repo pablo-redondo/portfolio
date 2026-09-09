@@ -54,8 +54,6 @@ export function CareerTraceroute({ hops }: { hops: TraceHop[] }) {
         <div className="trace-grid !p-0">
           <span className="text-mono-meta text-ink-meta uppercase">hop</span>
           <span className="text-mono-meta text-ink-meta uppercase">puesto</span>
-          <span className="trace-host text-mono-meta text-ink-meta uppercase">host</span>
-          <span className="trace-window text-mono-meta text-ink-meta uppercase">ventana</span>
           <span className="text-mono-meta text-right text-ink-meta uppercase">tiempo</span>
         </div>
       </div>
@@ -65,23 +63,22 @@ export function CareerTraceroute({ hops }: { hops: TraceHop[] }) {
         return (
           <details key={`${hop.company}-${hop.dates}`} className="status-row" open={i === 0}>
             <summary className="trace-grid cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-              <span className="text-mono-data text-ink-meta tabular-nums">{i + 1}</span>
+              <span className="text-mono-data pt-0.5 text-ink-meta tabular-nums">{i + 1}</span>
               <span className="min-w-0">
-                <span className="block truncate font-semibold text-ink">{hop.role}</span>
-                {hop.start && !hop.end && (
-                  <span className="text-mono-meta inline-flex items-center gap-1.5 text-ok normal-case">
-                    <span aria-hidden className="pulse-dot h-1.5 w-1.5 rounded-full bg-current" />
-                    actual
-                  </span>
-                )}
+                <span className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                  <span className="font-semibold text-ink">{hop.role}</span>
+                  {hop.start && !hop.end && (
+                    <span className="text-mono-meta inline-flex items-center gap-1.5 text-ok normal-case">
+                      <span aria-hidden className="pulse-dot h-1.5 w-1.5 rounded-full bg-current" />
+                      actual
+                    </span>
+                  )}
+                </span>
+                <span className="text-mono-data mt-0.5 block text-ink-meta">
+                  <span className="text-accent">{hop.company}</span> · {hop.dates}
+                </span>
               </span>
-              <span className="trace-host text-mono-data min-w-0 truncate text-accent">
-                {hop.company}
-              </span>
-              <span className="trace-window text-mono-data min-w-0 truncate text-ink-soft">
-                {hop.dates}
-              </span>
-              <span className="text-mono-data text-right text-ink tabular-nums">
+              <span className="text-mono-data pt-0.5 text-right text-ink tabular-nums">
                 {tiempo ?? "—"}
               </span>
             </summary>
