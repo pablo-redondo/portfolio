@@ -6,7 +6,7 @@ import { StackExplorer } from "@/components/StackExplorer";
 import { CareerTraceroute, type TraceHop } from "@/components/CareerTraceroute";
 import { Reveal } from "@/components/Reveal";
 import { HeroRoutes } from "@/components/HeroRoutes";
-import { MethodPanes, type Stage } from "@/components/MethodPanes";
+import { MethodTabs, type Stage } from "@/components/MethodTabs";
 import { SectionSpine } from "@/components/SectionSpine";
 import { TerminalWindow } from "@/components/TerminalWindow";
 import { aboutStack } from "@/content/stack";
@@ -49,7 +49,7 @@ const FICHA: { label: string; value: string }[] = [
 // check de red, un diff), no la misma tarjeta repetida tres veces. `hash` es
 // decorativo, el mismo recurso que un ID de traza: no es un commit real que
 // se pueda consultar. `cue` es la línea de stat al pie de cada uno.
-const STAGES: Stage[] = [
+const STAGES: [Stage, Stage, Stage] = [
   {
     hash: "e6a19c2",
     command: "git log -1 --stat",
@@ -279,12 +279,12 @@ export default function SobreMiPage() {
             <p className="text-body mb-[30px] max-w-[62ch] text-ink-soft">
               No son tres virtudes en una lista — es el mismo criterio
               dejando un rastro distinto cada vez, con un proyecto real
-              detrás. Tres terminales, tres pruebas, ningún adjetivo suelto.
+              detrás de cada uno. Elige cuál mirar.
             </p>
           </SectionHead>
 
           <Reveal>
-            <MethodPanes stages={STAGES} />
+            <MethodTabs stages={STAGES} />
           </Reveal>
 
           {/* Prueba del primer panel: no es solo la anécdota de Indra, es

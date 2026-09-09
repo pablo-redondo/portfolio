@@ -476,19 +476,116 @@ body {
   color: var(--ink);
 }
 
-/* --- "Cómo trabajo" como tres paneles de terminal ---------------
-   No una tarjeta repetida tres veces: tres ventanas independientes en
-   paralelo, cada una con la salida real de su propio comando. El
-   levantamiento al hover es el mismo lenguaje que ya usa `.project-card`
-   en toda la web, no uno nuevo. */
-.method-pane {
-  transition: transform 240ms var(--ease-out);
+/* --- "Cómo trabajo" como un explorador de dos columnas -----------
+   La única sección de la página sin el marco `.win`: índice a la
+   izquierda, detalle a la derecha, como una barra lateral de docs o de
+   editor. Con una sola etapa visible a la vez el panel usa su ancho
+   entero — no hay "cue" descolgada ni columnas que no cuadren entre sí.
+
+   Las pestañas son radios ocultos (visualmente, no del DOM: siguen
+   enfocables por teclado) justo antes de `.stage-shell`, alcanzados con
+   el combinador `~`. Cero JS — funciona igual si el bundle nunca carga,
+   el mismo criterio que ya sigue Reveal en toda la web. */
+.stage-radio {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .method-pane:hover {
-    transform: translateY(-4px);
+.stage-shell {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+@media (min-width: 64rem) {
+  .stage-shell {
+    flex-direction: row;
   }
+}
+
+.stage-nav {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 64rem) {
+  .stage-nav {
+    width: 280px;
+    flex: none;
+    border-right: 1px solid var(--border);
+  }
+}
+
+.stage-tab {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--border);
+  padding: 16px 20px;
+  transition: background 160ms var(--ease-out);
+}
+
+@media (min-width: 64rem) {
+  .stage-nav .stage-tab:last-child {
+    border-bottom: none;
+  }
+}
+
+.stage-tab:hover {
+  background: var(--bg-raised);
+}
+
+.stage-tab-index {
+  flex: none;
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  color: var(--ink-meta);
+}
+
+.stage-tab-command {
+  color: var(--ink-meta);
+}
+
+.stage-panels {
+  flex: 1;
+  min-width: 0;
+}
+
+.stage-panel {
+  display: none;
+}
+
+#stage-0:checked ~ .stage-shell .stage-panel[data-idx="0"],
+#stage-1:checked ~ .stage-shell .stage-panel[data-idx="1"],
+#stage-2:checked ~ .stage-shell .stage-panel[data-idx="2"] {
+  display: block;
+}
+
+#stage-0:checked ~ .stage-shell .stage-tab[data-idx="0"],
+#stage-1:checked ~ .stage-shell .stage-tab[data-idx="1"],
+#stage-2:checked ~ .stage-shell .stage-tab[data-idx="2"] {
+  background: var(--bg-raised);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+#stage-0:checked ~ .stage-shell .stage-tab[data-idx="0"] .stage-tab-index,
+#stage-0:checked ~ .stage-shell .stage-tab[data-idx="0"] .stage-tab-command,
+#stage-1:checked ~ .stage-shell .stage-tab[data-idx="1"] .stage-tab-index,
+#stage-1:checked ~ .stage-shell .stage-tab[data-idx="1"] .stage-tab-command,
+#stage-2:checked ~ .stage-shell .stage-tab[data-idx="2"] .stage-tab-index,
+#stage-2:checked ~ .stage-shell .stage-tab[data-idx="2"] .stage-tab-command {
+  color: var(--accent);
+}
+
+#stage-0:focus-visible ~ .stage-shell .stage-tab[data-idx="0"],
+#stage-1:focus-visible ~ .stage-shell .stage-tab[data-idx="1"],
+#stage-2:focus-visible ~ .stage-shell .stage-tab[data-idx="2"] {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
 }
 
 /* --- Fila del índice de proyectos -------------------------------
