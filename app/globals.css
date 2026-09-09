@@ -387,6 +387,23 @@ body {
   }
 }
 
+/* --- Línea de archivo (workflow-ia.md) --------------------------
+   El label de la sección promete un `cat workflow-ia.md`: en vez de
+   otra rejilla de cards, el contenido se pinta como la salida real de
+   ese comando — numerada como `cat -n`, con hover de línea como en un
+   editor de código. */
+.file-line {
+  transition: background 160ms var(--ease-out);
+}
+
+.file-line:hover {
+  background: var(--bg-raised);
+}
+
+.file-line:not(:last-child) {
+  border-bottom: 1px solid var(--border);
+}
+
 /* Etiqueta numerada de un "known issue": un pequeño acuse al pasar por
    encima, para que la rejilla no se quede plana entre las tres cards. */
 .issue-num {
@@ -1485,6 +1502,28 @@ body:has(#stack:target) .hop-link[data-hop="contexto"] {
   }
   [data-enter="4"] {
     animation-delay: 320ms;
+  }
+}
+
+/* --- Secuencia de arranque de la ficha del hero ------------
+   Las filas de la `dl` no aparecen todas de golpe con el resto del
+   card: se imprimen una a una, como el log real de un `uname -a`
+   devolviendo su salida línea a línea. Arranca cuando el card ya es
+   visible (320ms) para que se lea como una continuación, no como una
+   animación aparte compitiendo por la atención. */
+@media (prefers-reduced-motion: no-preference) {
+  [data-boot] {
+    animation: enter-up 520ms var(--ease-out) both;
+    animation-delay: 420ms;
+  }
+  [data-boot="2"] {
+    animation-delay: 500ms;
+  }
+  [data-boot="3"] {
+    animation-delay: 580ms;
+  }
+  [data-boot="4"] {
+    animation-delay: 660ms;
   }
 }
 

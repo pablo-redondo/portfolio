@@ -8,6 +8,7 @@ import { Reveal } from "@/components/Reveal";
 import { HeroRoutes } from "@/components/HeroRoutes";
 import { MethodPipeline, type MethodStage } from "@/components/MethodPipeline";
 import { SectionSpine } from "@/components/SectionSpine";
+import { TerminalWindow } from "@/components/TerminalWindow";
 import { aboutStack } from "@/content/stack";
 import { SITE } from "@/content/site";
 import { projects } from "@/content/projects";
@@ -219,13 +220,19 @@ export default function SobreMiPage() {
                 {/* Cada dato en su propia fila con separador, como una
                     salida tabulada de terminal y no una lista suelta. */}
                 <dl className="pb-1.5">
-                  {FICHA.map((fact) => (
+                  {FICHA.map((fact, i) => (
                     <div
                       key={fact.label}
+                      data-boot={i + 1}
                       className="flex items-baseline justify-between gap-4 border-t border-[var(--bg-raised)] px-5 py-3"
                     >
                       <dt className="font-mono text-xs text-ink-meta">{fact.label}</dt>
-                      <dd className="text-mono-data text-right text-ink">{fact.value}</dd>
+                      <dd className="text-mono-data text-right text-ink">
+                        {fact.value}
+                        {i === FICHA.length - 1 && (
+                          <span aria-hidden className="typing-caret" />
+                        )}
+                      </dd>
                     </div>
                   ))}
                 </dl>
@@ -341,17 +348,26 @@ export default function SobreMiPage() {
             </p>
           </SectionHead>
 
-          <Reveal className="surface-panel p-6">
-            <div className="grid gap-6 lg:grid-cols-3">
-              {IA_RULES.map((text, i) => (
-                <div key={i} className="flex flex-col gap-2.5">
-                  <span className="text-accent font-mono text-[11px] font-medium">
-                    #{i + 1}
-                  </span>
-                  <p className="text-sm leading-relaxed text-ink-soft">{text}</p>
-                </div>
-              ))}
-            </div>
+          {/* El label de la sección dice "cat workflow-ia.md" — el contenido
+              se pinta como esa salida de verdad (numerada, línea a línea),
+              no como otra rejilla de cards con las mismas tres columnas que
+              known issues. */}
+          <Reveal>
+            <TerminalWindow title="workflow-ia.md">
+              <div>
+                {IA_RULES.map((text, i) => (
+                  <div key={i} className="file-line flex gap-4 px-5 py-4">
+                    <span className="text-mono-data w-4 shrink-0 text-right text-ink-meta/60">
+                      {i + 1}
+                    </span>
+                    <p className="font-mono text-[13px] leading-relaxed text-ink-soft">
+                      <span className="text-accent">## </span>
+                      {text}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </TerminalWindow>
           </Reveal>
         </Container>
       </section>
