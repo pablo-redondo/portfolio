@@ -476,139 +476,77 @@ body {
   color: var(--ink);
 }
 
-/* --- Método como tubería de tres etapas (catálogo #15) ---------
-   Tres tarjetas con un conector punteado entre ellas. Los conectores
-   solo existen a partir de `lg`: apiladas en vertical, una línea de
-   puntos entre columnas contiguas no significaría nada. */
-.method-pipeline {
-  display: grid;
+/* --- "Cómo trabajo" como un git log --------------------------
+   Tres commits en vertical con su propio grafo, no tres tarjetas
+   iguales en fila: el orden en que ocurren (leer, diagnosticar,
+   cambiar) se lee como historia, no como pasos de una máquina.
+
+   Cada fila es su propio flex con un carril (`.commit-rail`) a la
+   izquierda: el nodo va fijo cerca de la línea de asunto del commit
+   (no centrado en la fila entera, que con un cuerpo largo lo dejaría
+   descolgado) y el trazo del carril ocupa el alto completo de la fila
+   para que conecte sin huecos con la fila siguiente. Solo la primera
+   fila recorta el trazo por encima del nodo y solo la última lo
+   recorta por debajo — así el grafo no sobresale ni por arriba ni
+   por abajo del log. */
+.commit-row {
+  display: flex;
   gap: 16px;
 }
 
-@media (min-width: 64rem) {
-  .method-pipeline {
-    grid-template-columns: minmax(0, 1fr) 26px minmax(0, 1fr) 26px minmax(0, 1fr);
-    align-items: stretch;
-    gap: 0;
-  }
+.commit-row:not(:last-child) {
+  border-bottom: 1px solid var(--border);
 }
 
-.method-card {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  border-radius: 10px;
-  transition: transform 260ms var(--ease-out);
+.commit-rail {
+  position: relative;
+  width: 11px;
+  flex: none;
+}
+
+.commit-rail::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  background: var(--border);
+  transform: translateX(-50%);
+}
+
+.commit-row:first-child .commit-rail::before {
+  top: 11px;
+}
+
+.commit-row:last-child .commit-rail::before {
+  bottom: calc(100% - 11px);
+}
+
+.commit-dot {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--bg-inset);
+  border: 1.5px solid var(--border-strong);
+  transform: translateX(-50%);
+  transition:
+    border-color 220ms var(--ease-out),
+    box-shadow 220ms var(--ease-out);
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .method-card:hover {
-    transform: translateY(-3px);
-  }
-
-  .method-card:hover .method-chip {
-    background: var(--accent);
-    color: var(--accent-ink);
+  .commit-row:hover .commit-dot {
+    border-color: var(--accent);
     box-shadow: 0 0 0 4px var(--accent-soft);
   }
 }
 
-/* Sin la caja no hay borde que delimite cada etapa: en vertical (por
-   debajo de `lg`, donde el conector punteado no se pinta) una regla
-   arriba hace ese trabajo. A partir de `lg` las etapas ya están una al
-   lado de la otra y es el conector el que las separa. */
-@media (max-width: 63.9375rem) {
-  .method-card:not(:first-child) {
-    border-top: 1px solid var(--border);
-    padding-top: 20px;
-  }
-}
-
-.method-chip {
-  display: flex;
-  width: 26px;
-  height: 26px;
-  flex: none;
-  align-items: center;
-  justify-content: center;
-  border-radius: 7px;
-  background: var(--bg-raised);
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 11px;
-  font-weight: 600;
-  line-height: 1;
-  color: var(--ink-meta);
-  transition:
-    background 220ms var(--ease-out),
-    color 220ms var(--ease-out),
-    box-shadow 220ms var(--ease-out);
-}
-
-.method-link {
-  display: none;
-}
-
-@media (min-width: 64rem) {
-  .method-link {
-    display: block;
-    position: relative;
-    align-self: center;
-    height: 1px;
-    width: 100%;
-    overflow: visible;
-    background-image: repeating-linear-gradient(
-      90deg,
-      #2a3a43 0,
-      #2a3a43 5px,
-      transparent 5px,
-      transparent 11px
-    );
-  }
-
-  /* Un pulso que recorre cada conector: la tubería no es solo una línea
-     entre tarjetas, es la incidencia moviéndose de una etapa a la
-     siguiente. El segundo conector arranca cuando el primero ya está a
-     mitad de camino, para que se lea como una única señal en tránsito
-     y no como dos parpadeos sincronizados. */
-  .method-link::after {
-    content: "";
-    position: absolute;
-    top: -2.5px;
-    left: 0;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--accent);
-    box-shadow: 0 0 8px 2px var(--accent-glow);
-    opacity: 0;
-  }
-}
-
-@media (min-width: 64rem) and (prefers-reduced-motion: no-preference) {
-  .method-link::after {
-    animation: pipeline-flow 2.6s var(--ease-out) infinite;
-  }
-
-  .method-link:nth-of-type(2)::after {
-    animation-delay: 1.3s;
-  }
-}
-
-@keyframes pipeline-flow {
-  0% {
-    left: 0;
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  85% {
-    opacity: 1;
-  }
-  100% {
-    left: calc(100% - 6px);
-    opacity: 0;
-  }
+.commit-hash {
+  color: var(--accent);
 }
 
 /* --- Fila del índice de proyectos -------------------------------

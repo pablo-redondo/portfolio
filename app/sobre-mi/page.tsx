@@ -6,7 +6,7 @@ import { StackExplorer } from "@/components/StackExplorer";
 import { CareerTraceroute, type TraceHop } from "@/components/CareerTraceroute";
 import { Reveal } from "@/components/Reveal";
 import { HeroRoutes } from "@/components/HeroRoutes";
-import { MethodPipeline, type MethodStage } from "@/components/MethodPipeline";
+import { CommitLog, type Commit } from "@/components/CommitLog";
 import { SectionSpine } from "@/components/SectionSpine";
 import { TerminalWindow } from "@/components/TerminalWindow";
 import { aboutStack } from "@/content/stack";
@@ -40,25 +40,30 @@ const FICHA: { label: string; value: string }[] = [
   { label: "Buscando", value: "Primera posición como desarrollador" },
 ];
 
-// Cada tarjeta es un rasgo con una prueba real detrás, no una virtud
+// Cada commit es un rasgo con una prueba real detrás, no una virtud
 // declarada. La prueba es el dato que hace que la frase no sea intercambiable
 // con la de cualquier otro portfolio.
 //
 // Van en el orden en que ocurren durante una incidencia — leer, diagnosticar,
-// cambiar — porque el sistema de diseño los pinta como una tubería y no como
-// tres virtudes sueltas. `cue` es lo que entra o sale de cada etapa.
-const RASGOS: MethodStage[] = [
+// cambiar — pero contados como historia (un `git log`), no como estaciones
+// de una máquina. `hash` es decorativo, el mismo recurso que un ID de traza:
+// no es un commit real que se pueda consultar. `cue` es la línea de stat al
+// pie de cada uno.
+const COMMITS: Commit[] = [
   {
+    hash: "e6a19c2",
     title: "Cómodo en código que no es mío",
     body: "En las prácticas en Indra no partía de cero: eran endpoints REST sobre microservicios ya en producción, con su propio flujo de revisión. Entender una convención ajena antes de tocarla es un hábito, no una excepción.",
     cue: "entrada: código que no es mío",
   },
   {
+    hash: "4f2b8d1",
     title: "Diagnóstico antes que reinicio",
     body: "Dando soporte a una red corporativa en 24×7 aprendes a no conformarte con 'no responde': hay que mirar dónde se rompe de verdad. Es el mismo criterio detrás de NetPulse: checks reales por TCP, DNS y TLS, no un ping que solo dice sí o no.",
     cue: "salida: causa identificada",
   },
   {
+    hash: "91c7a05",
     title: "Por fases, sin dejarlo roto entre pasos",
     body: "CodeQuest RPG era una prueba de concepto abandonada a medias. Lo reconstruí en fases: la migración a TypeScript fue archivo por archivo, comprobando build y juego jugable en cada paso, en vez de una reescritura de golpe que se rompe a mitad sin que te enteres.",
     cue: "salida: nada roto entre pasos",
@@ -264,27 +269,29 @@ export default function SobreMiPage() {
       <section className="pt-[92px]">
         <Container rail>
           <SectionHead
-            label="runbook --incidente"
-            count={`${RASGOS.length} etapas`}
+            label="git log --stat -3"
+            count={`${COMMITS.length} commits`}
             title="Cómo trabajo"
           >
             <p className="text-body mb-[30px] max-w-[62ch] text-ink-soft">
-              Lo mismo que hacía con una incidencia a las tres de la mañana,
-              aplicado a escribir código. Tres etapas en orden, cada una con un
-              proyecto que la demuestra.
+              No son tres virtudes en una lista — es el mismo criterio
+              apareciendo tres veces, con un proyecto real detrás de cada
+              vez. El log no miente: esto es lo que hay.
             </p>
           </SectionHead>
 
           <Reveal>
-            <MethodPipeline stages={RASGOS} />
+            <CommitLog commits={COMMITS} />
           </Reveal>
 
-          {/* Prueba de la primera etapa: no es solo la anécdota de Indra, es
+          {/* Prueba del primer commit: no es solo la anécdota de Indra, es
               algo que se puede ir a comprobar en un proyecto propio. */}
           <Reveal className="surface-panel incident-panel mt-4 overflow-hidden !p-0">
             <div className="flex flex-wrap items-center gap-2.5 border-b border-line px-6 py-3.5">
               <span aria-hidden className="live-dot h-1.5 w-1.5 rounded-full bg-accent" />
-              <span className="typing-caret font-mono text-xs text-ink">--codigo-ajeno</span>
+              <span className="typing-caret font-mono text-xs text-ink">
+                git show {COMMITS[0].hash} --stat
+              </span>
               <span className="ml-auto font-mono text-[11px] text-ink-meta">
                 partiendo de un repo existente
               </span>
@@ -312,19 +319,22 @@ export default function SobreMiPage() {
             </div>
           </Reveal>
 
-          <Reveal className="surface-panel incident-panel mt-6 p-6">
-            <div className="flex flex-wrap items-center gap-3">
-              <span className="bg-warn/15 text-warn rounded font-mono text-[10px] tracking-wide uppercase px-2 py-1">
-                Known issues
+          {/* Autocrítica como un `git status` honesto: lo que aún no está
+              "trackeado" en la experiencia real, no una rejilla de cards
+              más — y sin numerar #1/#2/#3 lo que no es una secuencia. */}
+          <Reveal className="surface-panel incident-panel mt-6 overflow-hidden !p-0">
+            <div className="flex flex-wrap items-center gap-2.5 border-b border-line px-6 py-3.5">
+              <span className="font-mono text-xs text-ink">git status --short</span>
+              <span className="ml-auto font-mono text-[11px] text-ink-meta">
+                lo que todavía no sé hacer
               </span>
-              <span className="text-mono-meta text-ink-meta">lo que todavía no sé hacer</span>
             </div>
 
-            <Reveal stagger className="mt-5 grid gap-6 lg:grid-cols-3">
+            <Reveal stagger className="grid gap-6 p-6 lg:grid-cols-3">
               {KNOWN_ISSUES.map((text, i) => (
                 <div key={i} className="issue-card flex flex-col gap-2.5">
                   <span className="issue-num text-warn font-mono text-[11px] font-medium">
-                    #{i + 1}
+                    ??
                   </span>
                   <p className="text-sm leading-relaxed text-ink-soft">{text}</p>
                 </div>
