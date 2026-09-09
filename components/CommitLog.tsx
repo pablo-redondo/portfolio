@@ -25,17 +25,24 @@ export function CommitLog({ commits }: { commits: Commit[] }) {
               <span className="commit-dot" />
             </span>
 
-            <div className="min-w-0 pb-0.5">
-              <div className="mb-1.5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                <span className="commit-hash font-mono text-xs">{commit.hash}</span>
-                <h3 className="font-sans text-[20px] leading-tight font-extrabold tracking-tight text-ink">
-                  {commit.title}
-                </h3>
+            <div className="flex min-w-0 flex-1 flex-col gap-3 pb-0.5 lg:flex-row lg:justify-between lg:gap-8">
+              <div className="min-w-0">
+                <div className="mb-1.5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                  <span className="commit-hash font-mono text-xs">{commit.hash}</span>
+                  <h3 className="font-sans text-[20px] leading-tight font-extrabold tracking-tight text-ink">
+                    {commit.title}
+                  </h3>
+                </div>
+
+                <p className="max-w-[62ch] text-sm leading-relaxed text-ink-soft">{commit.body}</p>
               </div>
 
-              <p className="max-w-[68ch] text-sm leading-relaxed text-ink-soft">{commit.body}</p>
-
-              <p className="mt-3 font-mono text-[11px] text-ink-meta">{commit.cue}</p>
+              {/* Como el "stat" real de un commit — la anotación va a la
+                  derecha, no debajo, para que la fila use el ancho que
+                  antes se quedaba vacío. */}
+              <p className="font-mono text-[11px] text-ink-meta lg:w-[180px] lg:shrink-0 lg:pt-[3px] lg:text-right">
+                {commit.cue}
+              </p>
             </div>
           </div>
         ))}
