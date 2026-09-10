@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/Container";
 import { SectionLabel } from "@/components/SectionLabel";
-import { ProjectCard } from "@/components/ProjectCard";
+import { ProjectIndex } from "@/components/ProjectIndex";
 import { FeaturedProject } from "@/components/FeaturedProject";
 import { TopologyGraph } from "@/components/TopologyGraph";
 import { RequestTrace } from "@/components/RequestTrace";
@@ -174,13 +174,12 @@ export default function HomePage() {
             </SectionLabel>
           </Reveal>
 
-          {/* `stagger`: la rejilla entera comparte un observador y el CSS
-              reparte el retardo por hijo, en vez de montar un observador
-              por card. */}
-          <Reveal stagger className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {rest.map((project) => (
-              <ProjectCard key={project.slug} project={project} />
-            ))}
+          {/* `stagger`: la lista entera comparte un observador y el CSS
+              reparte el retardo por fila, en vez de montar un observador
+              por proyecto. `as="ol"` porque el propio Reveal pasa a ser el
+              `<ol>` de verdad — sus hijos son los `<li>` de ProjectIndex. */}
+          <Reveal as="ol" stagger className="project-index">
+            <ProjectIndex projects={rest} />
           </Reveal>
         </Container>
       </section>

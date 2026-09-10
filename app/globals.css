@@ -619,42 +619,76 @@ body {
   color: var(--accent);
 }
 
-/* --- Card de proyecto y chip de stack --------------------------
-   Los valores salen del sistema de diseño: panel a 12px de radio sobre
-   --bg-panel, y chips de texto sobre --bg-raised. El hover marca el foco
-   con borde y elevación mínima, nunca con escala (el catálogo descarta
-   expresamente el «hover que agranda la tarjeta»). */
-.project-card {
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--bg-panel);
-  padding: 24px;
-  transition:
-    border-color 220ms var(--ease-out),
-    transform 220ms var(--ease-out);
+/* --- Índice tipográfico de proyectos ----------------------------
+   La topología ya cuenta, por nodo, la entradilla y las tecnologías de
+   cada proyecto; una rejilla de cards debajo repitiendo justo eso era el
+   doble de información para decir lo mismo. Aquí no hay entradilla ni
+   stack: solo el número de línea, el nombre a un tamaño que carga la
+   jerarquía sin ayuda de una caja, la categoría (el único dato que la
+   topología no muestra) y el estado. El resto vive un clic más allá, en
+   el caso de estudio. */
+.project-index {
+  border-top: 1px solid var(--border);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .project-card:hover,
-  .project-card:focus-visible {
-    transform: translateY(-2px);
-  }
+.project-index-row {
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+  padding: 22px 2px;
+  border-bottom: 1px solid var(--border);
+  transition: border-color var(--motion-base) var(--ease-out);
 }
 
-.project-card:hover,
-.project-card:focus-visible {
+.project-index-row:hover,
+.project-index-row:focus-visible {
   border-color: var(--border-strong);
 }
 
-.tech-chip {
-  padding: 4px 8px;
-  border-radius: 4px;
-  background: var(--bg-raised);
+.project-index-n {
+  flex-shrink: 0;
+  width: 2ch;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 13px;
+  color: var(--ink-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.project-index-title {
+  flex: 1;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-size: clamp(19px, 1.4vw + 14px, 26px);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  transition: color var(--motion-base) var(--ease-out);
+}
+
+.project-index-row:hover .project-index-title,
+.project-index-row:focus-visible .project-index-title {
+  color: var(--accent);
+}
+
+.project-index-meta {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 18px;
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 11px;
-  line-height: 1;
-  color: var(--ink-body);
-  white-space: nowrap;
+}
+
+.project-index-tag {
+  color: var(--ink-meta);
+}
+
+@media (max-width: 30rem) {
+  /* Bajo esa anchura la fila ya no tiene sitio para tres columnas más el
+     nombre: la categoría es la prescindible, el estado se queda porque
+     dice si el proyecto sigue vivo. */
+  .project-index-tag {
+    display: none;
+  }
 }
 
 /* --- Campo de rutas del hero (catálogo #8) ---------------------
