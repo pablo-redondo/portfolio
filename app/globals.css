@@ -622,27 +622,65 @@ body {
 /* --- Índice tipográfico de proyectos ----------------------------
    La topología ya cuenta, por nodo, la entradilla y las tecnologías de
    cada proyecto; una rejilla de cards debajo repitiendo justo eso era el
-   doble de información para decir lo mismo. Aquí no hay entradilla ni
-   stack: solo el número de línea, el nombre a un tamaño que carga la
-   jerarquía sin ayuda de una caja, la categoría (el único dato que la
-   topología no muestra) y el estado. El resto vive un clic más allá, en
-   el caso de estudio. */
+   doble de información para decir lo mismo. En reposo esta fila no
+   repite nada de eso: número, nombre, categoría (lo único que la
+   topología no muestra) y estado. La entradilla y un adelanto del stack
+   sí viven aquí, pero plegados — el foco o el ratón los despliega — así
+   que no vuelven a estar siempre visibles, solo a un gesto de distancia.
+
+   El hueco entre el nombre y el estado, que en la fila en reposo se leía
+   como aire de sobra, lo llena una guía de puntos — el leader de un
+   índice de libro — que además es donde vive el gesto: al pasar por
+   encima, los puntos pasan a acento y "corren" hacia la derecha. */
 .project-index {
   border-top: 1px solid var(--border);
 }
 
 .project-index-row {
+  position: relative;
   display: flex;
-  align-items: baseline;
-  gap: 20px;
-  padding: 22px 2px;
+  flex-direction: column;
+  padding: 16px 4px 16px 18px;
   border-bottom: 1px solid var(--border);
-  transition: border-color var(--motion-base) var(--ease-out);
+  overflow: hidden;
+  transition:
+    border-color var(--motion-base) var(--ease-out),
+    background-color var(--motion-base) var(--ease-out);
+}
+
+.project-index-row::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 10px;
+  bottom: 10px;
+  width: 2px;
+  background: var(--accent);
+  transform: scaleY(0);
+  transform-origin: top;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .project-index-row::before {
+    transition: transform var(--motion-base) var(--ease-out);
+  }
 }
 
 .project-index-row:hover,
 .project-index-row:focus-visible {
   border-color: var(--border-strong);
+  background: color-mix(in oklab, var(--accent) 5%, transparent);
+}
+
+.project-index-row:hover::before,
+.project-index-row:focus-visible::before {
+  transform: scaleY(1);
+}
+
+.project-index-top {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
 }
 
 .project-index-n {
@@ -655,7 +693,7 @@ body {
 }
 
 .project-index-title {
-  flex: 1;
+  flex: 0 1 auto;
   font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   font-size: clamp(19px, 1.4vw + 14px, 26px);
   font-weight: 700;
@@ -667,6 +705,66 @@ body {
 .project-index-row:hover .project-index-title,
 .project-index-row:focus-visible .project-index-title {
   color: var(--accent);
+}
+
+/* Cursor de bloque, como el del prompt del hero: parpadea solo cuando la
+   fila está activa, señalando "esta es la línea seleccionada". */
+.project-index-caret {
+  display: inline-block;
+  width: 0.5em;
+  height: 1em;
+  margin-left: 3px;
+  transform: translateY(0.14em);
+  background: var(--accent);
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .project-index-row:hover .project-index-caret,
+  .project-index-row:focus-visible .project-index-caret {
+    animation: cursor-blink 900ms steps(1, end) infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-index-row:hover .project-index-caret,
+  .project-index-row:focus-visible .project-index-caret {
+    opacity: 1;
+  }
+}
+
+/* Guía de puntos: el leader tipográfico de un índice de libro, no una
+   barra decorativa. Ocupa justo el hueco entre el nombre y el estado. */
+.project-index-leader {
+  flex: 1 1 auto;
+  align-self: stretch;
+  min-width: 28px;
+  margin-bottom: 5px;
+  background-image: radial-gradient(circle, var(--border-strong) 1.1px, transparent 1.6px);
+  background-size: 9px 100%;
+  background-repeat: repeat-x;
+  background-position: left bottom;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .project-index-row:hover .project-index-leader,
+  .project-index-row:focus-visible .project-index-leader {
+    background-image: radial-gradient(circle, var(--accent) 1.2px, transparent 1.7px);
+    animation: leader-march 900ms linear infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-index-row:hover .project-index-leader,
+  .project-index-row:focus-visible .project-index-leader {
+    background-image: radial-gradient(circle, var(--accent) 1.2px, transparent 1.7px);
+  }
+}
+
+@keyframes leader-march {
+  to {
+    background-position: -18px bottom;
+  }
 }
 
 .project-index-meta {
@@ -682,12 +780,83 @@ body {
   color: var(--ink-meta);
 }
 
+/* Truco de `grid-template-rows` para animar un alto que en CSS puro no
+   se puede transicionar desde 0 hasta "lo que el contenido pida": la fila
+   de la rejilla pasa de 0fr a 1fr y el contenido, en `overflow: hidden`,
+   se revela con ella. Sin JS y sin una altura fija que adivinar. */
+.project-index-detail {
+  display: grid;
+  grid-template-rows: 0fr;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .project-index-detail {
+    transition: grid-template-rows var(--motion-slow) var(--ease-out);
+  }
+}
+
+.project-index-row:hover .project-index-detail,
+.project-index-row:focus-visible .project-index-detail {
+  grid-template-rows: 1fr;
+}
+
+.project-index-detail-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.project-index-tagline,
+.project-index-stack {
+  display: block;
+  opacity: 0;
+  transform: translateY(-4px);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .project-index-tagline,
+  .project-index-stack {
+    transition:
+      opacity var(--motion-base) var(--ease-out),
+      transform var(--motion-base) var(--ease-out);
+  }
+}
+
+.project-index-row:hover .project-index-tagline,
+.project-index-row:focus-visible .project-index-tagline,
+.project-index-row:hover .project-index-stack,
+.project-index-row:focus-visible .project-index-stack {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.project-index-tagline {
+  max-width: 62ch;
+  padding-top: 12px;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  transition-delay: 40ms;
+}
+
+.project-index-stack {
+  margin-top: 6px;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--ink-faint);
+  transition-delay: 90ms;
+}
+
 @media (max-width: 30rem) {
-  /* Bajo esa anchura la fila ya no tiene sitio para tres columnas más el
-     nombre: la categoría es la prescindible, el estado se queda porque
-     dice si el proyecto sigue vivo. */
+  /* Bajo esa anchura la fila ya no tiene sitio para el leader ni la
+     categoría: el estado se queda porque dice si el proyecto sigue vivo. */
+  .project-index-leader,
   .project-index-tag {
     display: none;
+  }
+
+  .project-index-title {
+    flex: 1;
   }
 }
 
