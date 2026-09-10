@@ -168,7 +168,11 @@ export function TopologyGraph({ nodes, edges, defaultSlug }: Props) {
           <>
             <p className="text-xl leading-tight font-bold text-ink">{selected.label}</p>
             <p className="text-mono-data mt-1.5 text-accent">{selected.slug}</p>
-            <p className="text-body-sm mt-3 line-clamp-2 text-ink-soft">{selected.tagline}</p>
+            {/* Sin line-clamp: cortaba la frase a mitad de palabra ("...e...")
+                en vez de en un punto natural. La barra lateral ya crece con
+                su contenido (ver .topo-panel en globals.css), así que no
+                hace falta recortar el texto para que quepa. */}
+            <p className="text-body-sm mt-3 text-ink-soft">{selected.tagline}</p>
 
             <div className="mt-4 grid grid-cols-2 gap-4">
               <div>
