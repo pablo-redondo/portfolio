@@ -1,11 +1,16 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"main": ".open-next/worker.js",
-	// Nombre real registrado en Cloudflare Workers Builds para este repo —
-	// confirmado por el propio CI en un aviso de deploy ("the CI system
-	// expected 'portfolio'"), no una suposición. Cualquier otro valor aquí
-	// da igual lo que ponga el `name` de package.json.
-	"name": "portfolio",
+	// Nombre real registrado en Cloudflare Workers Builds para ESTA rama
+	// (main) — confirmado por el propio CI en un aviso de deploy ("the CI
+	// system expected 'portfolio-pre'"), no una suposición. La rama de
+	// producción tiene su propio wrangler.jsonc con "portfolio": Workers
+	// Builds asigna un nombre de Worker distinto por rama conectada, así
+	// que este archivo no se puede compartir entre ramas sin más — hasta
+	// que este valor no coincidió, el deploy de main "tenía éxito" pero
+	// publicaba bajo el nombre equivocado y el dominio personalizado
+	// (pre.pablo-redondo.dev, atado a "portfolio-pre") nunca recibía nada.
+	"name": "portfolio-pre",
 	"compatibility_date": "2026-08-20",
 	"compatibility_flags": [
 		"nodejs_compat",
@@ -24,7 +29,7 @@
 			// coincidir con el `name` de arriba.
 			// ver https://opennext.js.org/cloudflare/caching
 			"binding": "WORKER_SELF_REFERENCE",
-			"service": "portfolio"
+			"service": "portfolio-pre"
 		}
 	],
 	"images": {

@@ -127,10 +127,15 @@ reglas que ya se pagaron caras:
 
 ### Despliegue en Cloudflare
 
-- `wrangler.jsonc` — el `name` debe ser `portfolio` (lo exige Workers Builds para este repo);
-  el binding `WORKER_SELF_REFERENCE` tiene que apuntar a ese mismo nombre. El binding KV
-  `STATUS_HISTORY` respalda el histórico de `/api/status` (ver arriba); tiene `id` y
-  `preview_id` reales, no de plantilla.
+- `wrangler.jsonc` — el `name` es por-rama, no por-repo: Workers Builds registra un Worker
+  distinto según qué rama conectada dispara el deploy, y el build de una rama falla en
+  silencio (deploy "verde" pero publicado bajo el nombre equivocado, dominio personalizado
+  sin recibir nada) si el `name` de aquí no coincide con lo que esa rama tiene asignado —
+  el propio CI lo dice en el log ("the CI system expected '<nombre>'") cuando no cuadra. En
+  `main` es `portfolio-pre` (→ pre.pablo-redondo.dev); la rama de producción tiene su propio
+  `wrangler.jsonc` con `portfolio` (→ pablo-redondo.dev). El binding `WORKER_SELF_REFERENCE`
+  tiene que apuntar a ese mismo nombre, siempre. El binding KV `STATUS_HISTORY` respalda el
+  histórico de `/api/status` (ver arriba); tiene `id` y `preview_id` reales, no de plantilla.
 - `open-next.config.ts` — `buildCommand: "npm run build"` está fijado a mano (aunque ya
   coincide con el valor por defecto) para no depender de qué signifique "build" en
   `package.json` si vuelve a cambiar.
