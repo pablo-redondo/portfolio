@@ -394,8 +394,8 @@ export default function SobreMiPage() {
           >
             <p className="text-body mb-[30px] max-w-[62ch] text-ink-soft">
               No es una lista de logos: cada tecnología está aquí por un motivo
-              concreto, el mismo que aparece en los casos de estudio. Los siete
-              puntos de cada ficha marcan en qué proyectos está viva.
+              concreto, el mismo que aparece en los casos de estudio. Abre una
+              ficha para leerlo y ver en cuántos proyectos está viva.
             </p>
           </SectionHead>
 

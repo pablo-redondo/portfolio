@@ -438,42 +438,140 @@ body {
 
 /* Resplandor difuso tras el hero: rompe el plano sin ser un patrón
    de fondo ni partículas. */
-/* --- Ficha de tecnología del stack -----------------------------
-   Logo (o monograma), nombre, cuántos proyectos la usan y un punto por
-   proyecto. El logo va desaturado hasta el hover: en una rejilla de
-   quince, quince marcas a todo color compiten entre ellas. */
-.tech-card {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  padding: 16px 0;
-  border-bottom: 1px solid var(--border);
-  transition: border-color 240ms var(--ease-out);
+/* --- Fila de tecnología del stack (compacta, expandible) -------
+   Antes cada pieza iba siempre desplegada a ancho completo: quince
+   párrafos seguidos, siempre visibles, era lo que hacía la sección
+   demasiado larga. Ahora cada fila es una sola línea — icono, nombre,
+   señal de uso — y el motivo real vive en un <details> nativo, el
+   mismo recurso que ya usa CareerTraceroute. Cerrarlo por defecto no
+   es esconder el porqué: sigue a un clic, no a un tooltip invisible.
+   `--cat` lo fija cada fila inline al color de su categoría. */
+.stack-row {
+  --cat: var(--accent);
+  border-top: 1px solid var(--border);
 }
 
-.tech-card:hover {
-  border-color: var(--border-strong);
+.stack-row summary {
+  list-style: none;
+}
+.stack-row summary::-webkit-details-marker {
+  display: none;
 }
 
-.tech-card-logo {
+.stack-row-head {
   display: flex;
-  width: 38px;
-  height: 38px;
+  cursor: pointer;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 6px;
+  transition: background-color var(--motion-fast) var(--ease-out);
+}
+
+.stack-row-head:hover {
+  background: var(--bg-raised);
+}
+
+.stack-row-icon {
+  display: flex;
+  width: 32px;
+  height: 32px;
   flex: none;
   align-items: center;
   justify-content: center;
-  border-radius: 9px;
+  border-radius: 8px;
   background: var(--bg-raised);
+  box-shadow: inset 0 0 0 1px var(--border);
   font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 700;
   line-height: 1;
   color: var(--ink-meta);
-  transition: color 240ms var(--ease-out);
+  transition:
+    color var(--motion-fast) var(--ease-out),
+    box-shadow var(--motion-fast) var(--ease-out),
+    transform var(--motion-fast) var(--ease-out);
 }
 
-.tech-card:hover .tech-card-logo {
-  color: var(--ink);
+.stack-row-head:hover .stack-row-icon,
+.stack-row[open] > .stack-row-head .stack-row-icon {
+  color: var(--cat);
+  transform: scale(1.06);
+  box-shadow:
+    inset 0 0 0 1px var(--cat),
+    0 0 0 3px color-mix(in oklab, var(--cat) 20%, transparent);
+}
+
+.stack-row-name {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.stack-row-chevron {
+  flex: none;
+  color: var(--ink-meta);
+  transition:
+    transform var(--motion-base) var(--ease-out),
+    color var(--motion-fast) var(--ease-out);
+}
+
+.stack-row[open] > .stack-row-head .stack-row-chevron {
+  color: var(--cat);
+  transform: rotate(90deg);
+}
+
+.stack-row-body {
+  padding: 2px 6px 20px 50px;
+}
+
+/* Medidor real de en cuántos proyectos vive la tecnología — no una cifra
+   suelta, la misma proporción que ya cuenta el texto al lado. */
+.stack-meter {
+  position: relative;
+  height: 3px;
+  width: 100%;
+  max-width: 220px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--border);
+}
+
+.stack-meter-fill {
+  position: absolute;
+  inset: 0;
+  width: var(--pct);
+  border-radius: inherit;
+  background: var(--cat);
+  transition: width 700ms var(--ease-out) 150ms;
+}
+
+@media (prefers-reduced-motion: no-preference) and (scripting: enabled) {
+  [data-reveal="out"] .stack-meter-fill {
+    width: 0% !important;
+    transition: none;
+  }
+}
+
+/* --- Filtro de categoría del stack, sin JS ----------------------
+   Los radios ocultos son hermanos de los grupos dentro de
+   .stack-explorer; :has() decide cuál enseñar, el mismo recurso que ya
+   usa el spy de :target del caso de estudio. Sin ninguno marcado
+   ("todo") no hay regla que coincida y no se oculta nada. */
+.stack-explorer:has(#stack-filter-frontend:checked) .stack-group:not([data-category="frontend"]),
+.stack-explorer:has(#stack-filter-backend:checked) .stack-group:not([data-category="backend"]),
+.stack-explorer:has(#stack-filter-infra:checked) .stack-group:not([data-category="infra"]),
+.stack-explorer:has(#stack-filter-tooling:checked) .stack-group:not([data-category="tooling"]) {
+  display: none;
+}
+
+.stack-filter-dot {
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: 50%;
 }
 
 /* --- "Cómo trabajo" como un explorador de dos columnas -----------
