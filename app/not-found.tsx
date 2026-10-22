@@ -34,9 +34,6 @@ export default function NotFound() {
             <Link href="/" className="btn btn-primary">
               Volver a inicio
             </Link>
-            <Link href="/proyectos" className="btn btn-secondary">
-              Ver proyectos
-            </Link>
           </div>
         </div>
       </Container>

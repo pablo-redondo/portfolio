@@ -1,7 +1,17 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // El dominio principal muestra solo la página «Próximamente»: las rutas
+  // del portfolio antiguo siguen en el código, pero llevan a la portada.
+  // Temporales (307) a propósito: volverán cuando se publique el nuevo.
+  async redirects() {
+    return [
+      { source: "/proyectos/:path*", destination: "/", permanent: false },
+      { source: "/proyectos", destination: "/", permanent: false },
+      { source: "/sobre-mi", destination: "/", permanent: false },
+      { source: "/contacto", destination: "/", permanent: false },
+    ];
+  },
 };
 
 export default nextConfig;
