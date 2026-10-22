@@ -28,20 +28,6 @@
   font-family: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
 }
 
-.soon::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background:
-    radial-gradient(60% 50% at 50% 0%, rgba(76, 201, 255, 0.12), transparent 70%),
-    linear-gradient(var(--s-border) 1px, transparent 1px) 0 0 / 56px 56px,
-    linear-gradient(90deg, var(--s-border) 1px, transparent 1px) 0 0 / 56px 56px;
-  opacity: 0.55;
-  mask-image: radial-gradient(70% 70% at 50% 30%, #000 30%, transparent 100%);
-  -webkit-mask-image: radial-gradient(70% 70% at 50% 30%, #000 30%, transparent 100%);
-}
-
 .soon-bar {
   display: flex;
   align-items: center;
