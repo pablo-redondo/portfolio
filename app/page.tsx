@@ -33,7 +33,7 @@ export default function ComingSoonPage() {
           </p>
 
           <h1 data-enter="lcp">
-            Mi nuevo portfolio llega <em>pronto.</em>
+            Compilando algo <em>mejor.</em>
           </h1>
 
           <div className="soon-grid">
