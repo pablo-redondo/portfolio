@@ -96,6 +96,13 @@ export function SoonTerminal({ email, github, linkedin, cvUrl }: Props) {
     "help",
   ];
 
+  const enlaces: Record<string, string> = {
+    gmail,
+    ...(linkedin ? { linkedin } : {}),
+    github,
+    ...(cvUrl ? { cv: cvUrl } : {}),
+  };
+
   const [lineas, setLineas] = useState<Linea[]>([]);
   const [valor, setValor] = useState("");
   const idRef = useRef(0);
@@ -124,6 +131,13 @@ export function SoonTerminal({ email, github, linkedin, cvUrl }: Props) {
     return () => timers.forEach(clearTimeout);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [push]);
+
+  const anotar = (cmd: string) => {
+    push([
+      { tipo: "in", texto: cmd },
+      { tipo: "ok", texto: "✓ abierto en una pestaña nueva" },
+    ]);
+  };
 
   const abrir = (url: string) => window.open(url, "_blank", "noopener,noreferrer");
 
@@ -240,11 +254,28 @@ export function SoonTerminal({ email, github, linkedin, cvUrl }: Props) {
         </label>
 
         <div className="soon-chips">
-          {comandos.map((c) => (
-            <button key={c} type="button" className="soon-chip" onClick={() => void ejecutar(c)}>
-              {c}
-            </button>
-          ))}
+          {comandos.map((c) => {
+            const href = enlaces[c];
+            // Los canales con destino son enlaces reales: abren en pestaña
+            // nueva directamente (sin depender de window.open) y además
+            // dejan constancia en la salida de la terminal.
+            return href ? (
+              <a
+                key={c}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="soon-chip"
+                onClick={() => anotar(c)}
+              >
+                {c}
+              </a>
+            ) : (
+              <button key={c} type="button" className="soon-chip" onClick={() => void ejecutar(c)}>
+                {c}
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>

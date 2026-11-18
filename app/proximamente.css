@@ -580,13 +580,16 @@
 }
 
 .soon-chips {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
 }
 
 .soon-chip {
-  padding: 6px 12px;
+  display: block;
+  padding: 8px 10px;
+  text-align: center;
+  text-decoration: none;
   border: 1px solid var(--s-border-strong);
   border-radius: 999px;
   background: transparent;
