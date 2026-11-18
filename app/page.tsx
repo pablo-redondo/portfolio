@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { SITE } from "@/content/site";
+import { SoonContact, SoonCopyButton } from "@/components/SoonContact";
 import { HeroRoutes } from "@/components/HeroRoutes";
 import "./proximamente.css";
 
@@ -41,50 +42,18 @@ export default function ComingSoonPage() {
               <p data-enter="3" className="soon-lead">
                 Estoy rehaciendo mi portfolio desde cero. Mientras termina de
                 desplegarse, esta es la única página en pie — si quieres
-                hablar, un email directo funciona mejor que esperar.
+                hablar, elige un canal y escríbeme directamente.
               </p>
               <div data-enter="4" className="soon-actions">
-                <a href={`mailto:${SITE.email}`} className="soon-btn soon-btn-primary">
-                  Escribir un email
-                </a>
-                <a href={SITE.github} className="soon-btn" rel="noreferrer">
-                  GitHub
+                <SoonCopyButton email={SITE.email} />
+                <a href="#canales" className="soon-btn soon-btn-ghost">
+                  Otros canales
                 </a>
               </div>
             </div>
 
-            <div data-enter="4" className="soon-win" aria-label="Estado del despliegue">
-              <div className="soon-win-bar">
-                <div className="soon-dots" aria-hidden>
-                  <i />
-                  <i />
-                  <i />
-                </div>
-                <span>deploy — pablo-redondo.dev</span>
-                <span />
-              </div>
-              <div className="soon-win-body">
-                <div className="soon-status">
-                  <span aria-hidden className="soon-pulse" />
-                  EN CONSTRUCCIÓN
-                </div>
-                <ul className="soon-log">
-                  <li>
-                    <span>portfolio nuevo</span>
-                    <b className="run">
-                      en preparación<span aria-hidden className="soon-caret" />
-                    </b>
-                  </li>
-                  <li>
-                    <span>contacto</span>
-                    <b className="ok">abierto</b>
-                  </li>
-                  <li>
-                    <span>publicación</span>
-                    <b>pronto</b>
-                  </li>
-                </ul>
-              </div>
+            <div data-enter="4" id="canales" className="soon-side">
+              <SoonContact email={SITE.email} github={SITE.github} linkedin={SITE.linkedin} />
             </div>
           </div>
 

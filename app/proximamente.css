@@ -382,3 +382,104 @@
     animation: none;
   }
 }
+
+/* --- Terminal de contacto --- */
+.soon-btn {
+  cursor: pointer;
+  font-family: inherit;
+  background: transparent;
+}
+
+.soon-btn-primary {
+  background: var(--s-accent);
+}
+
+.soon-hint {
+  margin-left: auto;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--s-meta);
+}
+
+.soon-ch-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.soon-ch {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) auto;
+  grid-template-areas:
+    "key name act"
+    ". dest dest";
+  align-items: baseline;
+  gap: 2px 10px;
+  width: 100%;
+  padding: 11px 8px;
+  margin: 0 -8px;
+  border: 0;
+  border-top: 1px solid var(--s-raised);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 140ms ease;
+}
+
+.soon-ch-list li:first-child .soon-ch {
+  border-top-color: var(--s-raised);
+}
+
+.soon-ch:hover,
+.soon-ch:focus-visible {
+  background: var(--s-raised);
+}
+
+.soon-ch kbd {
+  grid-area: key;
+  display: inline-grid;
+  place-items: center;
+  height: 18px;
+  border: 1px solid var(--s-border-strong);
+  border-radius: 4px;
+  font: inherit;
+  font-size: 11px;
+  color: var(--s-meta);
+}
+
+.soon-ch:hover kbd,
+.soon-ch:focus-visible kbd {
+  border-color: var(--s-accent);
+  color: var(--s-accent);
+}
+
+.soon-ch-name {
+  grid-area: name;
+  color: var(--s-meta);
+}
+
+.soon-ch-dest {
+  grid-area: dest;
+  color: var(--s-ink);
+  overflow-wrap: anywhere;
+}
+
+.soon-ch-act {
+  grid-area: act;
+  color: var(--s-accent);
+}
+
+.soon-ch-act[data-estado="copiado"] {
+  color: var(--s-ok);
+}
+
+.soon-ch-act[data-estado="error"] {
+  color: #ff6b6b;
+}
+
+.soon-btn-ghost {
+  background: transparent;
+}
