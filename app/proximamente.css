@@ -28,15 +28,31 @@
   font-family: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
 }
 
+/* Una sola columna de contenido (1160px) compartida por cabecera, hero y
+   pie: así todo queda alineado al mismo margen en cualquier ancho. */
+.soon-wrap {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
 .soon-bar {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 22px 28px;
+  position: relative;
+  z-index: 1;
+  padding: 22px 0;
   font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
   font-size: 13px;
   font-weight: 700;
   color: var(--s-ink);
+}
+
+.soon-bar .soon-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .soon-main {
@@ -45,28 +61,20 @@
   flex: 1;
   align-items: center;
   width: 100%;
-}
-
-.soon-inner {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  max-width: 1160px;
-  margin: 0 auto;
-  padding: 48px 28px 64px;
+  padding: 40px 0 72px;
 }
 
 .soon-grid {
   display: grid;
-  align-items: start;
+  align-items: center;
   gap: 40px;
   grid-template-columns: minmax(0, 1fr);
 }
 
 @media (min-width: 960px) {
   .soon-grid {
-    grid-template-columns: minmax(0, 1fr) 372px;
-    gap: 56px;
+    grid-template-columns: minmax(0, 1fr) 400px;
+    gap: 64px;
   }
 }
 
@@ -164,9 +172,9 @@
 }
 
 .soon h1 {
-  max-width: 21ch;
-  margin: 0 0 40px;
-  font-size: clamp(38px, 4.9vw, 70px);
+  max-width: 14ch;
+  margin: 0 0 28px;
+  font-size: clamp(40px, 5.2vw, 72px);
   font-weight: 800;
   line-height: 1.02;
   letter-spacing: -0.036em;
@@ -180,8 +188,8 @@
 }
 
 .soon-lead {
-  max-width: 52ch;
-  margin: 0 0 32px;
+  max-width: 46ch;
+  margin: 0;
   font-size: 1.125rem;
   line-height: 1.65;
 }
@@ -350,16 +358,21 @@
 }
 
 .soon-foot {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 24px;
-  justify-content: space-between;
-  padding: 22px 28px;
+  position: relative;
+  z-index: 1;
+  padding: 22px 0;
   border-top: 1px solid var(--s-border);
   background: var(--s-inset);
   font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
   font-size: 12px;
   color: var(--s-meta);
+}
+
+.soon-foot-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  justify-content: space-between;
 }
 
 .soon-foot nav {
