@@ -102,10 +102,9 @@ export function SoonTerminal({ email, github, linkedin, cvUrl }: Props) {
   const historial = useRef<string[]>([]);
   const cursor = useRef(-1);
   const input = useRef<HTMLInputElement>(null);
-  const scroller = useRef<HTMLDivElement>(null);
 
   const push = useCallback((l: Omit<Linea, "id">[]) => {
-    setLineas((prev) => [...prev, ...l.map((x) => ({ ...x, id: idRef.current++ }))].slice(-60));
+    setLineas((prev) => [...prev, ...l.map((x) => ({ ...x, id: idRef.current++ }))].slice(-4));
   }, []);
 
   // Arranque: la terminal "imprime" su propio inicio línea a línea, como un
@@ -116,7 +115,7 @@ export function SoonTerminal({ email, github, linkedin, cvUrl }: Props) {
       { tipo: "in", texto: "boot contacto" },
       { tipo: "ok", texto: `[ok] canales cargados: ${canales}` },
       { tipo: "ok", texto: "[ok] terminal lista" },
-      { tipo: "out", texto: "escribe un comando o pulsa uno de abajo · help para la ayuda" },
+      { tipo: "out", texto: "escribe un comando o pulsa uno · help" },
     ];
     const reducido = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const timers = guion.map((l, i) =>
@@ -125,11 +124,6 @@ export function SoonTerminal({ email, github, linkedin, cvUrl }: Props) {
     return () => timers.forEach(clearTimeout);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [push]);
-
-  useEffect(() => {
-    const el = scroller.current;
-    if (el) el.scrollTop = el.scrollHeight;
-  }, [lineas]);
 
   const abrir = (url: string) => window.open(url, "_blank", "noopener,noreferrer");
 
@@ -142,14 +136,7 @@ export function SoonTerminal({ email, github, linkedin, cvUrl }: Props) {
 
     switch (cmd) {
       case "help":
-        push([
-          { tipo: "out", texto: "email      copia mi correo" },
-          { tipo: "out", texto: "gmail      redacta un mensaje en Gmail web" },
-          ...(linkedin ? [{ tipo: "out" as const, texto: "linkedin   abre mi perfil" }] : []),
-          { tipo: "out", texto: "github     abre mi GitHub" },
-          ...(cvUrl ? [{ tipo: "out" as const, texto: "cv         abre mi currículum (PDF)" }] : []),
-          { tipo: "out", texto: "whoami · clear" },
-        ]);
+        push([{ tipo: "out", texto: `comandos: ${comandos.filter((c) => c !== "help").join(" · ")} · whoami · clear` }]);
         break;
       case "email":
         try {
@@ -227,7 +214,7 @@ export function SoonTerminal({ email, github, linkedin, cvUrl }: Props) {
 
       <div className="soon-win-body">
         {/* La salida se anuncia sola a lectores de pantalla. */}
-        <div className="soon-term-out" ref={scroller} role="log" aria-live="polite">
+        <div className="soon-term-out" role="log" aria-live="polite">
           {lineas.map((l) => (
             <p key={l.id} className={`soon-line soon-line-${l.tipo}`}>
               {l.tipo === "in" && <span className="soon-prompt">$</span>}

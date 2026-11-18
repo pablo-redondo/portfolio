@@ -499,11 +499,11 @@
   padding: 18px 20px 20px;
 }
 
+/* Sin scroll: la salida muestra solo las últimas líneas (el componente
+   recorta a 4) y la altura mínima evita saltos mientras se imprimen. */
 .soon-term-out {
-  height: 188px;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--s-border-strong) transparent;
+  min-height: 7.2em;
+  overflow: hidden;
 }
 
 .soon-line {
