@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { SITE } from "@/content/site";
-import { SoonCopyButton, SoonSpotlight, SoonTerminal } from "@/components/SoonContact";
+import { SoonCopyButton, SoonHeadline, SoonSpotlight, SoonTerminal } from "@/components/SoonContact";
 import { HeroRoutes } from "@/components/HeroRoutes";
 import "./proximamente.css";
 
@@ -34,9 +34,7 @@ export default function ComingSoonPage() {
             <span>$</span> status --site
           </p>
 
-          <h1 data-enter="lcp">
-            Compilando algo <em>mejor.</em>
-          </h1>
+          <SoonHeadline before="Compilando algo " accent="mejor." />
 
           <div className="soon-grid">
             <div>

@@ -108,12 +108,22 @@ export function SoonTerminal({ email, github, linkedin, cvUrl }: Props) {
     setLineas((prev) => [...prev, ...l.map((x) => ({ ...x, id: idRef.current++ }))].slice(-60));
   }, []);
 
-  // Arranque: se "escribe" una sola vez, como si alguien hubiera lanzado la ayuda.
+  // Arranque: la terminal "imprime" su propio inicio línea a línea, como un
+  // build, y deja listo el prompt. Con movimiento reducido sale de golpe.
   useEffect(() => {
-    push([
-      { tipo: "out", texto: "contacto — pablo · escribe un comando o pulsa uno de abajo" },
-      { tipo: "out", texto: "ayuda: help" },
-    ]);
+    const canales = comandos.filter((c) => c !== "help").join(", ");
+    const guion: Omit<Linea, "id">[] = [
+      { tipo: "in", texto: "boot contacto" },
+      { tipo: "ok", texto: `[ok] canales cargados: ${canales}` },
+      { tipo: "ok", texto: "[ok] terminal lista" },
+      { tipo: "out", texto: "escribe un comando o pulsa uno de abajo · help para la ayuda" },
+    ];
+    const reducido = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const timers = guion.map((l, i) =>
+      setTimeout(() => push([l]), reducido ? 0 : 500 + i * 380),
+    );
+    return () => timers.forEach(clearTimeout);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [push]);
 
   useEffect(() => {
@@ -251,5 +261,73 @@ export function SoonTerminal({ email, github, linkedin, cvUrl }: Props) {
         </div>
       </div>
     </div>
+  );
+}
+
+/**
+ * Titular que reacciona al puntero. Cada letra es un span: al cargar entran
+ * en cascada (desenfoque → nítido) y, con puntero fino, las más cercanas al
+ * cursor se elevan y se encienden. El texto real va en `aria-label`; los
+ * spans son decorativos.
+ */
+export function SoonHeadline({ before, accent }: { before: string; accent: string }) {
+  const ref = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    const h = ref.current;
+    if (!h) return;
+    if (
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      !window.matchMedia("(pointer: fine)").matches
+    )
+      return;
+
+    const chars = Array.from(h.querySelectorAll<HTMLElement>("[data-c]"));
+    let raf = 0;
+    const onMove = (e: PointerEvent) => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        for (const c of chars) {
+          const r = c.getBoundingClientRect();
+          const d = Math.hypot(e.clientX - (r.left + r.width / 2), e.clientY - (r.top + r.height / 2));
+          c.style.setProperty("--p", Math.max(0, 1 - d / 170).toFixed(3));
+        }
+      });
+    };
+    const onLeave = () => chars.forEach((c) => c.style.setProperty("--p", "0"));
+    window.addEventListener("pointermove", onMove, { passive: true });
+    document.addEventListener("pointerleave", onLeave);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("pointermove", onMove);
+      document.removeEventListener("pointerleave", onLeave);
+    };
+  }, []);
+
+  let n = 0;
+  const palabras = (txt: string, acento: boolean) =>
+    txt
+      .split(" ")
+      .filter(Boolean)
+      .map((w, i) => (
+        <span key={`${acento}-${i}`} className="soon-w" aria-hidden>
+          {[...w].map((ch, j) => (
+            <span
+              key={j}
+              data-c
+              className={acento ? "soon-c soon-c-acc" : "soon-c"}
+              style={{ animationDelay: `${120 + n++ * 32}ms` }}
+            >
+              {ch}
+            </span>
+          ))}
+        </span>
+      ));
+
+  return (
+    <h1 ref={ref} data-enter="lcp" aria-label={`${before}${accent}`}>
+      {palabras(before, false)}
+      {palabras(accent, true)}
+    </h1>
   );
 }
